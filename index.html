@@ -1022,7 +1022,7 @@ function vEntrada(w){
   box.innerHTML=`<section class="panel"><div class="eyebrow">Acesso</div><h2>Entre no Painel de Gestão</h2>
     <p class="muted" style="margin:6px 0 16px">Escolha o seu escritório e entre com o e-mail e a senha que você recebeu. No primeiro acesso, o painel pede para você criar a sua própria senha.</p>
     <form class="form" id="fEntrada" style="background:none;border:0;padding:0">
-      <label class="f"><span>Escritório</span><select name="ecp" id="ent-ecp" required><option value="">Selecione</option>${opts()}<option value="*">Sebrae/PR · rede de escritórios (consultores e administração)</option></select></label>
+      <label class="f"><span>Escritório</span><select name="ecp" id="ent-ecp" required><option value="">Selecione</option>${opts()}<option value="*">Sebrae/PR - Gestão Estadual</option><option value="*c">Sebrae/PR - Credenciados</option></select></label>
       <label class="f"><span>E-mail</span><input name="email" id="ent-email" type="email" autocomplete="username" required inputmode="email"></label>
       ${campoSenha("senha","Senha","current-password",'id="ent-senha"')}
       <div class="warnline" id="ent-erro" hidden></div>
@@ -1031,14 +1031,14 @@ function vEntrada(w){
     <p class="small" style="color:#fff;text-align:center;margin:0">Esqueceu a senha ou não tem acesso? Fale com o administrador do painel ou com o consultor do Sebrae que acompanha o seu escritório.</p>`;
   ligarMostrarSenha(box);
   const sel=$("#ent-ecp",box); const ult=LS.get("ultEcp",""); if(ult) sel.value=ult;
-  api("escritorios").then(l=>{ ESCRITORIOS_PUBLICOS=l; LS.set("escritorios",l); const v=sel.value; sel.innerHTML=`<option value="">Selecione</option>${opts()}<option value="*">Sebrae/PR · rede de escritórios (consultores e administração)</option>`; sel.value=v||LS.get("ultEcp",""); }).catch(e=>{ if(!ESCRITORIOS_PUBLICOS.length) mostrarErro(e.message); });
+  api("escritorios").then(l=>{ ESCRITORIOS_PUBLICOS=l; LS.set("escritorios",l); const v=sel.value; sel.innerHTML=`<option value="">Selecione</option>${opts()}<option value="*">Sebrae/PR - Gestão Estadual</option><option value="*c">Sebrae/PR - Credenciados</option>`; sel.value=v||LS.get("ultEcp",""); }).catch(e=>{ if(!ESCRITORIOS_PUBLICOS.length) mostrarErro(e.message); });
   const err=$("#ent-erro",box); function mostrarErro(t){ err.textContent=t; err.hidden=false; }
   $("#fEntrada",box).onsubmit=async ev=>{
     ev.preventDefault(); err.hidden=true; const fd=Object.fromEntries(new FormData(ev.target)); const btn=ev.target.querySelector("button"); btn.disabled=true; btn.textContent="Entrando…";
     try{
-      const r=await api("entrar",{email:fd.email,senha:fd.senha,ecp:fd.ecp});
+      const r=await api("entrar",{email:fd.email,senha:fd.senha,ecp:fd.ecp==="*c"?"*":fd.ecp});
       S.token=r.token; LS.set("token",r.token); LS.set("ultEcp",fd.ecp); S._senhaLogin=fd.senha;
-      if(fd.ecp && fd.ecp!=="*") LS.set("sel",fd.ecp);
+      if(fd.ecp && fd.ecp[0]!=="*") LS.set("sel",fd.ecp);
       aplicarSessao(await api("sessao"),true); processarFila();
     }catch(e){ mostrarErro(e.message); }
     finally{ btn.disabled=false; btn.textContent="Entrar"; }
@@ -1169,7 +1169,7 @@ function vUsers(w){
   const out=$("#uOut",g);
   const mostra=()=>{ const u=S.ultimaSenha; if(!u){ out.innerHTML=""; return; }
     const ecpTxt = u.ecps.includes("*") ? "todos os escritórios" : u.ecps.map(k=>(S.ecps[k]||{}).nome||k).join(", ");
-    const ecpEntrada = PERFIS[u.perfil].multi ? "Sebrae/PR · rede de escritórios" : ((S.ecps[u.ecps[0]]||{}).nome||u.ecps[0]);
+    const ecpEntrada = PERFIS[u.perfil].multi ? (u.perfil==="credenciado"?"Sebrae/PR - Credenciados":"Sebrae/PR - Gestão Estadual") : ((S.ecps[u.ecps[0]]||{}).nome||u.ecps[0]);
     const msg=`Olá, ${u.nome}!\n\nVocê recebeu acesso ao Painel de Gestão do Escritório de Compras Públicas, com o perfil ${perfilNome(u.perfil)} (${ecpTxt}).\n\n1. Acesse: ${linkDoPainel()}\n2. Escritório: ${ecpEntrada}\n3. E-mail: ${u.email}\n4. Senha provisória: ${u.senha}\n\nNo primeiro acesso o painel pede para você criar a sua própria senha.`;
     out.innerHTML=`<div class="form" style="margin-top:12px"><div class="eyebrow">Senha provisória de ${esc(u.nome)}</div><div class="codebox">${esc(u.senha)}</div>
       <div class="small muted">Copie agora: por segurança, a senha não aparece de novo.</div>
