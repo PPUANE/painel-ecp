@@ -228,6 +228,10 @@ svg text{fill:var(--muted);font-family:var(--f-body)}
 @media (prefers-reduced-motion:no-preference){.fill{transition:width .4s ease}}
 .me button{background:none;border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:6px;padding:4px 9px;font:inherit;font-size:.8rem;cursor:pointer}
 .me button:hover{background:rgba(255,255,255,.1)}
+.pw{position:relative}
+.f .pw input{padding-right:44px}
+.pw-ver{position:absolute;top:50%;right:4px;transform:translateY(-50%);width:36px;height:36px;display:grid;place-items:center;border:0;background:none;color:var(--muted);border-radius:6px;cursor:pointer;padding:0}
+.pw-ver:hover,.pw-ver:focus-visible{color:var(--teal);background:var(--surface-2)}
 .filabar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#b26a00;color:#fff;text-align:center;font-weight:700;font-size:.85rem;padding:8px 16px calc(8px + env(safe-area-inset-bottom,0px))}
 </style>
 </head>
@@ -471,7 +475,7 @@ function escolherEcpInicial(){
 }
 function fillSelect(){
   const sel=$("#ecpSel"); const ids=(S.gate==="ok"?ecpsPermitidos():[]).sort((a,b)=>(S.ecps[a].nome||a).localeCompare(S.ecps[b].nome||b));
-  $(".ecp-pick").style.visibility = S.gate==="ok" ? "visible" : "hidden";
+  const vis = S.gate==="ok" ? "" : "none"; $(".ecp-pick label").style.display=vis; sel.style.display=vis; $("#btnSenha").style.display = S.gate==="ok" ? "" : "none";
   sel.innerHTML = ids.length ? ids.map(id=>`<option value="${esc(id)}">${esc(S.ecps[id].nome||id)}</option>`).join("") : `<option value="">—</option>`;
   if(S.ecpId) sel.value=S.ecpId;
 }
@@ -921,6 +925,11 @@ function vCad(w){
     <p class="small muted" style="margin:8px 0 0">Cada pessoa entra com e-mail e senha cadastrados na aba <b>Usuários</b>. Não é preciso nenhuma outra conta.</p></section>`);
 }
 
+/* ===== Campos de senha com "Mostrar" ===== */
+const ICO_OLHO='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>', ICO_OLHO_X='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.2A10.9 10.9 0 0 1 12 4c6.4 0 10 7 10 7a18 18 0 0 1-2.9 3.9M6.6 6.6C3.7 8.4 2 12 2 12s3.6 7 10 7a10.6 10.6 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="M2 2l20 20"/></svg>';
+function campoSenha(nome,rotulo,auto,extra){ return `<label class="f"><span>${rotulo}</span><div class="pw"><input name="${nome}" type="password" autocomplete="${auto}" required ${extra||""}><button type="button" class="pw-ver" aria-label="Mostrar senha" title="Mostrar senha">${ICO_OLHO}</button></div></label>`; }
+function ligarMostrarSenha(root){ root.querySelectorAll(".pw-ver").forEach(b=>b.onclick=()=>{ const i=b.previousElementSibling; const ver=i.type==="password"; i.type=ver?"text":"password"; b.innerHTML=ver?ICO_OLHO_X:ICO_OLHO; b.setAttribute("aria-label",ver?"Ocultar senha":"Mostrar senha"); b.title=ver?"Ocultar senha":"Mostrar senha"; i.focus(); }); }
+
 /* ===== Tela de entrada ===== */
 let ESCRITORIOS_PUBLICOS = LS.get("escritorios",[]);
 function vEntrada(w){
@@ -931,11 +940,12 @@ function vEntrada(w){
     <form class="form" id="fEntrada" style="background:none;border:0;padding:0">
       <label class="f"><span>Escritório</span><select name="ecp" id="ent-ecp" required><option value="">Selecione</option>${opts()}<option value="*">Sebrae/PR · rede de escritórios (consultores e administração)</option></select></label>
       <label class="f"><span>E-mail</span><input name="email" id="ent-email" type="email" autocomplete="username" required inputmode="email"></label>
-      <label class="f"><span>Senha</span><input name="senha" id="ent-senha" type="password" autocomplete="current-password" required></label>
+      ${campoSenha("senha","Senha","current-password",'id="ent-senha"')}
       <div class="warnline" id="ent-erro" hidden></div>
       <button class="btn primary" type="submit" style="justify-content:center;padding:10px">Entrar</button>
     </form></section>
     <p class="small" style="color:#fff;text-align:center;margin:0">Esqueceu a senha ou não tem acesso? Fale com o administrador do painel ou com o consultor do Sebrae que acompanha o seu escritório.</p>`;
+  ligarMostrarSenha(box);
   const sel=$("#ent-ecp",box); const ult=LS.get("ultEcp",""); if(ult) sel.value=ult;
   api("escritorios").then(l=>{ ESCRITORIOS_PUBLICOS=l; LS.set("escritorios",l); const v=sel.value; sel.innerHTML=`<option value="">Selecione</option>${opts()}<option value="*">Sebrae/PR · rede de escritórios (consultores e administração)</option>`; sel.value=v||LS.get("ultEcp",""); }).catch(e=>{ if(!ESCRITORIOS_PUBLICOS.length) mostrarErro(e.message); });
   const err=$("#ent-erro",box); function mostrarErro(t){ err.textContent=t; err.hidden=false; }
@@ -943,7 +953,7 @@ function vEntrada(w){
     ev.preventDefault(); err.hidden=true; const fd=Object.fromEntries(new FormData(ev.target)); const btn=ev.target.querySelector("button"); btn.disabled=true; btn.textContent="Entrando…";
     try{
       const r=await api("entrar",{email:fd.email,senha:fd.senha,ecp:fd.ecp});
-      S.token=r.token; LS.set("token",r.token); LS.set("ultEcp",fd.ecp);
+      S.token=r.token; LS.set("token",r.token); LS.set("ultEcp",fd.ecp); S._senhaLogin=fd.senha;
       if(fd.ecp && fd.ecp!=="*") LS.set("sel",fd.ecp);
       aplicarSessao(await api("sessao"),true); processarFila();
     }catch(e){ mostrarErro(e.message); }
@@ -956,21 +966,25 @@ function vTrocarSenha(w){
   box.innerHTML=`<section class="panel"><div class="eyebrow">${primeira?"Primeiro acesso":"Segurança"}</div><h2>${primeira?"Crie a sua senha":"Trocar senha"}</h2>
     <p class="muted" style="margin:6px 0 16px">${primeira?`Olá, ${esc(S.me.nome)}. A senha que você recebeu é provisória. Crie agora uma senha só sua, com pelo menos 8 caracteres.`:"Use pelo menos 8 caracteres. Evite datas e nomes fáceis de adivinhar."}</p>
     <form class="form" id="fSenha" style="background:none;border:0;padding:0">
-      <label class="f"><span>${primeira?"Senha provisória":"Senha atual"}</span><input name="atual" type="password" autocomplete="current-password" required></label>
-      <label class="f"><span>Nova senha</span><input name="nova" type="password" autocomplete="new-password" minlength="8" required></label>
-      <label class="f"><span>Repita a nova senha</span><input name="nova2" type="password" autocomplete="new-password" minlength="8" required></label>
+      ${campoSenha("atual",primeira?"Senha provisória":"Senha atual","current-password")}
+      ${primeira&&S._senhaLogin?`<div class="small muted" style="margin-top:-6px">Já preenchida com a senha que você usou para entrar. Toque no olho para conferir.</div>`:""}
+      ${campoSenha("nova","Nova senha","new-password",'minlength="8"')}
+      ${campoSenha("nova2","Repita a nova senha","new-password",'minlength="8"')}
       <div class="warnline" id="sen-erro" hidden></div>
       <div class="row"><button class="btn primary" type="submit" style="flex:1;justify-content:center;padding:10px">Salvar nova senha</button>${primeira?"":`<button class="btn ghost" type="button" id="senVoltar">Cancelar</button>`}</div>
     </form></section>`;
   const err=$("#sen-erro",box);
+  ligarMostrarSenha(box);
+  if(primeira && S._senhaLogin) box.querySelector('input[name="atual"]').value=S._senhaLogin;
   const v=$("#senVoltar",box); if(v) v.onclick=()=>{ S.gate="ok"; render(); };
   $("#fSenha",box).onsubmit=async ev=>{
     ev.preventDefault(); err.hidden=true; const fd=Object.fromEntries(new FormData(ev.target));
-    if(fd.nova!==fd.nova2){ err.textContent="As duas senhas novas não são iguais."; err.hidden=false; return; }
+    if(fd.nova!==fd.nova2){ err.textContent="As duas senhas novas não são iguais. Toque no olho para conferir."; err.hidden=false; return; }
+    if(fd.nova===fd.atual){ err.textContent="A nova senha precisa ser diferente da provisória."; err.hidden=false; return; }
     const btn=ev.target.querySelector("button[type=submit]"); btn.disabled=true;
     try{ await api("trocarSenha",{atual:fd.atual,nova:fd.nova}); S.me.trocarSenha=false; const c=LS.get("sessao",null); if(c){ c.eu.trocarSenha=false; LS.set("sessao",c); }
-      toast("Senha salva"); S.gate="ok"; fillSelect(); if(!S.ecpId) escolherEcpInicial(); else render(); }
-    catch(e){ err.textContent=e.message; err.hidden=false; }
+      toast("Senha salva"); S._senhaLogin=null; S.gate="ok"; fillSelect(); if(!S.ecpId) escolherEcpInicial(); else render(); }
+    catch(e){ err.textContent=e.message==="A senha atual não confere."?(primeira?"A senha provisória não confere. Toque no olho para conferir o que foi digitado. Se preferir, clique em Sair e entre de novo.":"A senha atual não confere. Toque no olho para conferir."):e.message; err.hidden=false; }
     finally{ btn.disabled=false; }
   };
 }
