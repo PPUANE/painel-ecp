@@ -1,0 +1,1195 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Painel de Gestão dos Escritórios de Compras Públicas do Paraná: diagnóstico de maturidade, evidências, plano de ação e homologação.">
+<meta name="theme-color" content="#021e4d">
+<title>Painel de Gestão - Diagnósticos de Compras</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M25 7h50l25 43-25 43H25L0 50z' fill='%232a4fda'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@800&family=Sora:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+<script src="config.js"></script>
+<style>
+body{margin:0}
+
+/* Layout: identidade visual oficial do Escritório de Compras (KV V2 Sebrae): marinho #15234D, azul #2A4FDA, branco; hexágonos vazados: barra azul-marinho com hexágonos, conteúdo em coluna de até 1180px */
+:root{
+  --navy:#15234d; --navy-2:#1d2f63; --teal:#2a4fda; --teal-soft:#e7ecfc; --gold:#15234d; --hex:#2a4fda;
+  --bg:#5572e2; --surface:#ffffff; --surface-2:#f0f2f5; --line:#dfe3e8; --fg:#1b2235; --muted:#5f6878; --bar:#021e4d; --bar-fg:#ffffff; --bar-muted:#aab8d6; --head:#ffffff;
+  --ok:#22804f; --ok-soft:#e0f2e8; --warn:#b26a00; --warn-soft:#fbefd9; --bad:#b8352d; --bad-soft:#f9e1de; --info:#4a5fa8; --info-soft:#e6e9f6;
+  --onbar:#ffffff; --onbar-muted:#aab8d6;
+  --f-display:"Geometria","Figtree","Segoe UI",system-ui,sans-serif; --f-body:"Sora","Segoe UI",system-ui,sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --navy:#e6e8ec; --navy-2:#2a2e36; --teal:#8099f5; --teal-soft:#232a3d; --gold:#e6e8ec; --hex:#2a4fda;
+  --bg:#2644b2; --surface:#1e2127; --surface-2:#262a31; --line:#343944; --fg:#e6e8ec; --muted:#9aa1ad; --bar:#021e4d; --bar-fg:#ffffff; --bar-muted:#aab8d6; --head:#1e2127;
+  --ok:#5cc58a; --ok-soft:#173326; --warn:#e6a547; --warn-soft:#3a2c17; --bad:#ef7f74; --bad-soft:#3d1f1d; --info:#9aaaf0; --info-soft:#1f2a55;
+  --onbar:#ffffff; --onbar-muted:#93a3c6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --navy:#e6e8ec; --navy-2:#2a2e36; --teal:#8099f5; --teal-soft:#232a3d; --gold:#e6e8ec; --hex:#2a4fda;
+  --bg:#2644b2; --surface:#1e2127; --surface-2:#262a31; --line:#343944; --fg:#e6e8ec; --muted:#9aa1ad; --bar:#021e4d; --bar-fg:#ffffff; --bar-muted:#aab8d6; --head:#1e2127;
+  --ok:#5cc58a; --ok-soft:#173326; --warn:#e6a547; --warn-soft:#3a2c17; --bad:#ef7f74; --bad-soft:#3d1f1d; --info:#9aaaf0; --info-soft:#1f2a55;
+  --onbar:#ffffff; --onbar-muted:#93a3c6; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--fg)}
+body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='364' viewBox='0 0 420 364'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.10' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M60 0 L180 0 L240 104 L180 208 L60 208 L0 104 Z'/%3E%3Cpath d='M270 182 L390 182 L450 286 L390 390 L270 390 L210 286 Z'/%3E%3C/g%3E%3C/svg%3E");background-size:420px 364px}
+.view > .empty, main > .empty{color:#fff;border-color:rgba(255,255,255,.45)}
+body{font-family:var(--f-body);font-size:14px;line-height:1.5}
+h1,h2,h3{font-family:var(--f-display);font-weight:800;letter-spacing:-.005em;text-wrap:balance;margin:0}
+h2{font-size:1.35rem} h3{font-size:1.08rem}
+a{color:var(--teal)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid #6f8df0;outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+
+/* Barra */
+.bar{background:var(--bar);color:var(--bar-fg);padding:14px 16px 0;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;overflow:hidden}
+.bar::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='300' viewBox='0 0 520 300'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.12' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M300 -60 L420 -60 L480 44 L420 148 L300 148 L240 44 Z'/%3E%3Cpath d='M430 100 L520 100 L565 178 L520 256 L430 256 L385 178 Z'/%3E%3Cpath d='M150 120 L210 120 L240 172 L210 224 L150 224 L120 172 Z'/%3E%3C/g%3E%3C/svg%3E") right top/auto 100% no-repeat;pointer-events:none}
+.bar-in{position:relative;z-index:1}
+.bar-in{max-width:1180px;margin:0 auto}
+.bar-top{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:16px;min-width:0;flex-wrap:wrap}
+.brand img{height:60px;width:auto;display:block}
+.logo-dark{display:none!important}
+.brand .hdr-hide{display:none!important}
+.brand .logo-dark{display:block!important}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .logo-dark{display:block!important}:root:not([data-theme="light"]) .logo-light{display:none!important}}
+:root[data-theme="dark"] .logo-dark{display:block!important}:root[data-theme="dark"] .logo-light{display:none!important}
+.brand-t{display:flex;flex-direction:column;gap:1px;border-left:1px solid rgba(255,255,255,.25);padding-left:16px}
+.brand-t b{font-family:var(--f-display);font-weight:400;font-size:1.05rem;letter-spacing:.06em;text-transform:uppercase}
+.brand-t b strong{font-weight:800}
+.brand-t span{color:var(--bar-muted);font-size:.8rem}
+@media (max-width:560px){.brand img{height:42px}.brand-t{border-left:0;padding-left:0}}
+.ecp-pick{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ecp-pick label{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--bar-muted)}
+.ecp-pick select{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:6px;padding:7px 10px;min-width:210px;max-width:100%}
+.ecp-pick select option{color:#1b2235;background:#fff}
+.me{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--bar-muted)}
+.me img{width:26px;height:26px;border-radius:50%}
+.tabs{display:flex;gap:2px;overflow-x:auto;margin-top:12px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:none;border:0;color:var(--bar-muted);padding:10px 14px;border-radius:8px 8px 0 0;cursor:pointer;white-space:nowrap;font-weight:700;font-size:.92rem}
+.tab:hover{color:#fff}
+.tab[aria-selected="true"]{background:var(--bg);color:#fff}
+.tab{font-family:var(--f-display);font-weight:600}
+
+main{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:22px 48px;display:grid;gap:18px}
+.view{display:grid;gap:18px;min-width:0}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;min-width:0}
+.panel-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 16px;margin-bottom:12px}
+.eyebrow{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:18px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* Botões */
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:7px 12px;cursor:pointer;font-weight:700;font-size:.88rem;display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--fg)}
+.btn:hover{border-color:var(--teal)}
+.btn.primary{background:var(--hex);border-color:var(--hex);color:#fff}
+.btn.ghost{background:none}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.drive{color:var(--teal);font-weight:700;font-size:.85rem;text-decoration:none;display:inline-flex;gap:5px;align-items:center}
+.drive:hover{text-decoration:underline}
+
+/* Pílulas de estado */
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:700;white-space:nowrap}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.p-ok{background:var(--ok-soft);color:var(--ok)} .p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-bad{background:var(--bad-soft);color:var(--bad)} .p-info{background:var(--info-soft);color:var(--info)}
+.p-mut{background:var(--surface-2);color:var(--muted)}
+.code{font-family:var(--f-display);font-weight:600;font-size:.78rem;background:var(--hex);color:#fff;border-radius:4px;padding:2px 7px;letter-spacing:.03em}
+
+/* Score */
+.score{display:grid;grid-template-columns:auto 1fr;gap:18px 26px;align-items:center}
+@media (max-width:640px){.score{grid-template-columns:1fr}}
+.score-hex{display:flex;align-items:center;gap:18px}
+.hexbox{width:150px;aspect-ratio:1.155/1;max-width:100%;background:var(--hex);color:#fff;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);display:grid;place-items:center;flex:none}
+.score-n{font-family:var(--f-display);font-weight:800;font-size:2.2rem;line-height:1;color:#fff}
+.scale{position:relative;margin-top:26px}
+.scale-bands{display:flex;height:14px;border-radius:4px;overflow:hidden}
+.scale-bands div{height:100%}
+.scale-lbl{display:flex;font-size:.72rem;color:var(--muted);margin-top:5px}
+.scale-lbl div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:4px}
+.scale-mark{position:absolute;top:-24px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;font-weight:700;font-size:.8rem}
+.scale-mark::after{content:"";width:3px;height:22px;background:var(--fg);margin-top:2px;border-radius:2px}
+.scale-ref{position:absolute;top:-4px;bottom:16px;border-left:2px dashed var(--gold)}
+.foot{background:#021e4d;color:#aab8d6;position:relative;overflow:hidden;padding-inline:16px;padding-block:18px calc(18px + env(safe-area-inset-bottom,0px))}
+.foot-in{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between;font-size:.82rem}
+.foot img{height:30px;width:auto}
+.foot .logo-light{display:none!important}
+.foot .logo-dark{display:block!important}
+.foot::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='120' viewBox='0 40 520 120'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.12' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M300 -60 L420 -60 L480 44 L420 148 L300 148 L240 44 Z'/%3E%3Cpath d='M430 100 L520 100 L565 178 L520 256 L430 256 L385 178 Z'/%3E%3Cpath d='M150 120 L210 120 L240 172 L210 224 L150 224 L120 172 Z'/%3E%3C/g%3E%3C/svg%3E") right center/auto 100% no-repeat;pointer-events:none}
+.foot-in{position:relative;z-index:1}
+.foot-r{display:flex;align-items:center;gap:10px}
+.next{display:grid;grid-template-columns:auto 1fr auto;gap:14px 20px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden}
+.next::after{content:"";position:absolute;right:-30px;bottom:-40px;width:130px;height:130px;border:2px solid var(--hex);opacity:.18;clip-path:polygon(25% 6.7%,75% 6.7%,100% 50%,75% 93.3%,25% 93.3%,0 50%);pointer-events:none}
+.next-hex{width:46px;height:40px;background:var(--hex);color:#fff;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);display:grid;place-items:center;font-weight:800;font-family:var(--f-display)}
+.next h3{font-size:1.05rem}
+.prog{height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-top:8px;max-width:520px}
+.prog i{display:block;height:100%;background:var(--hex);border-radius:99px}
+@media (max-width:640px){.next{grid-template-columns:auto 1fr}.next .btn{grid-column:1/-1;justify-content:center}}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.kpi{border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;background:var(--surface)}
+.kpi b{display:block;font-family:var(--f-display);font-size:1.7rem;line-height:1.1}
+.kpi span{font-size:.82rem;color:var(--muted)}
+
+/* Barras por dimensão */
+.dims{display:grid;gap:12px}
+.dim{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:end}
+.dim .track{grid-column:1/-1;grid-row:2}
+.dim-name{font-size:.9rem;font-weight:700;min-width:0}
+.dim-name small{display:block;font-weight:400;color:var(--muted);font-size:.76rem}
+.track{position:relative;height:18px;background:var(--surface-2);border-radius:4px}
+.fill{position:absolute;inset:0 auto 0 0;border-radius:4px}
+.ref85{position:absolute;top:-3px;bottom:-3px;left:85%;border-left:2px dashed var(--gold)}
+.dim-v{text-align:right;font-weight:700}
+
+/* Tabelas */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+th{text-align:left;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--surface-2);padding:9px 10px;white-space:nowrap}
+td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
+tr.click{cursor:pointer} tr.click:hover td{background:var(--surface-2)}
+.heat{display:inline-block;min-width:44px;text-align:center;border-radius:4px;padding:2px 4px;font-weight:700}
+
+/* Diagnóstico */
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:.85rem;cursor:pointer;font-weight:700}
+.chip[aria-pressed="true"]{background:var(--hex);color:#fff;border-color:var(--hex)}
+.dimblock{display:grid;gap:10px}
+.dimhead{position:relative;overflow:hidden;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--head);color:var(--fg);border:1px solid var(--line);border-radius:var(--r)}
+.dimhead h3{color:var(--fg);display:flex;align-items:center;gap:10px}
+.dimhead h3::before{content:"";width:18px;height:18px;background:var(--hex);clip-path:polygon(25% 6.7%,75% 6.7%,100% 50%,75% 93.3%,25% 93.3%,0 50%);flex:none}
+.dimhead .meta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:.85rem;color:var(--muted)}
+.dimhead a{color:var(--teal)}
+.item{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:10px;min-width:0}
+.item.pr-Alta{border-left-color:var(--bad)} .item.pr-Média{border-left-color:var(--warn)} .item.pr-Baixa{border-left-color:var(--ok)} .item.na{border-left-color:var(--muted)}
+.item-h{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.item-c{flex:1 1 380px;min-width:0;display:flex;gap:10px;align-items:flex-start}
+.item-c p{margin:0;font-weight:700}
+details.how summary{cursor:pointer;color:var(--teal);font-weight:700;font-size:.86rem}
+details.how dl{display:grid;gap:8px;margin:10px 0 0;font-size:.88rem}
+details.how dt{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+details.how dd{margin:0}
+.notes{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+@media (max-width:640px){.notes{grid-template-columns:repeat(2,1fr)}}
+.note{border:1px solid var(--line);border-radius:6px;background:var(--surface);padding:7px 8px;cursor:pointer;text-align:left;display:flex;gap:8px;align-items:center;font-size:.82rem;line-height:1.2}
+.note b{font-family:var(--f-display);font-size:1.25rem;min-width:16px}
+.note[aria-pressed="true"]{border-width:2px;padding:6px 7px}
+.note.n0[aria-pressed="true"]{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.note.n1[aria-pressed="true"]{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.note.n2[aria-pressed="true"]{background:var(--info-soft);border-color:var(--info);color:var(--info)}
+.note.n3[aria-pressed="true"]{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:640px){.fields{grid-template-columns:1fr}}
+.f{display:grid;gap:4px;min-width:0}
+.f > span{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.f input,.f select,.f textarea{width:100%;border:1px solid var(--line);border-radius:6px;padding:7px 9px;background:var(--surface);min-width:0}
+.f textarea{min-height:60px;resize:vertical}
+.inline-link{display:flex;gap:6px}
+.inline-link input{flex:1}
+.saved{font-size:.78rem;color:var(--muted)}
+.warnline{font-size:.82rem;color:var(--warn);font-weight:700}
+
+/* Formulário de registro */
+.form{display:grid;gap:12px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:10px}
+.formgrid .wide{grid-column:1/-1}
+.empty{border:1px dashed var(--line);border-radius:var(--r);padding:22px;text-align:center;color:var(--muted)}
+.list{display:grid;gap:8px}
+.li{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;border-bottom:1px solid var(--line);padding:8px 0;flex-wrap:wrap}
+.li:last-child{border-bottom:0}
+.gate{max-width:520px;margin:24px auto;display:grid;gap:14px}
+.gate .panel{padding:26px}
+.gate h2{font-size:1.5rem}
+.codebox{font-family:var(--f-display);font-weight:800;font-size:1.6rem;letter-spacing:.12em;background:var(--teal-soft);color:var(--teal);border-radius:8px;padding:12px 16px;text-align:center}
+.msgbox{white-space:pre-wrap;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:.88rem}
+.perfil{display:inline-flex;align-items:center;border-radius:999px;padding:2px 9px;font-size:.74rem;font-weight:700;background:rgba(255,255,255,.14);color:#fff;margin-left:6px;white-space:nowrap}
+.hist-row{display:grid;grid-template-columns:150px 1fr auto;gap:10px 16px;padding:12px 0;border-bottom:1px solid var(--line);align-items:start}
+.hist-row:last-child{border-bottom:0}
+@media (max-width:700px){.hist-row{grid-template-columns:1fr}}
+.diff{display:grid;gap:3px;font-size:.84rem;margin-top:6px}
+.diff span.old{color:var(--bad);text-decoration:line-through;text-decoration-thickness:1px}
+.diff span.new{color:var(--ok);font-weight:600}
+.checks{display:flex;flex-wrap:wrap;gap:6px 14px}
+.checks label{display:flex;gap:6px;align-items:center;font-size:.88rem}
+.f .checks input{width:auto}
+[hidden]{display:none!important}
+main{min-height:calc(100vh - 220px)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#15234d;color:#fff;padding:9px 16px;border-radius:6px;font-weight:700;z-index:50;box-shadow:0 4px 18px rgba(0,0,0,.25)}
+.banner{border-radius:var(--r);padding:12px 14px;font-size:.9rem}
+.banner.warn{background:var(--warn-soft);color:var(--warn)}
+.banner.info{background:var(--info-soft);color:var(--info)}
+svg text{fill:var(--muted);font-family:var(--f-body)}
+@media (prefers-reduced-motion:no-preference){.fill{transition:width .4s ease}}
+.me button{background:none;border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:6px;padding:4px 9px;font:inherit;font-size:.8rem;cursor:pointer}
+.me button:hover{background:rgba(255,255,255,.1)}
+.pw{position:relative}
+.f .pw input{padding-right:44px}
+.pw-ver{position:absolute;top:50%;right:4px;transform:translateY(-50%);width:36px;height:36px;display:grid;place-items:center;border:0;background:none;color:var(--muted);border-radius:6px;cursor:pointer;padding:0}
+.pw-ver:hover,.pw-ver:focus-visible{color:var(--teal);background:var(--surface-2)}
+.filabar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#b26a00;color:#fff;text-align:center;font-weight:700;font-size:.85rem;padding:8px 16px calc(8px + env(safe-area-inset-bottom,0px))}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="bar-in">
+    <div class="bar-top">
+      <div class="brand"><img class="logo-hdr" src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 xmlns:xlink=%22http://www.w3.org/1999/xlink%22 width=%22938%22 height=%22445%22 viewBox=%22488 318 938 445%22%3E%0A%3Cdefs%3E%0A%3Cg%3E%0A%3Cg id=%22glyph-0-0%22%3E%0A%3Cpath d=%22M 74.5 0 L 10.8 0 L 10.8 -87.2 L 72.8 -87.2 L 72.8 -74.6 L 24.5 -74.6 L 24.5 -52.8 L 63.9 -52.8 L 63.9 -40.2 L 24.5 -40.2 L 24.5 -12.5 L 74.5 -12.5 Z M 74.5 0 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-0-1%22%3E%0A%3Cpath d=%22M 31.4 1.6 C 20.5 1.6 12.0 -0.4 5.8 -4.6 L 5.8 -17.3 C 13.0 -12.4 21.3 -9.9 30.7 -9.9 C 35.0 -9.9 38.3 -10.6 40.6 -11.8 C 43.0 -13.1 44.2 -14.9 44.2 -17.2 C 44.2 -19.1 42.9 -20.8 40.5 -22.0 C 39.4 -22.5 37.4 -23.1 34.6 -23.9 L 27.0 -25.7 C 19.8 -27.6 14.5 -29.9 11.3 -32.8 C 8.1 -35.7 6.4 -39.7 6.4 -44.8 C 6.4 -50.4 8.7 -54.8 13.3 -58 C 17.8 -61.1 24.2 -62.7 32.4 -62.7 C 41.7 -62.7 49.3 -60.9 54.9 -57.3 L 54.9 -44.9 C 47.5 -49.1 40.2 -51.2 32.8 -51.2 C 28.8 -51.2 25.7 -50.6 23.5 -49.4 C 21.3 -48.1 20.3 -46.5 20.3 -44.4 C 20.3 -42.5 21.5 -40.9 24.1 -39.6 C 24.5 -39.4 26.4 -38.8 30.0 -37.7 L 37.1 -36.2 C 51.0 -33.1 58.0 -26.7 58.0 -16.9 C 58.0 -11.3 55.6 -6.8 50.7 -3.4 C 45.8 -0.0 39.3 1.6 31.4 1.6 Z M 31.4 1.6 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-0-2%22%3E%0A%3Cpath d=%22M 38.2 1.6 C 29.0 1.6 21.2 -1.4 14.8 -7.4 C 8.4 -13.6 5.2 -21.3 5.2 -30.7 C 5.2 -40.1 8.4 -47.8 14.8 -53.8 C 21.3 -59.8 29.1 -62.7 38.3 -62.7 C 45.3 -62.7 51.5 -61.3 56.8 -58.5 L 56.8 -46.9 C 51.2 -49.6 45.7 -50.9 40.3 -50.9 C 34.2 -50.9 29.0 -49.0 24.9 -45.2 C 20.7 -41.3 18.6 -36.4 18.6 -30.6 C 18.6 -24.7 20.7 -19.8 24.9 -15.9 C 29.0 -12.1 34.2 -10.2 40.3 -10.2 C 46.9 -10.2 52.7 -11.7 57.8 -14.8 L 57.8 -3.3 C 52 -0.0 45.4 1.6 38.2 1.6 Z M 38.2 1.6 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-0-3%22%3E%0A%3Cpath d=%22M 23.0 0 L 9.5 0 L 9.5 -61.1 L 23.0 -61.1 L 23.0 -50.5 C 25.1 -54.1 28.2 -57.0 32.3 -59.3 C 36.5 -61.6 40.9 -62.7 45.6 -62.7 C 46.1 -62.7 46.6 -62.7 46.8 -62.6 L 46.8 -49.2 C 45.3 -49.3 44.1 -49.4 43.1 -49.4 C 38.5 -49.4 34.4 -48.3 30.7 -45.9 C 27.1 -43.6 24.5 -40.8 23.0 -37.5 Z M 23.0 0 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-0-4%22%3E%0A%3Cpath d=%22M 24.1 0 L 10.7 0 L 10.7 -61.1 L 24.1 -61.1 Z M 17.4 -72.1 C 15.0 -72.1 13.0 -72.9 11.3 -74.5 C 9.7 -76.2 8.9 -78.2 8.9 -80.6 C 8.9 -83.0 9.7 -85.0 11.3 -86.7 C 13.0 -88.3 15.0 -89.2 17.4 -89.2 C 19.7 -89.2 21.7 -88.3 23.3 -86.7 C 24.9 -85.0 25.7 -83.0 25.7 -80.6 C 25.7 -78.2 24.9 -76.2 23.3 -74.5 C 21.7 -72.9 19.7 -72.1 17.4 -72.1 Z M 17.4 -72.1 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-0-5%22%3E%0A%3Cpath d=%22M 15.9 -16.7 L 15.9 -49.3 L 2.8 -49.3 L 2.8 -61.1 L 15.9 -61.1 L 15.9 -79 L 29.4 -79 L 29.4 -61.1 L 48.7 -61.1 L 48.7 -49.3 L 29.4 -49.3 L 29.4 -20.5 C 29.4 -17.1 30.1 -14.6 31.7 -13.0 C 33.3 -11.5 35.7 -10.7 39 -10.7 C 42.2 -10.7 45.3 -11.4 48.2 -12.9 L 48.2 -1.3 C 45.3 0.6 40.7 1.6 34.6 1.6 C 28.8 1.6 24.2 0.0 20.9 -3.1 C 17.6 -6.2 15.9 -10.7 15.9 -16.7 Z M 15.9 -16.7 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-0-6%22%3E%0A%3Cpath d=%22M 38.8 -10.2 C 44.5 -10.2 49.3 -12.1 53.2 -16.0 C 57.0 -19.8 58.9 -24.7 58.9 -30.6 C 58.9 -36.4 57.0 -41.2 53.2 -45.1 C 49.3 -49.0 44.5 -50.9 38.8 -50.9 C 33.1 -50.9 28.3 -49.0 24.4 -45.1 C 20.5 -41.2 18.6 -36.4 18.6 -30.6 C 18.6 -24.7 20.5 -19.8 24.4 -16.0 C 28.3 -12.1 33.1 -10.2 38.8 -10.2 Z M 38.8 1.6 C 29.0 1.6 21.0 -1.4 14.7 -7.7 C 8.3 -13.9 5.2 -21.6 5.2 -30.6 C 5.2 -39.6 8.3 -47.2 14.7 -53.4 C 21.0 -59.6 29.0 -62.7 38.8 -62.7 C 48.5 -62.7 56.5 -59.6 62.9 -53.4 C 69.2 -47.2 72.3 -39.6 72.3 -30.6 C 72.3 -21.6 69.2 -14.0 62.9 -7.7 C 56.5 -1.4 48.5 1.6 38.8 1.6 Z M 43.7 -71.6 L 31.5 -71.6 L 43.3 -89.0 L 60.1 -89.0 Z M 43.7 -71.6 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-0-7%22%3E%0A%3Cpath d=%22M 38.8 -10.2 C 44.5 -10.2 49.3 -12.1 53.2 -16.0 C 57.0 -19.8 58.9 -24.7 58.9 -30.6 C 58.9 -36.4 57.0 -41.2 53.2 -45.1 C 49.3 -49.0 44.5 -50.9 38.8 -50.9 C 33.1 -50.9 28.3 -49.0 24.4 -45.1 C 20.5 -41.2 18.6 -36.4 18.6 -30.6 C 18.6 -24.7 20.5 -19.8 24.4 -16.0 C 28.3 -12.1 33.1 -10.2 38.8 -10.2 Z M 38.8 1.6 C 29.0 1.6 21.0 -1.4 14.7 -7.7 C 8.3 -13.9 5.2 -21.6 5.2 -30.6 C 5.2 -39.6 8.3 -47.2 14.7 -53.4 C 21.0 -59.6 29.0 -62.7 38.8 -62.7 C 48.5 -62.7 56.5 -59.6 62.9 -53.4 C 69.2 -47.2 72.3 -39.6 72.3 -30.6 C 72.3 -21.6 69.2 -14.0 62.9 -7.7 C 56.5 -1.4 48.5 1.6 38.8 1.6 Z M 38.8 1.6 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-1-0%22%3E%0A%3Cpath d=%22M 54.2 1.7 C 40.2 1.7 28.6 -2.4 19.4 -10.9 C 10.2 -19.4 5.6 -30.3 5.6 -43.6 C 5.6 -56.8 10.1 -67.7 19.3 -76.2 C 28.5 -84.7 40.1 -88.9 54.0 -88.9 C 62.3 -88.9 69.9 -87.3 76.6 -83.9 L 76.6 -61.9 C 69.8 -66.1 62.3 -68.2 54.3 -68.2 C 47.0 -68.2 40.9 -65.9 36 -61.2 C 31.1 -56.6 28.6 -50.7 28.6 -43.6 C 28.6 -36.2 31.1 -30.3 36.1 -25.7 C 41.2 -21.2 47.5 -18.9 55.2 -18.9 C 64.3 -18.9 71.9 -21.2 78.1 -25.9 L 78.1 -3.7 C 70.9 -0.0 63.0 1.7 54.2 1.7 Z M 54.2 1.7 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-1-1%22%3E%0A%3Cpath d=%22M 53.2 -31.6 C 53.2 -35.7 51.8 -39.1 49.2 -41.9 C 46.5 -44.7 43.2 -46.1 39.2 -46.1 C 35.2 -46.1 31.9 -44.7 29.2 -41.9 C 26.6 -39.1 25.2 -35.7 25.2 -31.6 C 25.2 -27.5 26.6 -24.0 29.2 -21.3 C 31.8 -18.5 35.1 -17.2 39.2 -17.2 C 43.3 -17.2 46.6 -18.5 49.2 -21.3 C 51.8 -24.0 53.2 -27.5 53.2 -31.6 Z M 64.7 -7.8 C 58.1 -1.5 49.6 1.6 39.2 1.6 C 28.8 1.6 20.3 -1.5 13.7 -7.8 C 6.9 -14.1 3.6 -22.1 3.6 -31.6 C 3.6 -41.1 6.9 -49.0 13.7 -55.3 C 20.5 -61.7 29.0 -64.9 39.2 -64.9 C 49.4 -64.9 57.9 -61.7 64.7 -55.3 C 71.5 -49.0 74.8 -41.1 74.8 -31.6 C 74.8 -22.1 71.5 -14.1 64.7 -7.8 Z M 64.7 -7.8 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-1-2%22%3E%0A%3Cpath d=%22M 29.6 0 L 7.5 0 L 7.5 -63.2 L 29.6 -63.2 L 29.6 -55.8 C 34.2 -61.8 40.7 -64.9 49.0 -64.9 C 52.9 -64.9 56.3 -63.8 59.5 -61.8 C 62.6 -59.8 64.9 -57.3 66.5 -54.4 C 68.6 -57.5 71.5 -60.0 75.3 -61.9 C 79.1 -63.9 83.0 -64.9 87.2 -64.9 C 94.0 -64.9 99.4 -62.7 103.6 -58.3 C 107.7 -53.9 109.7 -47.6 109.7 -39.5 L 109.7 0 L 87.7 0 L 87.7 -35.1 C 87.7 -41.9 85.0 -45.3 79.7 -45.3 C 75.3 -45.3 72.0 -43.4 69.7 -39.5 L 69.7 0 L 47.7 0 L 47.7 -35.1 C 47.7 -41.9 45.0 -45.3 39.7 -45.3 C 35.4 -45.3 32.0 -43.4 29.6 -39.5 Z M 29.6 0 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-1-3%22%3E%0A%3Cpath d=%22M 29.6 24.9 L 7.5 24.9 L 7.5 -63.2 L 29.6 -63.2 L 29.6 -56.2 C 33.9 -62.0 40.2 -64.9 48.5 -64.9 C 56.9 -64.9 63.8 -61.7 69.2 -55.3 C 74.7 -48.9 77.5 -41.0 77.5 -31.6 C 77.5 -22.1 74.7 -14.2 69.2 -7.8 C 63.8 -1.5 56.9 1.6 48.5 1.6 C 40.4 1.6 34.1 -1.2 29.6 -7.1 Z M 42.2 -17.0 C 46.1 -17.0 49.3 -18.4 51.8 -21.1 C 54.3 -23.9 55.5 -27.4 55.5 -31.6 C 55.5 -35.8 54.3 -39.3 51.8 -42.1 C 49.3 -44.8 46.1 -46.2 42.2 -46.2 C 36.6 -46.2 32.4 -43.9 29.6 -39.5 L 29.6 -23.7 C 32.4 -19.3 36.6 -17.0 42.2 -17.0 Z M 42.2 -17.0 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-1-4%22%3E%0A%3Cpath d=%22M 29.6 0 L 7.5 0 L 7.5 -63.2 L 29.6 -63.2 L 29.6 -52.9 C 31.1 -55.8 33.8 -58.5 37.7 -61.0 C 41.6 -63.6 45.8 -64.9 50.4 -64.9 C 51.4 -64.9 52.3 -64.8 53.2 -64.6 L 53.2 -43.3 C 50.3 -44.0 47.8 -44.3 45.7 -44.3 C 42.0 -44.3 38.7 -43.6 35.8 -42.2 C 32.9 -40.8 30.9 -39.0 29.6 -36.7 Z M 29.6 0 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-1-5%22%3E%0A%3Cpath d=%22M 25.5 1.6 C 18.7 1.6 13.1 -0.3 8.8 -4.2 C 4.6 -8.0 2.5 -13.1 2.5 -19.4 C 2.5 -26.1 5.0 -31.2 10.0 -34.8 C 15.0 -38.3 20.7 -40.0 27.1 -39.8 C 33.3 -39.8 38.7 -38.7 43.2 -36.6 L 43.2 -37.5 C 43.2 -42.0 41.4 -44.9 38 -46.1 C 35.2 -47.0 32.1 -47.5 28.5 -47.5 C 21.8 -47.5 15.6 -46.0 10.0 -42.9 L 10.0 -60.3 C 16.5 -63.3 24.5 -64.9 33.8 -64.9 C 43.1 -64.9 50.6 -62.5 56.4 -57.9 C 62.1 -53.3 65.0 -47.1 65.0 -39.3 L 65.0 -20.1 C 65.0 -17.9 66.2 -16.8 68.7 -16.8 C 70.2 -16.8 71.4 -17.0 72.3 -17.5 L 72.3 -1.8 C 69.5 0.2 65.8 1.3 61.1 1.3 C 53.7 1.3 48.5 -1.0 45.7 -5.8 C 40.6 -0.8 33.9 1.6 25.5 1.6 Z M 33.0 -13.2 C 37.4 -13.2 40.8 -15.0 43.2 -18.6 L 43.2 -25.2 C 40.8 -27.1 37.7 -28.0 34.0 -28.0 C 31.1 -28.0 28.8 -27.3 26.9 -25.9 C 25.1 -24.5 24.1 -22.6 24.1 -20.4 C 24.1 -18.2 25 -16.5 26.6 -15.2 C 28.3 -13.8 30.4 -13.2 33.0 -13.2 Z M 33.0 -13.2 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-1-6%22%3E%0A%3Cpath d=%22M 32.0 1.6 C 20.3 1.6 11.3 -0.2 5.2 -3.9 L 5.2 -22.5 C 7.8 -20.6 11.5 -19.0 16.2 -17.6 C 20.7 -16.3 25.7 -15.7 31.0 -15.7 C 36.1 -15.7 38.7 -16.7 38.7 -18.8 C 38.7 -19.9 37.8 -20.9 36.0 -21.6 L 33.1 -22.6 C 32.5 -22.8 29.6 -23.6 24.2 -25.0 C 17.0 -27.1 11.9 -29.4 8.9 -32.1 C 6.0 -34.8 4.6 -39.0 4.6 -44.7 C 4.6 -51.0 7.1 -55.9 12.3 -59.5 C 17.4 -63.1 24.5 -64.9 33.6 -64.9 C 42.9 -64.9 50.9 -62.9 57.5 -58.9 L 57.5 -41 C 50.2 -45.5 42.5 -47.8 34.5 -47.8 C 29.7 -47.8 27.4 -46.7 27.4 -44.6 C 27.4 -43.2 28.3 -42.3 30.2 -41.7 L 33.2 -40.8 C 34.0 -40.7 35.4 -40.3 37.6 -39.8 C 39.7 -39.3 41.0 -39.0 41.5 -39 C 48.3 -37.2 53.2 -34.8 56.3 -31.7 C 59.3 -28.6 60.9 -24.3 60.9 -18.8 C 60.9 -12.7 58.3 -7.8 53.0 -3.9 C 47.9 -0.2 40.9 1.6 32.0 1.6 Z M 32.0 1.6 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-1-7%22%3E%0A%3Cpath d=%22M 30.7 0 L 8.3 0 L 8.3 -87.2 L 47.2 -87.2 C 57.0 -87.2 64.7 -84.6 70.4 -79.6 C 76.1 -74.5 79 -68 79 -59.9 C 79 -51.8 76.1 -45.2 70.4 -40.1 C 64.7 -35.0 57.0 -32.5 47.2 -32.5 L 30.7 -32.5 Z M 30.7 -68.2 L 30.7 -50.9 L 45.6 -50.9 C 48.8 -50.9 51.4 -51.7 53.3 -53.2 C 55.3 -54.8 56.3 -56.9 56.3 -59.6 C 56.3 -62.4 55.3 -64.5 53.4 -66.0 C 51.5 -67.5 48.9 -68.2 45.6 -68.2 Z M 30.7 -68.2 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-1-8%22%3E%0A%3Cpath d=%22M 44.6 -71.7 L 26.2 -71.7 L 38.1 -90.7 L 64.1 -90.7 Z M 29.0 1.6 C 22.0 1.6 16.5 -0.7 12.5 -5.4 C 8.4 -10.1 6.4 -16.4 6.4 -24.4 L 6.4 -63.2 L 28.5 -63.2 L 28.5 -28.5 C 28.5 -24.9 29.3 -22.3 31.0 -20.6 C 32.6 -18.9 34.8 -18.0 37.6 -18.0 C 41.9 -18.0 45.4 -19.9 48.2 -23.6 L 48.2 -63.2 L 70.2 -63.2 L 70.2 0 L 48.2 0 L 48.2 -7.1 C 42.7 -1.2 36.3 1.6 29.0 1.6 Z M 29.0 1.6 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-1-9%22%3E%0A%3Cpath d=%22M 29.6 -7.1 L 29.6 0 L 7.5 0 L 7.5 -87.2 L 29.6 -87.2 L 29.6 -56.2 C 34.1 -62.0 40.4 -64.9 48.5 -64.9 C 56.9 -64.9 63.8 -61.7 69.2 -55.3 C 74.7 -48.9 77.5 -41.0 77.5 -31.6 C 77.5 -22.1 74.7 -14.2 69.2 -7.8 C 63.8 -1.5 56.9 1.6 48.5 1.6 C 40.2 1.6 33.9 -1.2 29.6 -7.1 Z M 42.2 -17.0 C 46.1 -17.0 49.3 -18.4 51.8 -21.1 C 54.3 -23.9 55.5 -27.4 55.5 -31.6 C 55.5 -35.8 54.3 -39.3 51.8 -42.1 C 49.3 -44.8 46.1 -46.2 42.2 -46.2 C 36.6 -46.2 32.4 -43.9 29.6 -39.5 L 29.6 -23.7 C 32.4 -19.3 36.6 -17.0 42.2 -17.0 Z M 42.2 -17.0 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-1-10%22%3E%0A%3Cpath d=%22M 25.6 1.6 C 13.6 1.6 7.5 -4.5 7.5 -16.8 L 7.5 -87.2 L 29.6 -87.2 L 29.6 -22.0 C 29.6 -18.8 31.1 -17.2 34.1 -17.2 C 35.5 -17.2 36.8 -17.4 37.8 -18.0 L 37.8 -0.7 C 34.8 0.8 30.7 1.6 25.6 1.6 Z M 25.6 1.6 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-1-11%22%3E%0A%3Cpath d=%22M 30.2 0 L 8.2 0 L 8.2 -63.2 L 30.2 -63.2 Z M 19.1 -69.0 C 15.6 -69.0 12.7 -70.2 10.2 -72.7 C 7.8 -75.1 6.6 -78.1 6.6 -81.7 C 6.6 -85.3 7.8 -88.3 10.2 -90.7 C 12.7 -93.2 15.6 -94.4 19.1 -94.4 C 22.7 -94.4 25.7 -93.2 28.2 -90.7 C 30.6 -88.3 31.9 -85.3 31.9 -81.7 C 31.9 -78.1 30.6 -75.1 28.2 -72.7 C 25.7 -70.2 22.7 -69.0 19.1 -69.0 Z M 19.1 -69.0 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-1-12%22%3E%0A%3Cpath d=%22M 38.3 1.6 C 29.0 1.6 20.9 -1.3 13.9 -7.3 C 7.0 -13.3 3.6 -21.4 3.6 -31.7 C 3.6 -42.1 7.0 -50.2 14.0 -56.0 C 21.1 -61.9 29.3 -64.9 38.6 -64.9 C 45.6 -64.9 51.9 -63.6 57.3 -61.0 L 57.3 -42.6 C 52.0 -44.7 47.0 -45.8 42.1 -45.8 C 37.3 -45.8 33.2 -44.5 30.0 -41.9 C 26.8 -39.4 25.2 -35.9 25.2 -31.6 C 25.2 -27.3 26.8 -23.8 30.0 -21.2 C 33.1 -18.6 37.1 -17.3 42 -17.3 C 48.0 -17.3 53.4 -18.5 58.1 -21.0 L 58.1 -2.7 C 51.9 0.1 45.3 1.6 38.3 1.6 Z M 38.3 1.6 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-2-0%22%3E%0A%3Cpath d=%22M 17.6 0.6 C 14.7 0.6 11.9 0.2 9.2 -0.4 C 6.6 -1.2 4.4 -2.3 2.7 -3.5 L 2.7 -8.3 C 4.3 -6.9 6.4 -5.7 9.0 -4.7 C 11.8 -3.7 14.5 -3.2 17.3 -3.2 C 20.5 -3.2 23.1 -3.9 25.2 -5.3 C 27.2 -6.7 28.2 -8.5 28.2 -10.8 C 28.5 -13.0 27.3 -14.8 24.9 -16.3 C 24.4 -16.7 23.6 -17.1 22.5 -17.5 L 19.9 -18.3 C 19.8 -18.4 19.6 -18.4 19.2 -18.5 C 18.9 -18.6 18.5 -18.7 18.1 -18.9 C 17.7 -19.0 17.3 -19.1 16.9 -19.2 C 14.5 -19.9 13.1 -20.4 12.6 -20.5 C 11.4 -20.9 10.2 -21.4 9.0 -22 C 7.8 -22.6 6.8 -23.2 6.1 -24.0 C 4.4 -25.7 3.5 -27.9 3.5 -30.5 C 3.5 -33.6 4.8 -36.1 7.2 -38.0 C 9.7 -40.0 13.1 -41 17.5 -41 C 22.3 -41 26.5 -39.8 30.0 -37.6 L 30.0 -33.2 C 26.0 -35.7 21.9 -37.0 17.6 -37.0 C 14.5 -37.0 12.1 -36.4 10.4 -35.1 C 8.7 -33.9 7.8 -32.3 7.8 -30.4 C 7.6 -28.9 8.5 -27.4 10.4 -25.9 C 10.7 -25.6 11.4 -25.3 12.3 -25 L 14.3 -24.2 L 16.8 -23.5 L 19.2 -22.8 C 21.3 -22.2 22.6 -21.7 23.2 -21.5 C 24.3 -21.2 25.4 -20.6 26.7 -20.0 C 27.9 -19.3 29.0 -18.6 29.8 -17.8 C 31.7 -16.1 32.6 -13.8 32.6 -10.9 C 32.6 -7.3 31.1 -4.4 28.2 -2.4 C 25.3 -0.3 21.8 0.6 17.6 0.6 Z M 17.6 0.6 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-2-1%22%3E%0A%3Cpath d=%22M 21.5 0.6 C 16.6 0.6 12.6 -0.8 9.6 -3.9 C 6.5 -7.0 5.0 -11.4 5.0 -17.1 L 5.0 -40.3 L 9.3 -40.3 L 9.3 -17.1 C 9.3 -12.7 10.4 -9.3 12.5 -6.9 C 14.7 -4.5 17.7 -3.2 21.5 -3.2 C 25.3 -3.2 28.3 -4.5 30.4 -6.9 C 32.6 -9.3 33.7 -12.7 33.7 -17.1 L 33.7 -40.3 L 38.0 -40.3 L 38.0 -17.1 C 38.0 -11.5 36.4 -7.1 33.4 -3.9 C 30.3 -0.8 26.3 0.6 21.5 0.6 Z M 21.5 0.6 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-2-2%22%3E%0A%3Cpath d=%22M 20.2 0 L 15.9 0 L 15.9 -36.4 L 2.0 -36.4 L 2.0 -40.3 L 34.2 -40.3 L 34.2 -36.4 L 20.2 -36.4 Z M 20.2 0 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-2-3%22%3E%0A%3Cpath d=%22M 34.2 0 L 5.7 0 L 5.7 -40.3 L 33.3 -40.3 L 33.3 -36.4 L 9.9 -36.4 L 9.9 -23.5 L 29.1 -23.5 L 29.1 -19.7 L 9.9 -19.7 L 9.9 -3.8 L 34.2 -3.8 Z M 34.2 0 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-2-4%22%3E%0A%3Cpath d=%22M 9.8 0 L 5.7 0 L 5.7 -40.3 L 9.3 -40.3 L 34.8 -7.3 L 34.8 -40.3 L 38.9 -40.3 L 38.9 0 L 35.3 0 L 9.8 -33.0 Z M 9.8 0 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-2-5%22%3E%0A%3Cpath d=%22M 6.1 0 L 1.7 0 L 19.7 -40.5 L 23.6 -40.5 L 41.7 0 L 37.2 0 L 32.1 -11.1 L 11.0 -11.1 Z M 21.6 -35.1 L 12.5 -14.8 L 30.8 -14.8 Z M 21.6 -35.1 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-2-6%22%3E%0A%3Cpath d=%22M 24.9 0 L 5.7 0 L 5.7 -40.3 L 23.1 -40.3 C 26.7 -40.3 29.5 -39.4 31.6 -37.6 C 33.6 -35.9 34.7 -33.5 34.7 -30.5 C 34.7 -28.4 34.2 -26.6 33.3 -25.1 C 32.3 -23.6 31.0 -22.6 29.4 -22 C 32.1 -21.5 34.2 -20.4 35.8 -18.4 C 37.3 -16.5 38.1 -14.1 38.1 -11.2 C 38.1 -7.8 36.9 -5.0 34.6 -3.0 C 32.2 -1.0 29.0 0 24.9 0 Z M 9.9 -19.5 L 9.9 -3.8 L 24.1 -3.8 C 27.1 -3.8 29.5 -4.5 31.1 -5.9 C 32.8 -7.3 33.6 -9.2 33.6 -11.7 C 33.6 -14.2 32.8 -16.1 31.1 -17.4 C 29.5 -18.8 27.1 -19.5 24.1 -19.5 Z M 9.9 -36.4 L 9.9 -23.2 L 22.4 -23.2 C 25.0 -23.2 27.0 -23.8 28.4 -24.9 C 29.8 -26.0 30.5 -27.6 30.5 -29.7 C 30.5 -31.9 29.8 -33.5 28.4 -34.7 C 27.0 -35.8 25.0 -36.4 22.4 -36.4 Z M 9.9 -36.4 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-2-7%22%3E%0A%3Cpath d=%22M 10.2 0 L 5.9 0 L 5.9 -40.3 L 10.2 -40.3 Z M 10.2 0 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-2-8%22%3E%0A%3Cpath d=%22M 32.4 0 L 5.7 0 L 5.7 -40.3 L 9.9 -40.3 L 9.9 -3.8 L 32.4 -3.8 Z M 32.4 0 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-2-9%22%3E%0A%3Cpath d=%22M 18.8 0 L 5.7 0 L 5.7 -40.3 L 18.8 -40.3 C 25.4 -40.3 30.6 -38.4 34.6 -34.7 C 38.7 -30.9 40.7 -26.1 40.7 -20.1 C 40.7 -14.1 38.7 -9.3 34.6 -5.5 C 30.6 -1.8 25.4 0 18.8 0 Z M 9.9 -36.4 L 9.9 -3.8 L 18.3 -3.8 C 23.9 -3.8 28.3 -5.3 31.5 -8.2 C 34.7 -11.2 36.4 -15.1 36.4 -20.1 C 36.4 -25.1 34.7 -29.0 31.5 -32.0 C 28.3 -34.9 23.9 -36.4 18.3 -36.4 Z M 9.9 -36.4 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-2-10%22%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-2-11%22%3E%0A%3Cpath d=%22M 24.5 0.6 C 18.7 0.6 13.8 -1.2 9.9 -5.1 C 5.9 -9.1 4.0 -14.0 4.0 -20.1 C 4.0 -26.1 5.9 -31.1 9.9 -35.0 C 13.8 -39.0 18.7 -41 24.7 -41 C 29.8 -41 34.0 -39.7 37.5 -37.1 L 37.5 -32.8 C 33.7 -35.6 29.5 -37.0 24.9 -37.0 C 20.2 -37.0 16.2 -35.4 13.0 -32.2 C 9.9 -29.1 8.3 -25.0 8.3 -20.0 C 8.3 -15.2 9.8 -11.1 13.0 -8 C 16.1 -4.8 20.0 -3.2 24.5 -3.2 C 29.4 -3.2 33.2 -4.6 36.0 -7.4 L 36.0 -23.1 L 40.2 -23.1 L 40.2 -5.8 C 38.4 -3.8 36.2 -2.2 33.4 -1.0 C 30.7 0.1 27.7 0.6 24.5 0.6 Z M 24.5 0.6 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-2-12%22%3E%0A%3Cpath d=%22M 9.7 -35.0 C 13.6 -39.0 18.5 -41 24.2 -41 C 30.0 -41 34.8 -39.0 38.7 -35.0 C 42.6 -31.0 44.5 -26.0 44.5 -20.1 C 44.5 -14.2 42.6 -9.2 38.7 -5.2 C 34.9 -1.2 30.0 0.6 24.2 0.6 C 18.4 0.6 13.6 -1.2 9.7 -5.2 C 5.9 -9.1 4.0 -14.1 4.0 -20.1 C 4.0 -26.1 5.9 -31.0 9.7 -35.0 Z M 12.9 -8.1 C 15.9 -4.8 19.7 -3.2 24.2 -3.2 C 28.8 -3.2 32.6 -4.8 35.6 -8.1 C 38.7 -11.3 40.2 -15.3 40.2 -20.1 C 40.2 -24.9 38.7 -28.9 35.6 -32.1 C 32.6 -35.4 28.8 -37.0 24.2 -37.0 C 19.7 -37.0 15.9 -35.4 12.9 -32.1 C 9.8 -28.9 8.3 -24.9 8.3 -20.1 C 8.3 -15.3 9.8 -11.3 12.9 -8.1 Z M 25.3 -43.9 L 21.3 -43.9 L 26.8 -51.6 L 32.1 -51.6 Z M 25.3 -43.9 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-2-13%22%3E%0A%3Cpath d=%22M 24.7 0.6 C 18.8 0.6 13.8 -1.2 9.9 -5.1 C 5.9 -9.1 4.0 -14.0 4.0 -20.1 C 4.0 -26.1 5.9 -31.1 9.9 -35.0 C 13.8 -39.0 18.7 -41 24.7 -41 C 29.0 -41 32.8 -40.0 36 -38.0 L 36 -33.6 C 32.4 -35.8 28.7 -37.0 24.7 -37.0 C 20.1 -37.0 16.2 -35.4 13.0 -32.1 C 9.9 -29.0 8.3 -25.0 8.3 -20.1 C 8.3 -15.2 9.9 -11.2 13.0 -8.0 C 16.2 -4.8 20.1 -3.2 24.8 -3.2 C 29.5 -3.2 33.5 -4.6 36.8 -7.3 L 36.8 -2.8 C 33.5 -0.5 29.5 0.6 24.7 0.6 Z M 24.7 0.6 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-2-14%22%3E%0A%3Cpath d=%22M 9.7 -35.0 C 13.6 -39.0 18.5 -41 24.2 -41 C 30.0 -41 34.8 -39.0 38.7 -35.0 C 42.6 -31.0 44.5 -26.0 44.5 -20.1 C 44.5 -14.2 42.6 -9.2 38.7 -5.2 C 34.9 -1.2 30.0 0.6 24.2 0.6 C 18.4 0.6 13.6 -1.2 9.7 -5.2 C 5.9 -9.1 4.0 -14.1 4.0 -20.1 C 4.0 -26.1 5.9 -31.0 9.7 -35.0 Z M 12.9 -8.1 C 15.9 -4.8 19.7 -3.2 24.2 -3.2 C 28.8 -3.2 32.6 -4.8 35.6 -8.1 C 38.7 -11.3 40.2 -15.3 40.2 -20.1 C 40.2 -24.9 38.7 -28.9 35.6 -32.1 C 32.6 -35.4 28.8 -37.0 24.2 -37.0 C 19.7 -37.0 15.9 -35.4 12.9 -32.1 C 9.8 -28.9 8.3 -24.9 8.3 -20.1 C 8.3 -15.3 9.8 -11.3 12.9 -8.1 Z M 12.9 -8.1 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-3-0%22%3E%0A%3Cpath d=%22M 2.6 0 L 2.6 -21 L 5.7 -21 L 12.7 -10.7 L 19.6 -21 L 22.7 -21 L 22.7 0 L 19.8 0 L 19.8 -16.2 L 12.7 -5.7 L 5.6 -16.2 L 5.6 0 Z M 2.6 0 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-3-1%22%3E%0A%3Cpath d=%22M 11.1 0 L 11.0 -2.6 L 11.0 -7.8 C 11.0 -8.9 10.9 -9.8 10.6 -10.5 C 10.4 -11.3 10.0 -11.8 9.5 -12.2 C 9.0 -12.6 8.3 -12.8 7.5 -12.8 C 6.7 -12.8 6.0 -12.6 5.5 -12.3 C 4.9 -12.0 4.4 -11.5 4.0 -10.8 L 1.5 -11.8 C 1.9 -12.5 2.3 -13.1 2.9 -13.6 C 3.4 -14.1 4.0 -14.5 4.8 -14.8 C 5.6 -15.2 6.5 -15.3 7.5 -15.3 C 8.9 -15.3 10.1 -15.0 11.0 -14.5 C 12.0 -13.9 12.7 -13.1 13.1 -12.0 C 13.6 -11.0 13.8 -9.7 13.8 -8.1 L 13.8 0 Z M 6.7 0.3 C 5 0.3 3.6 -0.0 2.6 -0.8 C 1.6 -1.6 1.1 -2.7 1.1 -4.2 C 1.1 -5.7 1.6 -6.9 2.6 -7.7 C 3.7 -8.5 5.1 -8.9 6.9 -8.9 L 11.1 -8.9 L 11.1 -6.7 L 7.7 -6.7 C 6.3 -6.7 5.4 -6.5 4.8 -6.0 C 4.2 -5.6 4.0 -5.0 4.0 -4.2 C 4.0 -3.5 4.2 -3.0 4.8 -2.6 C 5.3 -2.2 6.0 -2.0 7.0 -2.0 C 7.8 -2.0 8.5 -2.2 9.1 -2.5 C 9.7 -2.9 10.2 -3.4 10.5 -4.0 C 10.8 -4.7 11.0 -5.4 11.0 -6.2 L 12.0 -6.2 C 12.0 -4.2 11.6 -2.6 10.7 -1.4 C 9.8 -0.2 8.5 0.3 6.7 0.3 Z M 6.7 0.3 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-3-2%22%3E%0A%3Cpath d=%22M 3.7 -8.0 C 3.7 -9.6 4.0 -11.0 4.6 -12.0 C 5.2 -13.0 6.0 -13.8 7.0 -14.3 C 8.0 -14.8 9.0 -15.0 10.1 -15.0 L 10.1 -12.3 C 9.2 -12.3 8.3 -12.2 7.5 -11.9 C 6.7 -11.6 6.1 -11.2 5.5 -10.6 C 5.0 -10.0 4.8 -9.1 4.8 -8.1 Z M 1.9 0 L 1.9 -15 L 4.8 -15 L 4.8 0 Z M 1.9 0 %22/%3E%0A%3C/g%3E%0A%3Cg id=%22glyph-3-3%22%3E%0A%3Cpath d=%22M 8.8 0.3 C 7.3 0.3 5.9 0.0 4.8 -0.6 C 3.6 -1.3 2.7 -2.2 2.1 -3.4 C 1.4 -4.5 1.1 -5.9 1.1 -7.5 C 1.1 -9.0 1.4 -10.3 2.1 -11.5 C 2.7 -12.7 3.6 -13.6 4.8 -14.3 C 5.9 -15.0 7.2 -15.3 8.7 -15.3 C 10.2 -15.3 11.5 -15.0 12.7 -14.3 C 13.8 -13.6 14.7 -12.6 15.3 -11.4 L 12.7 -10.3 C 12.3 -11.0 11.8 -11.6 11.1 -12.0 C 10.3 -12.5 9.5 -12.7 8.6 -12.7 C 7.7 -12.7 6.9 -12.5 6.2 -12.0 C 5.5 -11.6 5.0 -11.0 4.6 -10.2 C 4.2 -9.4 4.0 -8.5 4.0 -7.5 C 4.0 -6.4 4.2 -5.5 4.6 -4.7 C 5.0 -4.0 5.5 -3.3 6.2 -2.9 C 7.0 -2.5 7.8 -2.2 8.7 -2.2 C 9.6 -2.2 10.4 -2.5 11.1 -2.9 C 11.9 -3.4 12.4 -4.0 12.8 -4.8 L 15.4 -3.8 C 14.8 -2.5 13.9 -1.4 12.7 -0.7 C 11.6 -0.0 10.3 0.3 8.8 0.3 Z M 8.8 0.3 %22/%3E%0A%3C/g%3E%0A%3C/g%3E%0A%3C/defs%3E%0A%3Cg fill=%22%23fff%22 fill-opacity=%221%22%3E%0A%3Cuse xlink:href=%22%23glyph-0-0%22 x=%22857.6%22 y=%22411.7%22/%3E%0A%3Cuse xlink:href=%22%23glyph-0-1%22 x=%22935.0%22 y=%22411.7%22/%3E%0A%3Cuse xlink:href=%22%23glyph-0-2%22 x=%22996.3%22 y=%22411.7%22/%3E%0A%3Cuse xlink:href=%22%23glyph-0-3%22 x=%221058.6%22 y=%22411.7%22/%3E%0A%3Cuse xlink:href=%22%23glyph-0-4%22 x=%221105.6%22 y=%22411.7%22/%3E%0A%3Cuse xlink:href=%22%23glyph-0-5%22 x=%221138.0%22 y=%22411.7%22/%3E%0A%3C/g%3E%0A%3Cg fill=%22%23fff%22 fill-opacity=%221%22%3E%0A%3Cuse xlink:href=%22%23glyph-0-6%22 x=%221188.6%22 y=%22411.7%22/%3E%0A%3Cuse xlink:href=%22%23glyph-0-3%22 x=%221263.7%22 y=%22411.7%22/%3E%0A%3Cuse xlink:href=%22%23glyph-0-4%22 x=%221310.7%22 y=%22411.7%22/%3E%0A%3Cuse xlink:href=%22%23glyph-0-7%22 x=%221343.1%22 y=%22411.7%22/%3E%0A%3C/g%3E%0A%3Cg fill=%22%23fff%22 fill-opacity=%221%22%3E%0A%3Cuse xlink:href=%22%23glyph-1-0%22 x=%22857.6%22 y=%22537.5%22/%3E%0A%3Cuse xlink:href=%22%23glyph-1-1%22 x=%22938.8%22 y=%22537.5%22/%3E%0A%3Cuse xlink:href=%22%23glyph-1-2%22 x=%221014.9%22 y=%22537.5%22/%3E%0A%3Cuse xlink:href=%22%23glyph-1-3%22 x=%221128.6%22 y=%22537.5%22/%3E%0A%3Cuse xlink:href=%22%23glyph-1-4%22 x=%221207.2%22 y=%22537.5%22/%3E%0A%3Cuse xlink:href=%22%23glyph-1-5%22 x=%221261.2%22 y=%22537.5%22/%3E%0A%3Cuse xlink:href=%22%23glyph-1-6%22 x=%221334.8%22 y=%22537.5%22/%3E%0A%3C/g%3E%0A%3Cg fill=%22%23fff%22 fill-opacity=%221%22%3E%0A%3Cuse xlink:href=%22%23glyph-1-7%22 x=%22857.6%22 y=%22663.4%22/%3E%0A%3Cuse xlink:href=%22%23glyph-1-8%22 x=%22937.0%22 y=%22663.4%22/%3E%0A%3Cuse xlink:href=%22%23glyph-1-9%22 x=%221012.4%22 y=%22663.4%22/%3E%0A%3Cuse xlink:href=%22%23glyph-1-10%22 x=%221091.0%22 y=%22663.4%22/%3E%0A%3Cuse xlink:href=%22%23glyph-1-11%22 x=%221130.1%22 y=%22663.4%22/%3E%0A%3Cuse xlink:href=%22%23glyph-1-12%22 x=%221166.3%22 y=%22663.4%22/%3E%0A%3Cuse xlink:href=%22%23glyph-1-5%22 x=%221227.8%22 y=%22663.4%22/%3E%0A%3Cuse xlink:href=%22%23glyph-1-6%22 x=%221301.5%22 y=%22663.4%22/%3E%0A%3C/g%3E%0A%3Cg fill=%22%23fff%22 fill-opacity=%221%22%3E%0A%3Cuse xlink:href=%22%23glyph-2-0%22 x=%22494.1%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-1%22 x=%22529.1%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-0%22 x=%22571.0%22 y=%22760.8%22/%3E%0A%3C/g%3E%0A%3Cg fill=%22%23fff%22 fill-opacity=%221%22%3E%0A%3Cuse xlink:href=%22%23glyph-2-2%22 x=%22604.9%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-3%22 x=%22640.0%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-4%22 x=%22675.7%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-2%22 x=%22719.2%22 y=%22760.8%22/%3E%0A%3C/g%3E%0A%3Cg fill=%22%23fff%22 fill-opacity=%221%22%3E%0A%3Cuse xlink:href=%22%23glyph-2-5%22 x=%22748.6%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-6%22 x=%22790.8%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-7%22 x=%22831.5%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-8%22 x=%22846.5%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-7%22 x=%22879.7%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-9%22 x=%22894.7%22 y=%22760.8%22/%3E%0A%3C/g%3E%0A%3Cg fill=%22%23fff%22 fill-opacity=%221%22%3E%0A%3Cuse xlink:href=%22%23glyph-2-5%22 x=%22935.5%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-9%22 x=%22977.7%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-3%22 x=%221021.4%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-10%22 x=%221057.1%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-3%22 x=%221071.1%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-10%22 x=%221106.9%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-4%22 x=%221120.9%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-3%22 x=%221164.4%22 y=%22760.8%22/%3E%0A%3C/g%3E%0A%3Cg fill=%22%23fff%22 fill-opacity=%221%22%3E%0A%3Cuse xlink:href=%22%23glyph-2-11%22 x=%221199.2%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-12%22 x=%221243.0%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-13%22 x=%221290.5%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-7%22 x=%221329.1%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-14%22 x=%221344.1%22 y=%22760.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-2-0%22 x=%221391.6%22 y=%22760.8%22/%3E%0A%3C/g%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%232a4fda%22 fill-opacity=%221%22 d=%22M 687.8 326.8 L 624.0 326.8 L 592.1 382.1 L 624.0 437.3 L 687.8 437.3 L 719.7 382.1 Z M 687.8 326.8 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%232a4fda%22 fill-opacity=%221%22 d=%22M 787.8 385.3 L 724.0 385.3 L 692.1 440.5 L 724.0 495.8 L 787.8 495.8 L 819.7 440.5 Z M 787.8 385.3 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%232a4fda%22 fill-opacity=%221%22 d=%22M 787.8 500.7 L 724.0 500.7 L 692.1 555.9 L 724.0 611.2 L 787.8 611.2 L 819.7 555.9 Z M 787.8 500.7 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%232a4fda%22 fill-opacity=%221%22 d=%22M 587.8 385.3 L 524.0 385.3 L 492.1 440.5 L 524.0 495.8 L 587.8 495.8 L 619.7 440.5 Z M 587.8 385.3 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%232a4fda%22 fill-opacity=%221%22 d=%22M 587.8 500.7 L 524.0 500.7 L 492.1 555.9 L 524.0 611.2 L 587.8 611.2 L 619.7 555.9 Z M 587.8 500.7 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%232a4fda%22 fill-opacity=%221%22 d=%22M 687.8 442.0 L 624.0 442.0 L 592.1 497.3 L 624.0 552.5 L 687.8 552.5 L 719.7 497.3 Z M 687.8 442.0 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%232a4fda%22 fill-opacity=%221%22 d=%22M 687.8 557.3 L 624.0 557.3 L 592.1 612.5 L 624.0 667.7 L 687.8 667.7 L 719.7 612.5 Z M 687.8 557.3 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 668.7 380.1 L 652.0 380.1 C 650.9 380.1 650.1 379.3 650.1 378.2 C 650.1 377.1 650.9 376.3 652.0 376.3 L 668.7 376.3 C 669.8 376.3 670.7 377.1 670.7 378.2 C 670.7 379.3 669.8 380.1 668.7 380.1 M 668.7 389.2 L 652.0 389.2 C 650.9 389.2 650.1 388.3 650.1 387.2 C 650.1 386.2 650.9 385.3 652.0 385.3 L 668.7 385.3 C 669.8 385.3 670.7 386.2 670.7 387.2 C 670.7 388.3 669.8 389.2 668.7 389.2 M 668.7 398.2 L 652.0 398.2 C 650.9 398.2 650.1 397.3 650.1 396.2 C 650.1 395.2 650.9 394.3 652.0 394.3 L 668.7 394.3 C 669.8 394.3 670.7 395.2 670.7 396.2 C 670.7 397.3 669.8 398.2 668.7 398.2 M 644.3 380.1 L 643.0 380.1 C 641.9 380.1 641.1 379.3 641.1 378.2 C 641.1 377.1 641.9 376.3 643.0 376.3 L 644.3 376.3 C 645.4 376.3 646.2 377.1 646.2 378.2 C 646.2 379.3 645.4 380.1 644.3 380.1 M 644.3 389.2 L 643.0 389.2 C 641.9 389.2 641.1 388.3 641.1 387.2 C 641.1 386.2 641.9 385.3 643.0 385.3 L 644.3 385.3 C 645.4 385.3 646.2 386.2 646.2 387.2 C 646.2 388.3 645.4 389.2 644.3 389.2 M 644.3 398.2 L 643.0 398.2 C 641.9 398.2 641.1 397.3 641.1 396.2 C 641.1 395.2 641.9 394.3 643.0 394.3 L 644.3 394.3 C 645.4 394.3 646.2 395.2 646.2 396.2 C 646.2 397.3 645.4 398.2 644.3 398.2 M 676.8 363.7 C 674.8 361.8 671.8 361.5 666.2 361.5 L 666.2 362.8 C 666.2 364.9 664.4 366.6 662.3 366.6 L 649.4 366.6 C 647.3 366.6 645.6 364.9 645.6 362.8 L 645.6 361.5 C 640.0 361.5 636.9 361.8 635.0 363.7 C 632.7 366.0 632.7 369.6 632.7 376.9 L 632.7 392.4 C 632.7 399.6 632.7 403.3 635.0 405.6 C 637.2 407.8 640.9 407.8 648.1 407.8 L 663.6 407.8 C 670.9 407.8 674.5 407.8 676.8 405.6 C 679.0 403.3 679.0 399.6 679.0 392.4 L 679.0 376.9 C 679.0 369.6 679.0 366.0 676.8 363.7 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 666.2 360.2 L 666.2 361.5 L 645.6 361.5 L 645.6 360.2 C 645.6 358.1 647.3 356.3 649.4 356.3 L 662.3 356.3 C 664.4 356.3 666.2 358.1 666.2 360.2 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 721.3 432.4 C 722.9 428.8 724.6 425.3 726.2 421.7 C 727.3 419.3 728.7 418.8 731.2 419.9 C 733.4 420.9 735.7 421.8 737.9 422.9 C 739.4 423.7 740.6 423.5 742.0 422.9 C 744.4 421.9 746.9 420.8 749.7 421.0 C 750.7 421.0 751.6 421.3 752.5 422.2 C 751.1 423.4 748.9 424.4 747.6 425.5 C 745.8 427.0 744.5 428.7 744.0 431.1 C 743.4 433.9 743.9 436.4 746.0 438.1 C 748.3 440.0 752.2 440.5 754.7 439.3 C 756.6 438.4 758.1 437.3 759.6 435.9 C 760.7 435.0 761.4 435.5 762.4 436.3 C 767.6 440.5 771.1 443.8 775.4 448.8 C 777.3 450.9 776.6 454.0 773.7 454.4 C 772.8 454.5 772.3 454.9 772.0 455.7 C 771.2 457.6 769.9 458.2 767.1 458.3 C 766.2 460.6 764.6 462.0 762.0 461.8 C 761.4 461.8 761.1 462.1 760.9 462.6 C 759.3 466.0 754.8 464.9 752.8 462.9 C 752.4 462.6 752.5 462.0 752.5 461.5 C 752.6 458.5 751.2 456.2 748.1 455.9 C 747.4 455.8 747.3 455.3 747.2 454.7 C 746.3 452.2 745.1 451.2 742.4 451.3 C 741.8 451.3 741.6 451.0 741.4 450.6 C 740.4 449.1 739.2 447.9 737.2 448.0 C 736.8 448.0 736.7 447.6 736.4 447.4 C 736.1 446.9 735.8 446.5 735.4 446.1 C 733.7 444.4 732.3 444.2 730.5 445.8 C 729.4 446.9 728.4 446.8 727.1 446.2 C 724.8 445.0 722.5 444.0 720.1 442.9 C 718.1 441.9 717.5 440.6 718.5 438.5 C 719.4 436.5 720.3 434.5 721.3 432.4 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 789.5 426.3 C 790.8 429.6 792.1 432.8 793.4 436.1 C 794.3 438.3 793.6 439.8 791.5 440.7 C 790.3 441.3 789.0 441.7 787.8 442.3 C 786.7 442.8 785.7 443.0 784.6 442.4 C 784.0 442.1 783.5 442.3 783.1 442.8 C 782.0 443.8 780.9 444.8 779.7 445.8 C 778.3 446.9 777.8 446.9 776.5 445.6 C 773.1 442.3 769.9 438.7 766.3 435.6 C 764.9 434.4 763.5 433.2 761.9 432.3 C 760.6 431.4 759.5 431.6 758.3 432.6 C 757.1 433.7 755.8 434.8 754.5 435.8 C 753.6 436.5 752.6 437.1 751.4 437.2 C 749.5 437.4 748.0 436.6 747.1 435.0 C 746.1 433.4 746.4 430.9 747.8 429.5 C 750.9 426.4 754.1 423.5 758.0 421.4 C 759.7 420.4 761.6 420.6 763.5 420.8 C 766.8 421.2 770.1 421.7 773.4 422.1 C 774.1 422.2 774.6 422.1 774.8 421.2 C 775.1 420.0 775.9 419.3 777.0 418.8 C 778.5 418.2 780.0 417.5 781.5 416.9 C 784.3 415.7 785.5 416.2 786.6 419.1 C 787.6 421.5 788.5 423.8 789.5 426.3 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 741.0 455.5 C 742.0 454.4 742.9 453.6 744.3 454.4 C 744.9 454.7 745.4 455.2 745.2 455.9 C 744.8 457.3 744.3 458.7 743.1 459.7 C 742.4 460.2 741.5 460.2 740.7 459.6 C 740.0 459.1 739.6 458.4 739.9 457.5 C 740.1 456.7 740.4 456.1 741.0 455.5 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 735.0 454.6 C 735.1 453.1 736.0 452.1 736.9 451.2 C 737.8 450.3 738.7 450.7 739.4 451.5 C 740.2 452.4 740.1 453.4 739.7 454.4 C 739.2 455.4 738.7 456.5 737.4 456.7 C 736.2 456.9 735.3 456.1 735.0 454.6 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 748.9 463.6 C 747.6 464.4 746.4 464.4 745.4 463.4 C 744.6 462.6 744.8 461.6 745.3 460.7 C 746.3 459.1 747.5 458.4 748.6 458.7 C 749.7 459.0 750.2 459.9 750.0 461.0 C 749.8 461.9 749.6 462.8 748.9 463.6 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 730.8 449.5 C 731.3 448.5 731.9 448 732.7 447.6 C 733.5 447.2 734.2 447.3 734.8 447.9 C 735.4 448.5 735.6 449.2 735.3 450.0 C 735 450.8 734.5 451.5 734.0 452.2 C 733.2 453.1 732.3 453.3 731.3 452.8 C 730.3 452.2 730.0 451.3 730.5 450.2 C 730.6 450.0 730.7 449.8 730.8 449.5 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 749.2 576.0 C 749.4 576.9 750.0 577.3 750.9 577.2 C 751.6 577.2 752.1 576.6 752.2 575.9 C 752.3 575.2 751.8 574.7 751.2 574.4 C 750.3 574.0 749.6 574.5 749.2 576.0 M 771.1 574.5 C 770.3 574.9 769.8 575.5 770.3 576.4 C 770.6 577.1 771.2 577.5 772.1 577.2 C 772.9 576.9 773.2 576.2 773.0 575.4 C 772.8 574.6 772.2 574.2 771.1 574.5 M 767.7 566.6 C 762.9 566.6 758.2 566.6 753.6 566.5 C 751.9 566.5 752.2 567.6 752.0 568.4 C 751.7 569.4 752.4 569.8 753.2 570.0 C 753.6 570.1 754.1 570.1 754.5 570.1 C 759.8 570.1 765.1 570.1 770.4 570.1 C 771.4 570.1 772.3 570.2 773.2 570.4 C 775.9 571.0 777.8 573.8 777.5 576.5 C 777.1 579.4 774.7 581.7 771.9 581.7 C 768.6 581.8 766.1 579.5 765.9 576.1 C 765.9 575.3 765.6 575.0 764.8 575.0 C 762.4 575.0 760.0 575.0 757.6 575.0 C 756.8 575.0 756.4 575.2 756.4 576.1 C 756.2 579.4 753.8 581.7 750.6 581.7 C 747.4 581.7 744.8 579.4 744.7 576.1 C 744.6 574.2 745.3 572.6 746.7 571.4 C 747.1 571.0 747.4 570.6 747.3 570.0 C 747.2 569.0 747.2 567.9 747.5 566.8 C 748.2 564.9 747.2 563.3 746.8 561.6 C 745.2 553.9 743.8 546.2 742.3 538.5 C 742.2 537.8 742.0 537.0 741.6 536.3 C 741.1 535.4 740.3 535.0 739.3 535.0 C 738.0 535.0 736.6 535.1 735.2 535.0 C 733.7 535.0 732.6 534.0 732.6 532.6 C 732.6 531.3 733.6 530.3 735.1 530.2 C 737.2 530.2 739.3 530.1 741.4 530.5 C 743.6 530.8 745.1 532.2 745.9 534.3 C 746.6 536.3 747.0 538.4 747.3 540.5 C 747.5 541.6 748.0 541.8 749.0 541.8 C 759.8 541.8 770.6 541.9 781.3 541.8 C 783.8 541.7 785.7 543.6 785.0 546.3 C 783.5 551.6 782.3 557.0 780.9 562.3 C 780.2 565.0 778.0 566.5 775.3 566.6 C 772.8 566.6 770.3 566.6 767.7 566.6 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 730.0 543.8 C 732.5 543.8 734.8 543.8 737.2 543.8 C 738.9 543.8 739.7 544.6 739.8 546.2 C 739.8 547.7 738.8 548.7 737.2 548.7 C 734.6 548.7 732.1 548.7 729.5 548.7 C 727.7 548.7 726.7 547.7 726.7 546.2 C 726.7 544.7 727.7 543.8 729.5 543.8 C 729.6 543.8 729.8 543.8 730.0 543.8 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 737.9 556.6 C 735.6 556.6 733.4 556.7 731.2 556.6 C 729.6 556.6 728.6 555.6 728.5 554.2 C 728.5 552.8 729.6 551.8 731.2 551.8 C 733.7 551.7 736.1 551.7 738.6 551.8 C 740.4 551.8 741.5 552.6 741.5 554.1 C 741.5 555.7 740.5 556.6 738.6 556.6 C 738.4 556.6 738.2 556.6 737.9 556.6 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 732.7 561.3 C 733.3 560.5 734.0 560.1 735.0 560.2 C 736.6 560.2 738.3 560.2 739.9 560.2 C 741.1 560.2 742.1 561.0 742.2 562.2 C 742.4 563.4 741.7 564.6 740.5 564.8 C 738.4 565.2 736.4 565.2 734.3 564.9 C 732.7 564.6 732.1 563.1 732.7 561.3 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 672.7 483.7 C 673.1 485.6 673.5 487.3 673.9 489.1 C 674.2 490.2 674.5 491.3 675.3 492.1 C 676.8 493.8 677.4 495.8 678 497.9 C 678.4 499.7 679.0 500.2 680.8 500.4 C 681.5 500.5 682.1 500.6 682.8 500.6 C 684.2 500.6 685.1 501.3 685.6 502.5 C 685.8 503.1 686.3 503.2 686.7 503.5 C 687.8 504.0 688.5 504.8 688.5 506.1 C 688.5 507.7 688.1 508.3 686.6 508.7 C 684.0 509.4 684.0 509.4 683.8 511.9 C 683.6 513.5 682.8 514.4 681.3 514.7 C 679.1 515.1 677.0 515.7 675.1 516.8 C 673.9 517.6 672.4 517.5 671.1 516.7 C 669.3 515.6 667.6 515.7 665.8 516.6 C 664.9 517.0 663.9 517.2 662.9 517.0 C 660.8 516.8 659.3 517.6 658.3 519.4 C 658.0 519.9 657.8 520.4 657.6 520.9 C 656.9 522.1 656.0 522.7 654.7 522.4 C 651.3 521.8 647.9 521.7 644.9 519.8 C 643.4 518.8 641.5 518.9 639.7 518.7 C 638.5 518.6 637.3 518.6 636.1 518.5 C 634.4 518.2 633.2 517.5 632.3 516.2 C 631.4 514.9 630.7 513.5 630.2 512.0 C 629.8 510.6 628.9 510.2 627.7 510.1 C 627.3 510.0 626.9 510.1 626.5 510.0 C 623.7 509.6 622.8 508.3 623.4 505.5 C 624.3 501.4 625.1 497.4 625.9 493.3 C 626.2 492.1 626.7 491.0 627.7 490.2 C 629.0 489.1 629.8 487.8 630.1 486.1 C 630.6 483.3 631.9 480.9 633.9 478.9 C 635.0 477.8 636.0 476.7 637.0 475.6 C 639.0 473.3 641.7 472.4 644.7 472.4 C 645.3 472.3 646.0 472.2 646.6 472.1 C 648.5 472.1 650.4 471.9 652.3 472.8 C 654.1 473.7 656.1 473.3 658.1 473.6 C 659.4 473.8 660.7 474.1 661.7 475.0 C 663.2 476.3 664.9 476.4 666.7 476.5 C 669.9 476.7 671.1 477.6 672.0 480.7 C 672.3 481.7 672.5 482.7 672.7 483.7 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 569.7 583.6 C 551.7 592.8 532.3 582.0 527.5 565.8 C 522.7 549.3 533.5 532.0 550.4 529.1 C 552.9 528.7 555.3 528.6 557.8 528.6 C 557.8 527.9 557.3 527.6 557.1 527.2 C 556.9 526.5 556.7 525.7 557.4 525.2 C 558.1 524.7 558.8 524.9 559.4 525.5 C 560.5 526.7 561.5 527.9 562.5 529.1 C 563.3 530.1 563.0 531.0 562.2 531.8 C 561.1 532.8 560.0 533.7 558.8 534.6 C 558.1 535.2 557.3 535.6 556.5 534.7 C 555.7 533.9 556.0 533.0 556.8 532.3 C 556.9 532.2 557.0 532.1 557.1 531.8 C 554.9 531.5 552.7 531.6 550.6 532.0 C 539.5 534.3 531.5 542.4 529.6 553.6 C 528.3 562.1 530.9 569.5 536.8 575.9 C 537.4 576.5 537.9 576.6 538.7 576.1 C 542.8 573.2 547.4 571.6 552.4 571.1 C 553.5 571.0 553.8 570.5 553.8 569.5 C 553.8 568.4 553.1 568.4 552.2 568.3 C 544.6 567.7 538.5 562.9 536.5 555.7 C 535.9 553.5 535.6 551.2 535.7 548.9 C 535.8 547.0 537.1 545.8 538.9 545.7 C 546.1 545.5 551.5 548.6 555.3 554.7 C 555.5 555.0 555.6 555.5 556.0 555.7 C 556.6 555.5 556.7 554.9 557.0 554.5 C 560.6 548.7 565.8 545.8 572.6 545.7 C 574.9 545.7 576.3 546.9 576.3 549.3 C 576.3 556.4 574.1 562.5 567.4 566.2 C 565.0 567.5 562.4 568.1 559.8 568.3 C 559.0 568.4 558.3 568.3 558.3 569.4 C 558.3 570.4 558.4 571.0 559.6 571.1 C 564.7 571.7 569.3 573.3 573.6 576.1 C 574.3 576.6 574.8 576.3 575.3 575.8 C 579.0 571.8 581.4 567.0 582.2 561.6 C 583.5 553.4 580.9 546.3 575.9 539.9 C 575.5 539.5 575.1 539.0 575.1 538.4 C 575.1 537.8 575.4 537.4 575.9 537.1 C 576.7 536.8 577.3 537.2 577.7 537.7 C 579.5 539.7 580.9 541.9 582.1 544.2 C 589.7 558.7 583.6 576.5 569.7 583.6 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 547.2 429.9 C 547.2 432.3 547.9 433.5 549.6 433.9 L 549.6 426.6 C 548.1 427.3 547.3 428.2 547.2 429.9 M 564.8 454.0 C 566.6 450.9 565.6 447.8 562.5 446.8 L 562.5 455.8 C 563.5 455.5 564.1 454.9 564.8 454.0 M 558.1 435.8 C 558.1 433.5 558.1 431.2 558.1 428.8 C 558.1 425.1 558.5 425.9 555.0 425.3 C 554.1 425.1 553.9 425.5 554 426.3 C 554.0 429.1 554.0 431.9 554.0 434.6 C 554.0 435.2 553.9 435.8 554.6 436.0 C 555.7 436.1 556.8 437.0 558.0 436.4 C 558.1 436.4 558.1 436.2 558.1 435.8 M 558.1 446.7 C 558.0 446.2 558.3 445.5 557.7 445.3 C 556.5 444.9 555.3 444.4 554.0 444.3 C 554.0 447.7 553.9 450.9 554.0 454.1 C 554.0 457.1 553.4 456.9 556.8 457.0 C 557.8 457.0 558.1 456.6 558.1 455.6 C 558.1 452.7 558.1 449.8 558.1 446.7 M 554.0 467.8 C 553.9 469.6 553.1 470.4 551.8 470.4 C 550.4 470.3 549.7 469.5 549.7 467.8 C 549.7 466.6 549.6 465.4 549.7 464.3 C 549.8 463.1 549.4 462.5 548.2 462.2 C 544.1 460.9 541.0 458.4 539.3 454.3 C 538.8 453.2 538.6 452.0 538.5 450.8 C 538.4 449.9 538.8 449.3 539.7 449.3 C 541.5 449.1 543.3 449.2 545.1 449.2 C 546.2 449.3 546.4 450.0 546.6 450.8 C 547.0 452.6 547.9 454.1 549.4 455.1 C 549.9 454.6 549.7 454.1 549.7 453.7 C 549.7 450.5 549.7 447.4 549.7 444.2 C 549.7 443.1 549.5 442.5 548.4 442.1 C 546.5 441.4 544.8 440.4 543.2 439.2 C 538.6 435.7 538.6 427.6 542.4 423.5 C 544.1 421.7 546.1 420.4 548.5 419.6 C 549.4 419.4 549.8 418.9 549.7 418.0 C 549.7 416.4 549.7 414.8 549.7 413.1 C 549.7 411.7 550.6 410.7 551.8 410.7 C 553.1 410.7 553.9 411.7 554 413.2 C 554.0 414.6 554.0 416.1 553.9 417.5 C 553.9 418.4 554.2 418.8 555.2 418.8 C 558.6 418.7 558.0 419.1 558.1 416.0 C 558.1 414.9 558.1 413.9 558.1 412.8 C 558.1 411.6 559.0 410.7 560.1 410.7 C 561.3 410.7 562.3 411.5 562.3 412.8 C 562.4 414.6 562.4 416.4 562.3 418.2 C 562.3 419.2 562.7 419.6 563.5 420.0 C 567.6 421.7 570.4 424.6 571.4 428.9 C 571.5 429.4 571.5 429.8 571.5 430.3 C 571.7 431.3 571.2 431.7 570.1 431.7 C 568.8 431.6 567.4 431.6 566.1 431.7 C 565.0 431.7 564.3 431.2 564.0 430.2 C 563.7 429.3 563.4 428.4 562.4 427.6 C 562.4 431.2 562.4 434.5 562.4 437.8 C 562.4 438.5 562.8 438.6 563.2 438.7 C 564.4 439.3 565.6 439.8 566.8 440.3 C 573.9 443.3 575.1 452.6 570.8 458.0 C 568.9 460.3 566.5 461.9 563.7 462.7 C 562.6 463.0 562.3 463.4 562.3 464.5 C 562.4 465.7 562.4 466.9 562.3 468.1 C 562.3 469.6 561.5 470.4 560.2 470.4 C 559.0 470.4 558.1 469.5 558.1 468.1 C 558.1 467.0 558.1 465.9 558.1 464.8 C 558.1 464.0 557.9 463.6 557.0 463.6 C 556.0 463.7 555.1 463.6 554.0 463.6 C 554.0 465.0 554.0 466.3 554.0 467.8 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 684.9 622.2 C 677.9 618.2 670.8 614.3 663.9 610.2 C 663.7 610.3 663.7 610.5 663.6 610.6 C 662.8 612.1 662.0 613.6 661.1 615.1 C 661.0 615.3 661.0 615.5 661.2 615.8 C 662.0 616.8 662.0 618.1 661.3 619.0 C 660.6 620.0 659.3 620.4 658.1 620.1 C 657.2 619.9 656.5 619.3 655.8 618.9 C 651.9 616.8 648.0 614.6 644.2 612.4 C 642.6 611.5 642.1 609.6 643.2 608.2 C 643.7 607.5 644.5 607.2 645.4 607.2 C 645.8 607.2 646.1 607.1 646.3 606.6 C 648.2 603.2 650.2 599.7 652.1 596.3 C 653.0 594.6 653.9 593.0 654.8 591.4 C 655.0 591.1 655.0 590.9 654.8 590.6 C 653.4 588.9 654.3 586.6 656.5 586.2 C 657.2 586.1 657.8 586.3 658.5 586.6 C 661.0 588.0 663.6 589.3 666.2 590.7 C 668.2 591.8 670.1 592.8 672.1 593.9 C 673.1 594.5 673.7 595.7 673.5 596.8 C 673.3 597.9 672.4 598.7 671.2 598.9 C 671.1 598.9 670.9 599.0 670.8 599.0 C 670.4 598.8 670.2 599.1 670.0 599.5 C 669.3 600.8 668.5 602.1 667.7 603.5 C 667.5 603.9 667.5 603.9 667.9 604.2 C 672.1 606.4 676.3 608.6 680.5 610.8 C 684.3 612.8 688.2 614.7 692.0 616.7 C 692.7 617.1 693.5 617.5 694.2 617.9 C 695.9 619.1 696.6 621.4 695.6 623.3 C 694.9 624.5 693.8 625.2 692.4 625.4 C 691.3 625.6 690.3 625.3 689.3 624.8 C 687.8 623.9 686.4 623.1 684.9 622.2 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 660.0 638.8 C 652.2 638.8 644.5 638.8 636.7 638.8 C 636.5 638.8 636.3 638.8 636.2 638.8 C 635.7 638.8 635.4 638.4 635.4 637.9 C 635.4 637.1 635.3 636.2 635.4 635.4 C 635.4 633.9 636.7 632.7 638.1 632.7 C 650 632.7 661.8 632.7 673.6 632.7 C 675.1 632.7 676.4 634.0 676.4 635.5 C 676.4 636.3 676.4 637.1 676.4 637.9 C 676.4 638.4 676.1 638.8 675.5 638.8 C 675.4 638.8 675.2 638.8 675.1 638.8 C 670.1 638.8 665.1 638.8 660.0 638.8 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 652.1 626.9 C 657.0 626.9 662.0 626.9 666.9 626.9 C 667.7 626.9 668.5 626.9 669.3 627.0 C 670.9 627.1 672.1 628.3 672.2 629.9 C 672.3 631.0 672.3 631.0 671.2 631.0 C 660.8 631.0 650.5 631.0 640.1 631.0 C 639.5 631.0 639.5 631.0 639.5 630.4 C 639.5 628.7 640.4 627.4 642.0 627.0 C 642.4 626.9 642.9 626.9 643.3 626.9 C 646.2 626.9 649.1 626.9 652.1 626.9 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 635.4 607.7 C 634.6 607.5 633.8 607.2 633.1 606.9 C 632.3 606.6 632.0 605.9 632.2 605.2 C 632.4 604.4 633.2 604.0 633.9 604.3 C 635.5 604.8 637.0 605.3 638.5 605.9 C 639.2 606.2 639.6 606.9 639.3 607.6 C 639.1 608.4 638.4 608.8 637.7 608.5 C 636.9 608.3 636.2 608.0 635.4 607.7 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 632.5 613.5 C 633.2 613.2 633.9 613.1 634.6 612.9 C 635.5 612.7 636.4 612.5 637.3 612.4 C 638.1 612.2 638.8 612.7 639.0 613.5 C 639.2 614.2 638.7 614.9 637.9 615.1 C 636.5 615.4 635.0 615.8 633.5 616.1 C 632.9 616.2 632.2 615.8 632.0 615.3 C 631.8 614.7 631.8 613.9 632.5 613.5 %22/%3E%0A%3Cpath fill-rule=%22nonzero%22 fill=%22%23fff%22 fill-opacity=%221%22 d=%22M 642.0 603.1 C 641.4 603.1 641.1 602.8 640.8 602.5 C 639.8 601.5 638.9 600.4 637.9 599.4 C 637.5 599.0 637.5 598.5 637.7 597.9 C 637.8 597.4 638.2 597.2 638.7 597.1 C 639.2 597.0 639.7 597.2 640.0 597.5 C 641.0 598.6 642.0 599.6 642.9 600.7 C 643.4 601.1 643.4 601.7 643.2 602.2 C 643.0 602.8 642.6 603.0 642.0 603.1 %22/%3E%0A%3Cpath fill-rule=%22evenodd%22 fill=%22rgb(88.1%25, 100%25, 0%25)%22 fill-opacity=%221%22 d=%22M 149.5 76.6 L 38.3 76.6 C 33.4 76.6 29.5 72.7 29.5 67.9 L 29.5 38.7 C 29.5 33.9 33.4 30.0 38.3 30.0 L 149.5 30.0 C 154.3 30.0 158.2 33.9 158.2 38.7 L 158.2 67.9 C 158.2 72.7 154.3 76.6 149.5 76.6 %22/%3E%0A%3Cg fill=%22rgb(0%25, 0%25, 0%25)%22 fill-opacity=%221%22%3E%0A%3Cuse xlink:href=%22%23glyph-3-0%22 x=%2252.3%22 y=%2262.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-3-1%22 x=%2277.7%22 y=%2262.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-3-2%22 x=%2293.2%22 y=%2262.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-3-3%22 x=%22103.7%22 y=%2262.8%22/%3E%0A%3Cuse xlink:href=%22%23glyph-3-1%22 x=%22120.0%22 y=%2262.8%22/%3E%0A%3C/g%3E%0A%3C/svg%3E%0A" alt="Escritório Compras Públicas · Sustentabilidade e Negócios"><div class="brand-t"><b>Painel de <strong>Gestão</strong></b><span>Diagnóstico de Maturidade · Programa Compra Paraná</span></div></div>
+      <div class="ecp-pick">
+        <label for="ecpSel">Escritório</label>
+        <select id="ecpSel"><option value="">Carregando escritórios…</option></select>
+        <div class="me" id="me" hidden><span id="meNome"></span><b class="perfil" id="mePerfil" hidden></b><button type="button" id="btnSenha">Trocar senha</button><button type="button" id="btnSair">Sair</button></div>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist" id="tabs">
+      <button class="tab" role="tab" data-v="rede">Visão da rede</button>
+      <button class="tab" role="tab" data-v="painel">Painel do ECP</button>
+      <button class="tab" role="tab" data-v="diag">Diagnóstico</button>
+      <button class="tab" role="tab" data-v="plano">Plano de ação</button>
+      <button class="tab" role="tab" data-v="agenda">Agenda e reuniões</button>
+      <button class="tab" role="tab" data-v="atores">Atores</button>
+      <button class="tab" role="tab" data-v="docs">Documentos</button>
+      <button class="tab" role="tab" data-v="hist">Histórico</button>
+      <button class="tab" role="tab" data-v="users">Usuários</button>
+      <button class="tab" role="tab" data-v="cad">Cadastro</button>
+    </nav>
+  </div>
+</header>
+<div class="filabar" id="fila" hidden></div>
+<main id="main"><div class="empty">Carregando o painel…</div></main>
+<footer class="foot"><div class="foot-in"><span>Escritório de Compras Públicas · Sustentabilidade e Negócios · Programa Compra Paraná</span><span class="foot-r"><span>Realização</span><img class="logo-hdr" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAABWCAYAAABIBJ0pAAATCklEQVR42u1de9BdVXX/rX3PlwcBUiBABD8eCRDUJMSEYGmt1EqdOnXoHxapLePgq0hrdYQWC44Wx7TTIUgtVQQrVQefLdIZpZYmjUitBUoSwJgQAkEIQoC8Q8L3uPfsX/+4ayU7J3ufe+/3fWly7r175sy5X3LO3nvtvfZ6/Nba+wh6qJDMRKRB8mYAHwfQAJBVkRQAAmALgLNEZDdJERFWjRCH3ipe7wv0LlWmw3u/QZnPVZH5eooBVUJ4ktMAvKHi9BMAnHOrqz6PvSQBTdqdBeDEQI1Vuayq+qT0EgMarecp4/kK01LTBfRYwbToM2AFyqJQjVXcAXmq4rT0FAN2lQMC4HER2VNlBwQVhSDG64CcAyBXqZFXkJyG3h8JhIjvM+CRL+lzAPMAzKw4LbUCA1a69AoDmoR4FsAlFfeAre//rX/n6Jd+6ZexFeklYklKFzlevsrOR88xIMlat9ArIo2+7OyXfulLwLYkn1MI5jIAb1ajvVZh52MXgM+ISL3PgNViwAcBvKkLSFqLJpyEbrABsy5nvhCAPg1NELeqEIzlLi4TEZLMsB+U7jPgESzhCeBs7AegpeLz9Vg3TVC3x4KNvvnKeFUGbc1urXwGTC8xoJVFVbcmdAG9jC7IgOklBuy2FPz13ZAB0xM2YOiAeO/Pcc7lFVZbDeCgFHzfZ8AjX7rnAOY552YW7Kiq2n+PdNsk9UI2zFQA96rEqPImJBkZGXmgmxyQfumXw156IRLSz4Dpl37pl3FKQJUkRWnCRF1eRHwbdU64UyAieVD/eCWfa4eeCZCy4dgxpGGMEr+dcW1rjg71fLXTqNO4Y8cDcVg6fGjHQf6f2pIJWDzVloC2qm01KjPNRRPUnQPgVADTAEwGMAxgL4AXAKwHsFJE1tnEFVeaHaRD8jMAzp1AD5UArhaRF7SdawG8HWNLwfIANqN5+sAyEVkf9j2kjeRcAJ/C2BIdqOO3C8AzAB4QkQdTY1e2QLSuGQA+WjK/Ntb/ISI/adWG0btp06apg4ODtwA4FhOX0DFcxnz2+0ySS0iuY/ulQfJ/SF5aVIVWN8mjSe7hxJa9JI8J2lo7QfWO5Hn+VZLHF2jI9H71BNPxY5LndmJGBH25s8027gzfa8HYIDmfE1+ezGIN6qrOdFV/HMAxwSO2p5aJVWY2yIUALiT5BRH5s2ClWYbKHMXo6hOwmkzC3ScirygdJwMYDPorEcnTShuYpJvknLsCwHkkfwvAbpJhHYvQjFZMRLKrALgIwHKSiwBsaXX0GsmaHjt3MYDLAYyWaBTr41nB363sYA/gjfpsYwJotD78wCWY7yQAKwB8WpmvgQPBTwdgQK9MBy3TqxY0UgfwEZIfDJja2lyov8N3i3V0osbgvQ8jBXO17xLUGV6pNiXyDACM6CT8lS6kmojkKiEW6nMDkXpdCaNliX6MAHgtgI8p49VamEogORnAF3QsivWFf08CkHnvzyE5XU2hdgTAm0rGzo1hkTkAD8dU43QAywC8RRmIQSNeO+AAvApgu75ei0iUWvDOx3Si8gJB6HByUtcUAJlzbmVQx/mBzdNusT6z4FlDmcsDuJTklICWQQCzSqSoK2G0VMm0D29rQ0rV1E6/TrVKXmCImIaic+54ALPbQEPyQMp3SmPqmqTvrApVsNMVfTuaJ0jVddCLxuv9AD6HZlxyGM1Ez6sBvC/iTJiEmwXgZBHZTNIHEhARWEfUmfleoK7blYIPBOrqghg8pO2tA/DuoH5bkacD+KQuDh+ZSAFwPIAZIvJL/ffzdECL6tf+/iaA5frb6wScpP37vYQpY21N0wXAlH2mqvdcAH+ZMAGGdYEWmSpD85zE1UgkNwTO4gx1FovzZWO0BsB9AY2t5skB2Arg6QPwHZIXqXFYjzgVJHl3iSp4XN8b0Xud5Kjeh0ieGTw7M3BAfNCOtXv7OGGMjORTWlceqf8rqXf37t17KslXtF9h3+z3DnNGtK0liTGzdn+tpJ9/Gulj+PfKolMYw+VI/mdhnux+F8lvFf4t7OtNZY5IhC+K/bR6PjjWuSo2fFVC4ji1Az9pRrlKSFNbucIwWYkY3xZIp7m6ulPwy0odlE73PRiIe4ZKs5TKeFhNgrB+e+5FNBM/Z2n/pLDaNwLYoYZ/DmBxDEzWZ/cAeFppkYK0ywHcCeBvItCGtftUMP55xPHISb5XVXV43rW1dS2AK0uCBvNbmCkSMWdcwWQBgJ8rjTV0kHUuIo1MmSInORXNbYuxaId470ecc88XBtirChAAP1S1zMikPadnGduEL25B0Cqtt6OoQLCSF+hkFFWS/V6tTlFuGFgAms8EcEpCfdcAfEfVEkkeBd2hFmFAAbBBRF4serGBRJuu6js1+Stii8gwP5InAFhaGEdjxG+JyNMkh0sYaw7JySIykvC0WWKvG43bAKzT+co7jlUbzjM0NDRLVWZRLYaid0lRHXQSKQlE+r9G1IK1+RLJY7Temt5LrwgWdmNELVr9W0hOt0hNhJ6/jvTNxmWj9s3oWBBR1Qeoem1nQO92Tdb33x1pK9druzIYIn209u8ovO/13T2K3wrJPy4ZizrJs2N4Y4h1ktwQUcHW5n9pO1k7c3WQOREAjWcXCCkW+7dHdJLebgNUYMbJJCdph+yqBQRNIvl0CUH/Np5wmd5/FJlY+70s8e5xjUbjLwIG8PpOnSTzPN9OcmFggoDk+xP2n/39gZQNp0D8moBpbDyM2T8ci78GzPeWlG2X5/mS4Pl3Rp4L/74k0Y6N5eyEYDIal4zHXs8CMbtZxemMEvfdq3pbAOB6AFtJrgbwY/WOV4vIcKgmwrCVtnUmmnt0EfGYAWAByfvb8IDDkwLeIyJ7Va0ejfgp+Pt2yJH8SQC3OLVHT6nVajMisAy89w845z4kImuVDrOZLiiBc1iv1zdof5x6/5nae29UjHVuYDPlAQx0k4jcFtiZRak0AOCLkRBbDcBm59xSe7der788MDCAiK3NwA78fmS+jc7zFA1JmTOXkvyNNuZrHwIhIlcdoPKDVbVUuXo4IQVtldYjHhHV8/wHkotjolzvf5BYkWMta8LEB5KLSqR4OyFEk3wvkVxG8oqg7lqBpodLaPEkX8rz/EWSdm0h+WpJ++tJ/lEqBBeM4fURyWt9uLIgpWcFz8Uk2L8kJKC19bcJKT/W8o2DPG/LviA5LVBf1mgjwWwsqKnihP8TyaMCu8cIurkFQVZnq2tY7zdrvVP0/qEW9eeRuvLAlvMkt+nAnxpRfcZ8JylcMxZmt3Z3kXyI5N+R/G11BFPM53QcZ2vMOw/atYXz89AWM9NC6Sn20+Z0bao9va9oITDyDufrvSEDugDopIjsBfA7Cg1sDxB7U1eNILYahq2yQEXbM+8D8J0AVPUFl14ScE0Yay679kEqbXhsRdVSDMsxUOkGNn8CwIY8z79O8iRFCkKE4A0Aji5ANUUVlweXD9qxPgzrOO8GsFNEhnRiGEcthBpuOyoS3xYAn9Cj28JozisAdpRAMWcAOLnAdBKYM3Mj5kw4X77N+XIAODo6+mgS+ilkwbxGPajvkXyuhPNTUmyUJOv1+juCOqcnVuN4yrkFCbU6AZqGHm09uGKOVvH9x1XiSaDarh2DampldtyU8EiNtstKnKsV9mwgpY2hHkq0bzReVGhnIsyZWNkZaCoBgEw7KZE8wM0Avgzgy7oS5mt8+Dc1LjijRSxXAHjn3MUA/l3//XUqXZgIkd2toaFWIR17fw+AjQGWeTKap+AXJaxhYzcCuC3ACEUzcl6voO2ioC8mRUY1DPVZEblSs2CQCPWFZWsgHS2sNjVChw8ciGtIfkVE1geJIaKY368AuLkwdvZ7WMOhB2SEB3l+mxMZQEbrPHUipUDTokLorli+BOD5WPw80c6zIjLc0YcVE/bBDLVZ7ixZISYZbgve+0iLsNX8McIvtmLf1iK09daSOo5TR8FHJGGuWsBW70Ai1Ge/n9D6jiU5fefOnceRPJXklRqqTI2XJ3l5wQmw+60lUnSI5EqSjypMZpf9ndI6B4Qmi23meX5HCYa4U73xcZVMPdYZANhoNJpiMctsZY0AuD+wfUSjH1s1wL5cJ/89iUA4NayFEtjC7IPtAH4ZCVu1DOcEKzYWYWGQvbM+kPgsZJTsILlB7aG8kJ4lau8dq9LmzESoz9pdJSI7Cl3dAeB2kr8P4OLEeEkoJYM8v18F8OGSfMMpaO/8G0n8bXae2bl2X1gSEVoPwCsTtp0wUoxsZQD+WQ1RZNlBUnajpvgggkdNVtW2viTBU6Af1FNGXZjIqKih+eWf7Z2koUcwrQtK1PWTGucNVROCAR8I8MmYWh1RdWwZMFkJQ/yv1hvGmjOldVtivKyMRuCQW1ukTLGFyeJK0qgA4CzNDdwVxJhnBuZMbCPaanPMxnNmdabxyDwBag5rI1khA1gA1PX/3lkSjN+J/d+zODWRf2bJpI8pk2YkGx0wHrUfA8oYqZShn5nHXqjficgoyXeoVPOJ93+hoHfI6ExM6EqNF/sAiM9FxOd5fpxzrkwa7Q6k8gjJaxS4Ln5cO9V2J8U0wQmjo6OzA/vbPupzVEnCyGqdrxoDw7hFOWhfcxZAKaFxa07A60heIiLfT9hN16va8wVJ0FD0/Osisg0AGo3GvCzLpkSkhgCAc265StmOtiQGEZYzWkiwe3WlNiJ1LPbe3+6cY4kE/UEweOe3WHRrI1CDfeO3LNKERqNhTF4neTqAGyLjC0zcoQI5gGzSpEmvD3ID0SJhJAfwo7HMV0wCPqe2TSop8rsk/1HDbVvURjkbwLsAvDUY+CLzbQawhGQmIo0syxYnVq4N7DUWO21z0GoAHlTMsp0MmPnqRFiIKQNwovd+MYDfdc5lEVps8HcAMEP92AQ2ZkyyTu3JcPecJXZOLkEPzP7eHeBwt6jtGWY55wBq3vv7nXNXx1K1IhKupgjDYIlEWwDgGxFzRhJ13kqy3sF8OQDfFpFvHxBiJHldIeOjk5LHsD9F6n89iFuC5A8nOATHPM+X7qMwz5eOM2TkEyFHWnjMpGULj/Lvi6GmAJc7UaMfZdjaPH32XYmMIcNfF3SoKe5rkZSwLIiKTSL5ixZ46ljKZcWxyQDcgmZ6+gJNMq0F0i9E9CWSMOkCHMs25TwD4HIR+alKv7pKnnktVEfeqdpwzi3fZwA5d34b9TMhJVyBNqPHAfi0iHzT8ubawMYeKpFE0xUPTKn5BoBdGpL7fAIvrQG4Q0QeVVC80YaWawDYVOIsAsCcTZs2TdVozGyVlmW2ZbvztQ9RGRoaOuh0r0xE9mpKzl0FL7I4YSzxdA3m+CqAG0Rkqxqo1tAshTcayTBMZx6vAzCE5t4OKFA+B/tPwWeH9eWBLWwg9DYAfy4iX1Naws05jcTE17H/DL8YjdOD5yTBgC94729wzr1WPe9aEO4SdVI+pVK10QoxUEfIk9xY0m8P4KTBwcFBABuwP1N6BOPfgmkq/5l77rnn+SIKEYZrBkj+SZ7nD3egxoYVAL1heHj47EidBmxedSg2NQftvHmC672R5GAY2goSWJ8teXdLEKqTEqA8GaprNBrvb/HMdbHslRIGtDm4og3a/1Cf/dohmK+7DsqCUQno1eitK950K8k5qjJno5miPg3N1PFhXYEvoLlfYZ2IPF0Y6PDQG5NEO9Hc/5Bj/EdwmBp6sLD6O6rfe++dc0No7mV5Gc1PuT6heORoAATngRNxlPf+XufclESf1iikUww12e/ntZ+pBIZXRWRO8RnvPZxzFnr8vDK372C8zDSItq1jUQtgpicOwXx9txT/HM9hQpYChC4pSk9PfUn0cBUpwdZaMZSBwO0cw+Yw8YdEMjg4qd0jydpZrWx1DEaJo1O6iaqNfjICBR1k/I/lkMo2x8jsxUPxZVE/hghXv/TLYZCAFVOXDt1x1DD7EqJf+qUvAduXfGqvfBbN2GxVP8Ng/X5SRD7aUbJmF5SsosxnsdIBAB8A8JoumIshvdfQBZ9h7WoGxP7Q1mkATkD6EMoqFDvwcUUvquAqMyDQzEqxo9GqTIsdcQZ0yVcw2y2u4gy4sOKTRgDOe78HwOOBTdhnwApMHFB+amdl6HDObRCRLb3mgFSSAYMtmJOw/wyYSn8HGM3tAuaA9G3Aijggg+r9WgpWFVWXebur0KOligxoSbAXorkzrxvG/9FedECqyoAm6bageU7KRHyb43DZf4JmcuqaXnRA+qVfjgh7qpru46FJ8TpcJe/V7wBLRZmva7zF8XyatV/6pV96VAJeCD1QqaI0WL+36/ZV6VUVnFWI6UREuHLlygE0t5Ce0gXjfzeAn6LHMmAqyYAqMbho0aLTVPpV2XZqAMjyPL+v11Vw1RgQODADpqrOiKCZhPCzQCX3ZHEVZMCuyIAB8MrAwEBPZsBUlQG7KgMGzRT8Lb3sgFSGAfsZMH0GPFLU7+ne+8GKM6CVVeiXyjCg9XOenmGSV5gB930yttcdkKrZgN3igNgRaxt63QEBgP8DQMQYTeIA3V0AAAAASUVORK5CYII=" alt="Sebrae"></span></div></footer>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const ITEMS = [{"id": "GOV.01", "d": "GOV", "c": "As entidades compradoras aplicam, na prática, mecanismos legais de fomento, como tratamento diferenciado, cotas exclusivas, prioridade local ou restrição geográfica nos editais?", "r": "Execução real da política pública de compras com base no Prejulgado 27 do TCE/PR e demais legislações de fomento à MPE local.", "a": "Se o município vai além da teoria e as entidades compradoras efetivamente publicam editais que protegem e priorizam a MPE local, com base no Prejulgado 27 do TCE/PR e nas demais legislações de fomento.", "e": "Cópias de editais publicados (ou links oficiais) que comprovem a aplicação de cotas exclusivas, margem de preferência/prioridade local ou restrição geográfica para as MPEs."}, {"id": "GOV.02", "d": "GOV", "c": "As entidades compradoras do município publicam seus processos licitatórios de forma ampla no município e território?", "r": "Publicidade ampla e acessível dos processos licitatórios para fornecedores locais e do território — canais municipais, redes, murais e portais de transparência.", "a": "Se as entidades compradoras utilizam canais de divulgação que efetivamente alcançam os fornecedores locais e do território — como site municipal, redes sociais, Associações Comerciais e Escritório de Compras —, ampliando o acesso além da publicação nos portais oficiais de licitação.", "e": "Registros ou evidências de divulgação de ao menos 3 processos licitatórios nos últimos 90 dias em canais de abrangência local/territorial (site municipal, redes sociais, Escritório de Compras ou Associação Comercial)."}, {"id": "GOV.03", "d": "GOV", "c": "O município possui uma Política Pública de Compras Governamentais formalmente regulamentada e amparada em seu planejamento orçamentário (PPA)?", "r": "Base legal municipal que regulamente as compras públicas como vetor de desenvolvimento local, com inserção da política no Plano Plurianual (PPA) como diretriz orçamentária vinculante.", "a": "A existência de base legal municipal atualizada que regulamente as compras como vetor de desenvolvimento, garantindo que o tema não seja apenas uma ação isolada, mas uma diretriz orçamentária do Plano Plurianual (PPA).", "e": "Lei Municipal, Decreto de Regulamentação ou evidência de inserção da política de compras locais no PPA do município."}, {"id": "GOV.04", "d": "GOV", "c": "A instância de governança do Escritório de Compras está formalmente constituída, com reuniões realizadas e deliberações registradas em atas?", "r": "Comitê ou GT constituído por ato oficial, com composição multi-ator e periodicidade mínima bimestral.", "a": "Se a instância delibera com representatividade institucional ampla — incluindo setores econômicos, jurídico e acadêmico —, registra encaminhamentos com responsáveis e prazos e acompanha sua execução.", "e": "Decreto/portaria de constituição com composição nomeada (inclui entidades empresariais, ensino e Procuradoria) + atas das 2 últimas reuniões com encaminhamentos."}, {"id": "GOV.05", "d": "GOV", "c": "O Escritório de Compras possui plano de ação formalizado, atualizado e utilizado como referência nas reuniões de monitoramento?", "r": "Plano de ação com versão datada e atualização recente + atas de monitoramento com menção ao plano.", "a": "Se o plano é utilizado como documento de referência nas reuniões de monitoramento.", "e": "Plano de ação atualizado (versão datada) + atas de ao menos 2 reuniões de monitoramento com registro de análise do plano."}, {"id": "AC.01", "d": "AC", "c": "O Escritório de Compras e o Agente de Contratação realizaram atuação conjunta em licitações de impacto para MPEs locais?", "r": "Atuação conjunta Escritório–AC em licitação com cláusulas MPE, incluindo suporte na mobilização de fornecedores.", "a": "Se há evidência concreta de colaboração entre Escritório e AC em licitações de impacto para MPEs locais, incluindo atuação em demandas do setor de licitação para contatar ou mobilizar fornecedores.", "e": "Ata ou relatório de atuação conjunta Escritório–AC em ao menos 1 processo licitatório com cláusulas MPE."}, {"id": "AC.02", "d": "AC", "c": "O Agente de Contratação atua de forma preventiva orientando as secretarias demandantes para a inclusão de mecanismos de fomento às MPEs (cotas, prioridade local) nos Estudos Técnicos Preliminares (ETP) e Termos de Referência?", "r": "Atuação na fase preparatória — orientação preventiva do AC às secretarias demandantes para inclusão de mecanismos de fomento às MPEs na fase interna da contratação (ETP e Termo de Referência).", "a": "Se o AC atua como consultor interno das secretarias, garantindo que o viés do desenvolvimento local nasça no planejamento da compra e não apenas no edital.", "e": "Pareceres, e-mails institucionais ou despachos do AC orientando secretarias sobre a aplicação da Lei Complementar nº 123/2006 na fase interna."}, {"id": "AC.03", "d": "AC", "c": "O Escritório de Compras realizou reuniões institucionais com os principais órgãos compradores do município e ações de conexão entre compradores públicos e fornecedores locais?", "r": "Articulação institucional com órgãos compradores (reuniões com pauta e encaminhamentos) e eventos operacionais de conexão com fornecedores locais (rodadas de negócio e reuniões setoriais).", "a": "Se o Escritório atua em dois planos complementares: (1) articulação institucional com os órgãos compradores, documentada em atas com pauta e encaminhamentos; e (2) conexão operacional com fornecedores locais, documentada em registros de participantes e encaminhamentos por ação.", "e": "Atas de ao menos 2 reuniões com órgãos compradores nos últimos 12 meses (com pauta e encaminhamentos) + registros de ao menos 2 ações de conexão com fornecedores (rodadas, reuniões setoriais), com participantes documentados."}, {"id": "AC.04", "d": "AC", "c": "O Agente de Contratação compartilha informações sobre editais e oportunidades com o Escritório de Compras, com registros documentados?", "r": "Comunicação rotineira e rastreável do AC ao Escritório sobre editais e oportunidades em andamento — fluxo operacional de curto prazo.", "a": "Se o AC mantém o Escritório informado sobre processos licitatórios em curso ou próximos, com registros que comprovem regularidade e rastreabilidade do fluxo.", "e": "Registros de comunicações do AC ao Escritório com identificação de editais ou oportunidades nos últimos 6 meses."}, {"id": "AC.05", "d": "AC", "c": "O Plano Anual de Compras e o calendário de licitações são compartilhados com o Escritório e utilizados como referência para orientação de fornecedores?", "r": "Compartilhamento formal do Plano Anual de Compras e calendário de licitações — instrumento de planejamento de médio prazo utilizado como referência pelo Escritório para orientação proativa de fornecedores.", "a": "Se o Escritório tem acesso ao planejamento estruturado de compras e o utiliza como insumo para antecipar demandas e orientar fornecedores antes da publicação dos editais.", "e": "Registro formal de compartilhamento do Plano Anual com o Escritório + material de divulgação referenciando o calendário."}, {"id": "AC.06", "d": "AC", "c": "O Agente de Contratação participa das reuniões de planejamento e monitoramento do Escritório de Compras?", "r": "Participação do AC registrada em atas de reuniões de planejamento e monitoramento.", "a": "Se a participação do AC nas reuniões do Escritório é regular e formalmente registrada.", "e": "Atas de reuniões do Escritório com presença do AC registrada nos últimos 6 meses."}, {"id": "AC.07", "d": "AC", "c": "O Agente de Contratação está formalmente identificado por portaria ou ato equivalente, com canal institucional documentado de comunicação com o Escritório?", "r": "Portaria de designação vigente e canal documentado de comunicação com o Escritório.", "a": "Se o AC está formalmente identificado e há canal ativo e rastreável de comunicação com o Escritório.", "e": "Portaria de designação do AC vigente + canal de comunicação documentado com o Escritório."}, {"id": "IE.01", "d": "IE", "c": "O Escritório de Compras realizou ações de desenvolvimento e qualificação de fornecedores locais para participação em compras públicas — como orientações individuais, rodadas de habilitação ou workshops de capacitação para acesso a editais?", "r": "Ações voltadas ao desenvolvimento da base fornecedora local — capacitação, orientação para habilitação e preparação para participar de processos licitatórios.", "a": "Se o Escritório atua no desenvolvimento da competência individual dos fornecedores locais para acessar compras públicas — prioritariamente em formato individual ou de pequeno grupo —, promovendo ações que aumentem a capacidade de resposta da MPE de forma personalizada.", "e": "Registros de ao menos 2 ações de desenvolvimento de fornecedores nos últimos 12 meses (orientações, workshops, rodadas de habilitação), com lista de participantes e temática documentada."}, {"id": "IE.02", "d": "IE", "c": "O Escritório de Compras dispõe de dados sobre participação de MPEs nas compras públicas do município, com comparabilidade entre exercícios?", "r": "Dados de participação de MPEs nas compras públicas com comparabilidade entre exercícios.", "a": "Se o Escritório dispõe de dados que permitam acompanhar a trajetória de participação de MPEs nas compras públicas.", "e": "Relatório ou planilha com dados de participação de MPEs em 2 exercícios consecutivos, com fonte identificada."}, {"id": "IE.03", "d": "IE", "c": "O Escritório de Compras dispõe de mapeamento atualizado dos compradores públicos do município?", "r": "Mapeamento das entidades compradoras ativas, categorias de compra e volumes estimados.", "a": "Se o Escritório dispõe de informações suficientes para identificar o perfil da demanda pública local.", "e": "Planilha ou relatório de mapeamento dos compradores públicos atualizado nos últimos 12 meses."}, {"id": "EC.01", "d": "EC", "c": "O Escritório de Compras possui ao menos um profissional formalmente designado por ato oficial?", "r": "Portaria ou ato de designação com nome, função e período de atuação.", "a": "Se existe responsável institucional formalmente identificado e com dedicação documentada ao Escritório.", "e": "Portaria ou ato de designação com nome, função e período de atuação do profissional designado."}, {"id": "EC.02", "d": "EC", "c": "O Escritório de Compras utiliza formulários e instrumentos de controle dos atendimentos realizados?", "r": "Ficha de atendimento, lista de presença e/ou relatório de diagnóstico registrados no GISE.", "a": "Se os atendimentos são registrados de forma padronizada em formulários que permitem rastreabilidade e controle.", "e": "Modelos de formulários utilizados + exemplos preenchidos de ao menos 3 atendimentos recentes."}, {"id": "EC.03", "d": "EC", "c": "O espaço físico do Escritório de Compras atende aos requisitos mínimos de operação?", "r": "Espaço com atendimento individual, identificação visual do escritório, área coletiva e acesso público sem restrição.", "a": "Se as condições físicas permitem a operação regular do Escritório, verificáveis por checklist ou visita técnica.", "e": "Checklist de requisitos mínimos preenchido + registro fotográfico do espaço de atendimento e coletivo."}, {"id": "EC.04", "d": "EC", "c": "O Escritório de Compras dispõe de infraestrutura tecnológica operacional para acesso a internet e aos sistemas de compras públicas?", "r": "Conexão à internet estável, computador operacional e acesso ao PNCP, SICAF ou Compras.gov.", "a": "Se a infraestrutura disponível permite operação contínua e acesso aos sistemas essenciais do programa.", "e": "Checklist de infraestrutura (internet, equipamentos, sistemas) + print de acesso ao PNCP/Compras.gov."}, {"id": "MPE.01", "d": "MPE", "c": "O Escritório de Compras realiza ações de orientação e conexão para agricultores familiares e empreendedores rurais junto às compras institucionais públicas (PAA, PNAE e demais programas de aquisição)?", "r": "Lei nº 11.947/2009 (PNAE — 45% do FNDE para agricultura familiar), Lei nº 10.696/2003 (PAA), Resolução CD/FNDE nº 06/2020. Inclui articulação com EMATER, cooperativas e associações de produtores.", "a": "Se o Escritório atua como ponto de orientação para que agricultores familiares e suas organizações (cooperativas, associações) conheçam e acessem as compras institucionais — especialmente PNAE e PAA —, com registro documentado das ações realizadas.", "e": "Registros de atendimentos, oficinas ou reuniões com agricultores familiares, cooperativas ou EMATER nos últimos 12 meses, com identificação dos participantes e temática de compras institucionais."}, {"id": "MPE.02", "d": "MPE", "c": "O Escritório de Compras realiza ações de capacitação ou orientação coletiva para fornecedores?", "r": "Execução comprovada de ações coletivas de capacitação já realizadas, com registros de presença e material didático documentado.", "a": "Se as ações coletivas de formação foram efetivamente realizadas, com registros de presença e material didático que comprovem a execução.", "e": "Cronograma de capacitações + registros de presença de ao menos 4 eventos nos últimos 12 meses."}, {"id": "MPE.03", "d": "MPE", "c": "O Escritório de Compras apoia o cadastramento de fornecedores no SICAF e/ou Compras.gov?", "r": "Cadastramento de fornecedores no SICAF e/ou Compras.gov, registrado no GISE.", "a": "Se há registros de apoio ao cadastramento de fornecedores nos sistemas oficiais de compras públicas.", "e": "Relatório do GISE com registros de cadastro SICAF/Compras.gov nos últimos 6 meses."}, {"id": "MPE.04", "d": "MPE", "c": "O Escritório de Compras divulga oportunidades de compras públicas e o calendário de licitações aos fornecedores locais?", "r": "Canal documentado de divulgação de oportunidades e calendário de licitações com frequência regular.", "a": "Se há regularidade e registro da divulgação de oportunidades de compras públicas aos fornecedores.", "e": "Registros de divulgações por canal documentado nos últimos 3 meses, com frequência identificada."}, {"id": "MPE.05", "d": "MPE", "c": "O Escritório de Compras possui plano anual de capacitação para fornecedores e/ou compradores, com cronograma e registros de execução?", "r": "Plano anual de capacitação com atividades, datas previstas e registros de execução.", "a": "Se as capacitações futuras estão programadas e as passadas documentadas — avalia a gestão do plano como instrumento de continuidade, não o evento isolado.", "e": "Plano anual de capacitação com atividades previstas + registros de execução no exercício corrente."}];
+const DIMS = [
+  {k:"GOV",n:"Governança do Ecossistema",p:.10,f:"d1"},
+  {k:"AC", n:"Integração com Áreas de Compras",p:.25,f:"d2"},
+  {k:"IE", n:"Integração Empresarial",p:.25,f:"d3"},
+  {k:"EC", n:"Estrutura e Capacidade Operacional",p:.10,f:"d4"},
+  {k:"MPE",n:"Atendimento das MPEs",p:.30,f:"d5"}
+];
+const NOTAS = [
+  {v:0,t:"Não atende"},{v:1,t:"Parcial, sem evidência"},{v:2,t:"Parcial, com evidência"},{v:3,t:"Atende plenamente, com evidência"}
+];
+const BANDS = [
+  {t:"Em Estruturação",min:0,max:.30,c:"var(--bad)"},{t:"Básico",min:.30,max:.50,c:"var(--warn)"},
+  {t:"Intermediário",min:.50,max:.85,c:"var(--info)"},{t:"Avançado",min:.85,max:1.0001,c:"var(--ok)"}
+];
+const DEFAULT_METAS = {stakeholders:10,reunioes:12,acoes:10,parceiros:5};
+const ENT_PADRAO = [
+  ["Prefeitura Municipal — Secretaria de Administração","Executivo"],["Secretaria Municipal de Saúde","Executivo"],
+  ["Secretaria Municipal de Educação","Executivo"],["Secretaria Municipal de Obras / Infraestrutura","Executivo"],
+  ["Secretaria Municipal de Assistência Social","Executivo"],["Câmara Municipal de Vereadores","Legislativo"],
+  ["Autarquia / SAAE / Serviços de Água e Saneamento","Executivo"],["Fundo Municipal de Saúde","Executivo"],["Fundo Municipal de Educação / FUNDEB","Executivo"]
+];
+
+/* Esquemas dos registros de gestão */
+const SCHEMAS = {
+  cronograma:{title:"Cronograma de ações",sub:"Eventos, visitas institucionais, capacitações e atividades de relacionamento",folder:"acoes",order:"dataPrevista",
+    cols:["acao","tipo","dataPrevista","status","responsavel"],
+    fields:[{k:"acao",l:"Ação / evento",t:"text",req:1,wide:1},{k:"tipo",l:"Tipo",t:"select",o:["Reunião","Visita Institucional","Evento","Capacitação","Publicação","Audiência","Outro"]},
+      {k:"dataPrevista",l:"Data prevista",t:"date"},{k:"dataRealizada",l:"Data realizada",t:"date"},{k:"responsavel",l:"Responsável",t:"text"},
+      {k:"stakeholders",l:"Stakeholders envolvidos",t:"text"},{k:"status",l:"Status",t:"select",o:["Pendente","Em andamento","Concluído","Pausado","Cancelado"]},
+      {k:"participantes",l:"Nº de participantes",t:"number"},{k:"link",l:"Link do registro no Drive (fotos, lista, relatório)",t:"url",wide:1},{k:"resultado",l:"Resultado / observações",t:"textarea",wide:1}]},
+  reunioes:{title:"Histórico de reuniões",sub:"Pauta, decisões, encaminhamentos e prazos",folder:"reunioes",order:"data",
+    cols:["data","tipo","pauta","dataLimite","status"],
+    fields:[{k:"data",l:"Data",t:"date",req:1},{k:"tipo",l:"Tipo de reunião",t:"select",o:["Reunião de alinhamento","Visita técnica","Audiência pública","Comitê","Videoconferência","Outro"]},
+      {k:"modalidade",l:"Local / modalidade",t:"select",o:["Presencial","Remoto (Teams)","Remoto (Zoom)","Híbrido"]},{k:"participantes",l:"Participantes",t:"text"},
+      {k:"pauta",l:"Pauta / temas",t:"textarea",wide:1},{k:"decisoes",l:"Decisões tomadas",t:"textarea",wide:1},{k:"encaminhamentos",l:"Encaminhamentos / responsáveis",t:"textarea",wide:1},
+      {k:"dataLimite",l:"Data limite",t:"date"},{k:"status",l:"Status",t:"select",o:["Pendente","Em andamento","Concluído","Cancelado"]},
+      {k:"linkAta",l:"Link da ata no Drive",t:"url"},{k:"linkPresenca",l:"Link da lista de presença no Drive",t:"url"}]},
+  stakeholders:{title:"Stakeholders",sub:"Gestores públicos, parceiros, equipes internas e instituições",folder:"docs",order:"nome",
+    cols:["nome","cargo","tipo","influencia","engajamento"],
+    fields:[{k:"nome",l:"Nome / organização",t:"text",req:1},{k:"cargo",l:"Cargo / função",t:"text"},
+      {k:"tipo",l:"Tipo",t:"select",o:["Gestor Público","Parceiro Institucional","Equipe Interna","Legislativo","Sociedade Civil","Academia","Imprensa"]},
+      {k:"influencia",l:"Grau de influência",t:"select",o:["Alto","Médio","Baixo"]},{k:"engajamento",l:"Nível de engajamento",t:"select",o:["Engajado","Em contato","Monitorado","Inativo"]},
+      {k:"prioridade",l:"Prioridade",t:"select",o:["Alta","Média","Baixa"]},{k:"contato",l:"Contato (e-mail / telefone)",t:"text"},{k:"obs",l:"Observações",t:"textarea",wide:1}]},
+  entidades:{title:"Mapa de entidades compradoras",sub:"Preencha com dados do Painel PNCP em Números (gov.br/pncp)",order:"entidade",
+    cols:["entidade","poder","pncp","influencia","engajamento","acao"],
+    fields:[{k:"entidade",l:"Entidade / órgão",t:"text",req:1,wide:1},{k:"esfera",l:"Esfera",t:"select",o:["Municipal","Estadual","Federal"]},
+      {k:"poder",l:"Poder",t:"select",o:["Executivo","Legislativo","Judiciário"]},{k:"cnpj",l:"CNPJ",t:"text"},{k:"sistema",l:"Sistema de compras",t:"text"},
+      {k:"pncp",l:"Publica no PNCP?",t:"select",o:["Sim","Não","Parcial"]},{k:"contratos",l:"Contratos/ano",t:"number"},{k:"volume",l:"Volume estimado (R$)",t:"number"},
+      {k:"mpe",l:"% MPE",t:"number"},{k:"influencia",l:"Influência",t:"select",o:["Alta","Média","Baixa"]},{k:"engajamento",l:"Engajamento",t:"select",o:["Alto","Médio","Baixo"]},
+      {k:"responsavel",l:"Responsável",t:"text"},{k:"obs",l:"Observações",t:"textarea",wide:1}]},
+  documentos:{title:"Documentos de referência",sub:"Normativos, acordos, planos, atas e materiais de apoio do ECP",folder:"docs",order:"data",
+    cols:["titulo","tipo","data","status","link"],
+    fields:[{k:"titulo",l:"Título do documento",t:"text",req:1,wide:1},{k:"tipo",l:"Tipo",t:"select",o:["Normativo","Apresentação","Acordo","Ata","Relatório","Material de Apoio","Outro"]},
+      {k:"data",l:"Data",t:"date"},{k:"versao",l:"Versão",t:"text"},{k:"responsavel",l:"Responsável",t:"text"},
+      {k:"status",l:"Status",t:"select",o:["Vigente","Em revisão","Arquivado","Obsoleto"]},{k:"link",l:"Link no Drive",t:"url",wide:1},{k:"descricao",l:"Descrição / uso",t:"textarea",wide:1}]}
+};
+const LABEL = {};
+for (const s of Object.values(SCHEMAS)) for (const f of s.fields) LABEL[f.k]=f.l;
+LABEL.acao = LABEL.acao || "Ação";
+
+/* ---------- utilidades ---------- */
+const $ = (s,el=document)=>el.querySelector(s);
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pct = v => v==null||isNaN(v) ? "—" : (v*100).toFixed(1).replace(".",",")+"%";
+const pct0 = v => v==null||isNaN(v) ? "—" : Math.round(v*100)+"%";
+const fmtD = d => { if(!d) return "—"; const [y,m,dd]=String(d).slice(0,10).split("-"); return dd?`${dd}/${m}/${y}`:d; };
+const today = () => new Date().toISOString().slice(0,10);
+const band = v => BANDS.find(b=>v>=b.min && v<b.max) || BANDS[0];
+const isUrl = s => /^https?:\/\//i.test(String(s||"").trim());
+const folderUrl = id => id ? (isUrl(id) ? id : "https://drive.google.com/drive/folders/"+id) : "";
+function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>el.hidden=true,2200)}
+function prioridade(n){ if(n==null||n==="") return ""; return n<=1?"Alta":n==2?"Média":"Baixa"; }
+function sugestao(n){
+  const p=prioridade(n);
+  if(p==="Alta"&&n==0) return "Implementar imediatamente — não atendido. Formalizar ação corretiva e designar responsável (prazo: 30 dias).";
+  if(p==="Alta"&&n==1) return "Priorizar conclusão — atendimento parcial sem evidência. Regularizar documentação e registrar no GISE (prazo: 30 dias).";
+  if(p==="Média") return "Planejar melhoria — agendar ação no próximo ciclo. Fortalecer processo e documentar evolução.";
+  if(p==="Baixa") return "Monitorar — item atendido. Manter práticas e atualizar registros periodicamente.";
+  return "—";
+}
+function acaoEntidade(i,e){
+  if(!i||!e) return "—";
+  if(i==="Alta"&&e==="Alto") return "Gerenciar de perto";
+  if((i==="Alta"&&e==="Médio")||(i==="Média"&&e==="Alto")||(i==="Média"&&e==="Médio")) return "Engajar ativamente";
+  if(i==="Baixa"&&e==="Baixo") return "Monitorar";
+  return "Manter informado";
+}
+
+/* ---------- cálculo do diagnóstico (fiel à matriz) ---------- */
+function calc(diag){
+  const dims = DIMS.map(d=>{
+    const its = ITEMS.filter(i=>i.d===d.k);
+    const valid = its.filter(i=>!(diag[i.id]&&diag[i.id].na));
+    const ans = valid.filter(i=>diag[i.id] && diag[i.id].nota!=null && diag[i.id].nota!=="");
+    const sum = ans.reduce((s,i)=>s+Number(diag[i.id].nota)/3,0);
+    const ader = ans.length? sum/ans.length : null;              // AVERAGEIF dos itens avaliados
+    const contrib = valid.length? d.p*sum/valid.length : 0;       // SUMIF da contribuição ponderada
+    const alta = ans.filter(i=>Number(diag[i.id].nota)<=1).length;
+    const media = ans.filter(i=>Number(diag[i.id].nota)==2).length;
+    return {...d, total:valid.length, avaliados:ans.length, ader, contrib, alta, media};
+  });
+  const score = dims.reduce((s,d)=>s+d.contrib,0);
+  const valid = ITEMS.filter(i=>!(diag[i.id]&&diag[i.id].na));
+  const avaliados = valid.filter(i=>diag[i.id]&&diag[i.id].nota!=null&&diag[i.id].nota!=="").length;
+  const comEvid = valid.filter(i=>diag[i.id]&&isUrl(diag[i.id].evidencia)).length;
+  const semEvid = valid.filter(i=>diag[i.id]&&Number(diag[i.id].nota)>=2&&!isUrl(diag[i.id].evidencia)).length;
+  const alta = dims.reduce((s,d)=>s+d.alta,0);
+  return {dims,score,avaliados,total:valid.length,comEvid,semEvid,alta,started:avaliados>0};
+}
+
+const semCarimbo = o => { if(!o) return null; const c={...o}; delete c.atualizadoEm; delete c.atualizadoPor; return c; };
+/* ---------- perfis e permissões (o servidor confere tudo de novo) ---------- */
+const PERFIS={
+  admin:{n:"Administrador",multi:true},
+  consultor:{n:"Consultor do Sebrae",multi:true},
+  coordenador:{n:"Coordenador do escritório"},
+  atendente:{n:"Atendente"},
+  credenciado:{n:"Consultor credenciado",multi:true}
+};
+const PERM={
+  admin:["ver","diag","plano","agenda","atores","docs","ciclo","cadastro","usuarios","homologar","export"],
+  consultor:["ver","usuarios","homologar","export"],
+  coordenador:["ver","diag","plano","agenda","atores","docs","ciclo","homologar","export"],
+  atendente:["ver","diag","agenda","docs"],
+  credenciado:["ver","homologar","export"]
+};
+const AREA_DE={cronograma:"agenda",reunioes:"agenda",stakeholders:"atores",entidades:"atores",documentos:"docs"};
+function pode(a){ const u=S.me; return !!(u && u.ativo!==false && (PERM[u.perfil]||[]).includes(a)); }
+const multiEcp = () => !!(S.me && PERFIS[S.me.perfil] && PERFIS[S.me.perfil].multi);
+function ecpsPermitidos(){ return Object.keys(S.ecps); }
+const perfilNome = p => (PERFIS[p]||{}).n || p || "—";
+
+/* ---------- estado ---------- */
+const S = {token:null,me:null,gate:"loading",ecps:{},ecpId:null,view:"painel",
+  diag:{},plano:{},lists:{cronograma:{},reunioes:{},stakeholders:{},entidades:{},documentos:{}},ciclos:{},
+  filter:"todos",editing:{},rede:null,ready:false,hist:null,histFilter:"pend",histScope:"ecp",usuarios:null,ultimaSenha:null,carregando:false};
+const LS={ get(k,d){ try{ const v=localStorage.getItem("ecp."+k); return v?JSON.parse(v):d; }catch(e){ return d; } },
+           set(k,v){ try{ localStorage.setItem("ecp."+k,JSON.stringify(v)); }catch(e){} },
+           del(k){ try{ localStorage.removeItem("ecp."+k); }catch(e){} } };
+
+/* ---------- comunicação com o servidor ---------- */
+const API_URL = (window.PAINEL_CONFIG && window.PAINEL_CONFIG.apiUrl) || "";
+class ErroRede extends Error {}
+async function api(acao, dados={}){
+  if(!API_URL || API_URL.includes("COLE_AQUI")) throw new Error("O endereço do servidor ainda não foi configurado (arquivo config.js).");
+  let resp;
+  try{ resp = await fetch(API_URL,{method:"POST",body:JSON.stringify({acao,token:S.token,...dados}),redirect:"follow"}); }
+  catch(e){ throw new ErroRede("Sem conexão com a internet."); }
+  let j; try{ j=await resp.json(); }catch(e){ throw new ErroRede("O servidor não respondeu. Tente de novo."); }
+  if(!j.ok){ const e=new Error(j.erro||"Erro no servidor"); e.cod=j.cod; if(j.cod==="sessao") encerrar(j.erro); throw e; }
+  return j.dados;
+}
+
+/* ---------- envio com fila: nada se perde se a internet cair ---------- */
+let fila = LS.get("fila",[]); let enviando=false;
+function enfileirar(op){ fila.push({...op,em:Date.now()}); LS.set("fila",fila); mostrarFila(); processarFila(); }
+async function processarFila(){
+  if(enviando || !fila.length || !S.token) return; enviando=true; let mudou=false;
+  try{
+    while(fila.length){
+      const op=fila[0];
+      try{ await api(op.acao,op.dados); mudou=true; }
+      catch(e){ if(e instanceof ErroRede){ break; } toast(e.message); if(op.ecp===S.ecpId) mudou=true; }
+      fila.shift(); LS.set("fila",fila); mostrarFila();
+    }
+  } finally { enviando=false; }
+  if(mudou && !fila.length && S.ecpId){ carregarEcp(S.ecpId,true); S.hist=null; }
+}
+function mostrarFila(){
+  const el=$("#fila"); if(!el) return;
+  el.hidden=!fila.length; el.textContent = fila.length===1 ? "1 alteração aguardando conexão para ser enviada" : `${fila.length} alterações aguardando conexão para serem enviadas`;
+}
+setInterval(processarFila,20000);
+window.addEventListener("online",processarFila);
+
+/* ---------- inicialização ---------- */
+async function init(){
+  S.view = LS.get("view","painel");
+  bindTabs(); mostrarFila(); fillSelect();
+  S.token = LS.get("token",null);
+  if(!S.token){ S.gate="entrada"; S.ready=true; render(); return; }
+  // abre rápido com o que estiver guardado no aparelho, depois confirma no servidor
+  const cache=LS.get("sessao",null); if(cache){ aplicarSessao(cache,false); }
+  try{ aplicarSessao(await api("sessao"),true); processarFila(); }
+  catch(e){ if(!(e instanceof ErroRede)){ if(e.cod!=="sessao") toast(e.message); } else { toast("Sem conexão: mostrando os últimos dados salvos neste aparelho."); } }
+}
+function aplicarSessao(d,salvar){
+  S.me=d.eu; S.ecps={}; (d.ecps||[]).forEach(e=>S.ecps[e.id]=e);
+  if(salvar) LS.set("sessao",d);
+  S.gate = S.me.trocarSenha ? "senha" : "ok"; S.ready=true;
+  $("#mePerfil").hidden=false; $("#mePerfil").textContent=perfilNome(S.me.perfil); $("#meNome").textContent=S.me.nome; $("#me").hidden=false;
+  fillSelect();
+  if(S.gate==="ok") escolherEcpInicial(); else render();
+}
+function encerrar(msg){
+  S.token=null; S.me=null; LS.del("token"); LS.del("sessao"); S.gate="entrada"; S.ecpId=null; $("#me").hidden=true;
+  if(msg) toast(msg); fillSelect(); render();
+}
+function escolherEcpInicial(){
+  const ok=ecpsPermitidos(); let pick=null;
+  const h=(location.hash||"").replace("#",""); if(h && ok.includes(h)) pick=h;
+  if(!pick){ const r=LS.get("sel",null); if(r&&ok.includes(r)) pick=r; }
+  if(!pick) pick=ok.sort((a,b)=>(S.ecps[a].nome||a).localeCompare(S.ecps[b].nome||b))[0]||null;
+  if(!multiEcp() && S.view==="rede") S.view="painel";
+  selectEcp(pick);
+}
+function fillSelect(){
+  const sel=$("#ecpSel"); const ids=(S.gate==="ok"?ecpsPermitidos():[]).sort((a,b)=>(S.ecps[a].nome||a).localeCompare(S.ecps[b].nome||b));
+  const vis = S.gate==="ok" ? "" : "none"; $(".ecp-pick label").style.display=vis; sel.style.display=vis; $("#btnSenha").style.display = S.gate==="ok" ? "" : "none";
+  sel.innerHTML = ids.length ? ids.map(id=>`<option value="${esc(id)}">${esc(S.ecps[id].nome||id)}</option>`).join("") : `<option value="">—</option>`;
+  if(S.ecpId) sel.value=S.ecpId;
+}
+$("#ecpSel").addEventListener("change",e=>selectEcp(e.target.value));
+window.addEventListener("hashchange",()=>{const h=location.hash.replace("#",""); if(S.gate==="ok" && ecpsPermitidos().includes(h)) selectEcp(h);});
+$("#btnSair").addEventListener("click",async()=>{ try{ await api("sair"); }catch(e){} encerrar("Você saiu do painel."); });
+$("#btnSenha").addEventListener("click",()=>{ S.gate="senha"; S.trocaVoluntaria=true; render(); });
+
+function aplicarDados(d){
+  S.diag=d.diag||{}; S.plano=d.plano||{}; S.ciclos=d.ciclos||{};
+  for(const k of Object.keys(S.lists)) S.lists[k]=d[k]||{};
+  if(d.ecp) S.ecps[d.ecp.id]=d.ecp;
+}
+async function carregarEcp(id,silencioso){
+  const cache=LS.get("dados."+id,null);
+  if(cache && !silencioso) aplicarDados(cache);
+  S.carregando=!cache; if(!silencioso) render();
+  try{ const d=await api("carregar",{ecp:id}); if(S.ecpId!==id) return; aplicarDados(d); LS.set("dados."+id,d); }
+  catch(e){ if(e instanceof ErroRede){ if(!cache) toast("Sem conexão: não foi possível carregar este escritório."); } else toast(e.message); }
+  S.carregando=false; scheduleRender();
+}
+function selectEcp(id){
+  S.ecpId=id; S.diag={}; S.plano={}; S.ciclos={}; for(const k in S.lists) S.lists[k]={}; S.editing={}; S.hist=null;
+  if(id) LS.set("sel",id);
+  $("#ecpSel").value=id||"";
+  if(!id){ render(); return; }
+  carregarEcp(id);
+  if(pode("homologar")) loadHist();
+}
+/* grava localmente na hora e envia ao servidor pela fila */
+function salvarLocal(colecao,id,dados){
+  const alvo = colecao==="diag"?S.diag : colecao==="plano"?S.plano : colecao==="ciclos"?S.ciclos : S.lists[colecao];
+  const agora=new Date().toISOString();
+  alvo[id]={...dados,atualizadoEm:agora,atualizadoPor:S.me.nome};
+  const cache=LS.get("dados."+S.ecpId,null); if(cache){ cache[colecao]=cache[colecao]||{}; cache[colecao][id]=alvo[id]; LS.set("dados."+S.ecpId,cache); }
+  const tmp=String(id).startsWith("novo_");
+  if(tmp){ const q=fila.find(o=>o.tmp===id); if(q){ q.dados.dados=dados; LS.set("fila",fila); processarFila(); return; } }
+  enfileirar({acao:"salvar",ecp:S.ecpId,tmp:tmp?id:null,dados:{ecp:S.ecpId,colecao,id:tmp?null:id,dados}});
+}
+function excluirLocal(colecao,id){
+  delete S.lists[colecao][id];
+  if(String(id).startsWith("novo_")) { fila=fila.filter(o=>o.tmp!==id); LS.set("fila",fila); mostrarFila(); return; }
+  enfileirar({acao:"excluir",ecp:S.ecpId,dados:{ecp:S.ecpId,colecao,id}});
+}
+
+/* Re-render sem atrapalhar quem está digitando */
+let rT=null;
+function scheduleRender(){ clearTimeout(rT); rT=setTimeout(()=>{
+  const a=document.activeElement;
+  if(a && a.closest && a.closest("#main") && /INPUT|TEXTAREA|SELECT/.test(a.tagName)){ scheduleRender(); return; }
+  render();
+},120); }
+function bindTabs(){
+  $("#tabs").addEventListener("click",e=>{const b=e.target.closest(".tab"); if(!b) return; S.view=b.dataset.v; LS.set("view",S.view); render(); window.scrollTo({top:0});});
+}
+
+/* ---------- render ---------- */
+const TAB_OK = { rede:()=>multiEcp(), painel:()=>true, diag:()=>true, plano:()=>true, agenda:()=>true, atores:()=>true, docs:()=>true, hist:()=>true, users:()=>pode("usuarios"), cad:()=>pode("cadastro") };
+function render(){
+  const m=$("#main");
+  const ok = S.gate==="ok";
+  if(ok && !(TAB_OK[S.view]||(()=>false))()) S.view="painel";
+  document.querySelectorAll(".tab").forEach(t=>{ t.hidden = !ok || !(TAB_OK[t.dataset.v]||(()=>false))(); t.setAttribute("aria-selected",t.dataset.v===S.view); });
+  if(!S.ready || S.gate==="loading"){ m.innerHTML=`<div class="empty">Carregando o painel…</div>`; return; }
+  if(S.gate!=="ok"){ m.innerHTML=""; const wrap=document.createElement("div"); wrap.className="view"; m.appendChild(wrap); (S.gate==="senha"?vTrocarSenha:vEntrada)(wrap); return; }
+  if(!ecpsPermitidos().length && S.view!=="cad" && S.view!=="users"){
+    m.innerHTML=`<div class="panel"><h2>Nenhum escritório vinculado</h2><p class="muted">Peça à coordenação do Sebrae/PR para vincular o seu usuário a um escritório.</p></div>`; return;
+  }
+  const v = {rede:vRede,painel:vPainel,diag:vDiag,plano:vPlano,agenda:vAgenda,atores:vAtores,docs:vDocs,cad:vCad,hist:vHist,users:vUsers}[S.view]||vPainel;
+  const sy=window.scrollY; m.innerHTML=""; const wrap=document.createElement("div"); wrap.className="view"; m.appendChild(wrap);
+  if(S.carregando && ["painel","diag","plano","agenda","atores","docs"].includes(S.view)){ wrap.innerHTML=`<div class="empty">Carregando ${esc((S.ecps[S.ecpId]||{}).nome||"escritório")}…</div>`; return; }
+  v(wrap); window.scrollTo({top:sy});
+}
+const ecp = () => S.ecps[S.ecpId]||{};
+const pastas = () => ecp().pastas||{};
+
+function driveLink(key,label){ const u=folderUrl(pastas()[key]); return u?`<a class="drive" href="${esc(u)}" target="_blank" rel="noopener">↗ ${esc(label||"Abrir pasta no Drive")}</a>`:""; }
+function ecpHeader(){
+  const e=ecp();
+  return `<div class="panel-h" style="margin:0"><div><div class="eyebrow">${esc([e.territorio,e.regional?("Regional "+e.regional):""].filter(Boolean).join(" · ")||"Escritório de Compras Públicas")}</div><h2>${esc(e.nome||"")}</h2>
+  <div class="small muted">Responsável: ${esc(e.responsavel||"não informado")}${e.dataDiagnostico?` · Diagnóstico de ${fmtD(e.dataDiagnostico)}`:""}</div></div>
+  <div class="row">${driveLink("raiz","Pasta do ECP no Drive")}</div></div>`;
+}
+
+/* ===== Painel do ECP ===== */
+function vPainel(w){
+  const c=calc(S.diag), b=band(c.score), e=ecp();
+  const planoArr=Object.values(S.plano); const concl=planoArr.filter(p=>p.status==="Concluído").length;
+  const pend=itemsComAcao().length;
+  w.insertAdjacentHTML("beforeend",`<section class="panel">${ecpHeader()}</section>`);
+  w.appendChild(nextStep(c));
+  const ref = .85;
+  w.insertAdjacentHTML("beforeend",`<section class="panel"><div class="score">
+    <div class="score-hex"><div class="hexbox"><div class="score-n num">${c.started?pct(c.score):"—"}</div></div><div><div class="eyebrow">Índice de maturidade ponderado</div>
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px;align-items:flex-start">${c.started?`<span class="pill ${b.t==="Avançado"?"p-ok":b.t==="Intermediário"?"p-info":b.t==="Básico"?"p-warn":"p-bad"}">${b.t}</span>`:`<span class="pill p-mut">Diagnóstico não iniciado</span>`}
+      ${c.started&&c.score>=ref?`<span class="pill p-ok">Apto a Modelo de Referência</span>`:""}</div></div></div>
+    <div style="min-width:0">
+      <div class="scale">
+        ${c.started?`<div class="scale-mark num" style="left:${Math.min(99,Math.max(1,c.score*100))}%">${pct0(c.score)}</div>`:""}
+        <div class="scale-bands">${BANDS.map(x=>`<div style="width:${(Math.min(1,x.max)-x.min)*100}%;background:${x.c};opacity:.85"></div>`).join("")}</div>
+        <div class="scale-ref" style="left:85%" title="Modelo de Referência: 85%"></div>
+        <div class="scale-lbl">${BANDS.map(x=>`<div style="width:${(Math.min(1,x.max)-x.min)*100}%">${x.t}</div>`).join("")}</div>
+      </div>
+      <p class="small muted" style="margin:10px 0 0">A linha tracejada marca 85%, o patamar para o ECP ser Modelo de Referência no Paraná. Itens ainda não avaliados contam como zero no índice.</p>
+    </div></div></section>`);
+  w.insertAdjacentHTML("beforeend",`<section class="kpis">
+    <div class="kpi"><b class="num">${c.avaliados}/${c.total}</b><span>critérios avaliados</span></div>
+    <div class="kpi"><b class="num">${c.comEvid}/${c.total}</b><span>com evidência vinculada</span></div>
+    <div class="kpi"><b class="num" style="color:${c.semEvid?"var(--warn)":"inherit"}">${c.semEvid}</b><span>notas 2–3 sem link de evidência</span></div>
+    <div class="kpi"><b class="num" style="color:${c.alta?"var(--bad)":"inherit"}">${c.alta}</b><span>itens de alta prioridade</span></div>
+    <div class="kpi"><b class="num">${concl}/${pend}</b><span>ações do plano concluídas</span></div>
+  </section>`);
+  const g=document.createElement("div"); g.className="grid2"; w.appendChild(g);
+  g.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><h3>Aderência por dimensão</h3><span class="small muted">peso entre parênteses</span></div>
+    <div class="dims">${c.dims.map(d=>{const v=d.ader;const col=v==null?"var(--line)":band(v).c;return `<div class="dim"><div class="dim-name">${esc(d.n)} <small>(${Math.round(d.p*100)}%) · ${d.avaliados}/${d.total} avaliados</small></div>
+      <div class="track"><div class="fill" style="width:${v==null?0:v*100}%;background:${col}"></div><div class="ref85"></div></div><div class="dim-v num">${v==null?"—":pct0(v)}</div></div>`}).join("")}</div></section>`);
+  // gestão à vista
+  const top = ITEMS.filter(i=>{const r=S.diag[i.id];return r&&!r.na&&r.nota!=null&&r.nota!==""&&Number(r.nota)<=1;}).sort((a,b)=>S.diag[a.id].nota-S.diag[b.id].nota).slice(0,8);
+  g.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><h3>Gestão à vista: alta prioridade</h3><button class="btn ghost" data-go="plano">Ver plano de ação →</button></div>
+    ${top.length?`<div class="list">${top.map(i=>`<div class="li"><div style="min-width:0;flex:1 1 240px"><span class="code">${i.id}</span> <span class="small">${esc(short(i.c,120))}</span></div><span class="pill p-bad">Nota ${S.diag[i.id].nota}</span></div>`).join("")}</div>`
+    :`<div class="empty">${c.started?"Nenhum item com nota 0 ou 1.":"Os itens com nota 0 ou 1 aparecem aqui assim que o diagnóstico for lançado."}</div>`}</section>`);
+  // indicadores de impacto
+  const metas={...DEFAULT_METAS,...(e.metas||{})};
+  const L=S.lists;
+  const ind=[
+    ["Stakeholders mapeados","Alcance",Object.keys(L.stakeholders).length,metas.stakeholders],
+    ["Reuniões realizadas","Engajamento",Object.values(L.reunioes).filter(r=>r.status!=="Cancelado"&&r.data&&r.data<=today()).length,metas.reunioes],
+    ["Ações concluídas no cronograma","Execução",Object.values(L.cronograma).filter(r=>r.status==="Concluído").length,metas.acoes],
+    ["Parceiros engajados ativamente","Parcerias",Object.values(L.stakeholders).filter(r=>r.engajamento==="Engajado").length,metas.parceiros],
+    ["Critérios avaliados","Diagnóstico",c.avaliados,c.total],
+    ["Critérios com evidência vinculada","Diagnóstico",c.comEvid,c.total]
+  ];
+  g.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><h3>Indicadores de impacto</h3><span class="small muted">metas editáveis no Cadastro</span></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Indicador</th><th>Meta</th><th>Realizado</th><th>Atingimento</th></tr></thead><tbody>
+    ${ind.map(([n,dm,r,m])=>{const a=m?r/m:0;const cl=a>=.9?"p-ok":a>=.5?"p-warn":"p-bad";return `<tr><td>${n}<div class="small muted">${dm}</div></td><td class="num">${m}</td><td class="num">${r}</td><td><span class="pill ${cl} num">${pct0(a)}</span></td></tr>`}).join("")}
+    </tbody></table></div></section>`);
+  // próximos compromissos
+  const ag=[];
+  Object.values(L.cronograma).forEach(r=>{ if(r.dataPrevista && !["Concluído","Cancelado"].includes(r.status)) ag.push({d:r.dataPrevista,t:r.acao,k:r.tipo||"Ação"}); });
+  Object.values(L.reunioes).forEach(r=>{ if(r.dataLimite && !["Concluído","Cancelado"].includes(r.status)) ag.push({d:r.dataLimite,t:"Encaminhamento: "+(r.encaminhamentos||r.pauta||"reunião de "+fmtD(r.data)),k:"Prazo"}); });
+  Object.entries(S.plano).forEach(([id,p])=>{ if(p.quando && p.status!=="Concluído") ag.push({d:p.quando,t:`${id} — ${p.acao||sugestao(S.diag[id]?.nota)}`,k:"Plano de ação"}); });
+  ag.sort((a,b)=>a.d.localeCompare(b.d));
+  g.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><h3>Próximos compromissos e prazos</h3><button class="btn ghost" data-go="agenda">Agenda →</button></div>
+    ${ag.length?`<div class="list">${ag.slice(0,8).map(a=>{const late=a.d<today();return `<div class="li"><div style="min-width:0;flex:1 1 220px"><div class="small muted">${esc(a.k)}</div>${esc(short(a.t,110))}</div><span class="pill ${late?"p-bad":"p-info"} num">${late?"Atrasado · ":""}${fmtD(a.d)}</span></div>`}).join("")}</div>`
+    :`<div class="empty">Sem prazos em aberto. Ações do cronograma, encaminhamentos de reuniões e prazos do plano aparecem aqui.</div>`}</section>`);
+  // evolução
+  const cic=Object.values(S.ciclos).sort((a,b)=>(a.data||"").localeCompare(b.data||""));
+  w.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><div><h3>Evolução do índice</h3><div class="small muted">Registre uma fotografia ao fechar cada ciclo de diagnóstico para acompanhar a trajetória do ECP.</div></div>
+    <div class="row">${pode("ciclo")?`<button class="btn" id="btnCiclo" ${!c.started?"disabled":""}>Registrar fotografia de hoje</button>`:""}${pode("export")?`<button class="btn" id="btnXlsx">Exportar ECP (Excel)</button>`:""}</div></div>
+    ${cic.length?evoChart(cic):`<div class="empty">Nenhuma fotografia registrada ainda.</div>`}</section>`);
+  w.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{S.view=b.dataset.go;render();});
+  const bc=$("#btnCiclo",w); if(bc) bc.onclick=async()=>{
+    const id=today(); const snap={data:id,score:c.score,avaliados:c.avaliados,evidencias:c.comEvid,dims:Object.fromEntries(c.dims.map(d=>[d.k,d.ader]))};
+    const s2={...snap}; delete s2.atualizadoEm; delete s2.atualizadoPor; salvarLocal("ciclos",id,s2); toast("Fotografia registrada"); render();
+  };
+  const bx=$("#btnXlsx",w); if(bx) bx.onclick=()=>exportEcp();
+}
+function nextStep(c){
+  const sem=c.total-c.avaliados, acoes=itemsComAcao(), semPlano=acoes.filter(i=>!S.plano[i.id]||!S.plano[i.id].quem).length;
+  const done=c.avaliados+c.comEvid, tot=c.total*2, pr=tot?done/tot:0;
+  let t,d,btn,go,f;
+  const pend=pendentesHomologacao().length;
+  const alimenta=pode("diag");
+  if(pend>0 && pode("homologar") && (!alimenta || sem===0 || S.me.perfil!=="atendente")){ t=`${pend} ${pend===1?"alteração aguarda":"alterações aguardam"} sua homologação`; d="Confira o que mudou, quem alterou e homologue para validar o histórico do escritório."; btn="Homologar alterações"; go="hist"; S.histFilter="pend"; }
+  else if(!alimenta){ t="Acompanhe a evolução do escritório"; d="Seu perfil tem acesso de leitura aos painéis. As alterações feitas pela equipe aparecem no Histórico."; btn="Ver histórico"; go="hist"; }
+  else if(sem>0){ t=c.avaliados?`Faltam ${sem} critérios para fechar o diagnóstico`:"Comece o diagnóstico do seu ECP"; d=c.avaliados?"Continue de onde parou: os critérios sem nota já aparecem filtrados.":"São 24 critérios em 5 dimensões. Leva cerca de 30 minutos e tudo é salvo automaticamente."; btn=c.avaliados?"Continuar diagnóstico":"Começar agora"; go="diag"; f="pendentes"; }
+  else if(c.semEvid>0){ t=`${c.semEvid} notas aguardam evidência`; d="Guarde os arquivos na pasta da dimensão no Drive e cole o link no critério."; btn="Vincular evidências"; go="diag"; f="semevid"; }
+  else if(semPlano>0){ t=`${semPlano} ações do plano sem responsável`; d="Defina quem faz e até quando para transformar o diagnóstico em resultado."; btn="Completar plano de ação"; go="plano"; }
+  else { t="Diagnóstico completo e plano em dia"; d="Registre a fotografia do ciclo e acompanhe a evolução do índice."; btn="Ver agenda e reuniões"; go="agenda"; }
+  const el=document.createElement("section"); el.className="next";
+  el.innerHTML=`<div class="next-hex num">${Math.round(pr*100)}%</div><div style="min-width:0"><div class="eyebrow">Próximo passo</div><h3>${esc(t)}</h3><div class="small muted">${esc(d)}</div><div class="prog" title="Avanço: critérios avaliados e evidências vinculadas"><i style="width:${pr*100}%"></i></div></div><button class="btn primary">${esc(btn)} →</button>`;
+  el.querySelector("button").onclick=()=>{ if(f) S.filter=f; S.view=go; render(); window.scrollTo({top:0}); };
+  return el;
+}
+function short(s,n){s=String(s||"");return s.length>n?s.slice(0,n-1)+"…":s;}
+function evoChart(cic){
+  const W=640,H=180,pl=40,pr=16,pt=14,pb=28; const n=cic.length;
+  const x=i=>pl+(n===1?(W-pl-pr)/2:i*(W-pl-pr)/(n-1)); const y=v=>pt+(1-v)*(H-pt-pb);
+  const pts=cic.map((c,i)=>[x(i),y(c.score||0)]);
+  const grid=[0,.3,.5,.85,1].map(v=>`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="${v===.85?"var(--gold)":"var(--line)"}" ${v===.85?'stroke-dasharray="4 4"':""}/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end" font-size="11">${Math.round(v*100)}%</text>`).join("");
+  const area=`M${pts[0][0]},${y(0)} `+pts.map(p=>`L${p[0]},${p[1]}`).join(" ")+` L${pts[n-1][0]},${y(0)} Z`;
+  return `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px;min-width:420px" role="img" aria-label="Evolução do índice">${grid}
+    <path d="${area}" fill="var(--teal)" opacity=".12"/><polyline points="${pts.map(p=>p.join(",")).join(" ")}" fill="none" stroke="var(--teal)" stroke-width="2.5"/>
+    ${pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="${i===n-1?5:3.5}" fill="${i===n-1?"var(--hex)":"var(--teal)"}"/><text x="${p[0]}" y="${H-8}" text-anchor="middle" font-size="11">${fmtD(cic[i].data).slice(0,5)}</text>`).join("")}
+  </svg></div>`;
+}
+
+/* ===== Diagnóstico ===== */
+function vDiag(w){
+  const c=calc(S.diag);
+  w.insertAdjacentHTML("beforeend",`<section class="panel">${ecpHeader()}
+    <div class="banner info" style="margin-top:12px">Para cada critério: escolha a nota, guarde o arquivo na pasta da dimensão no Drive e cole o link da evidência. Tudo é salvo automaticamente. Notas 2 e 3 exigem evidência vinculada.</div>
+    ${!pode("diag")?`<div class="banner warn" style="margin-top:10px">Seu perfil (${esc(perfilNome(S.me&&S.me.perfil))}) consulta o diagnóstico, mas não altera as notas.</div>`:""}
+    <div class="row" style="margin-top:12px;justify-content:space-between"><div class="filters" id="filters">
+      ${[["todos","Todos"],["pendentes","Sem nota"],["alta","Alta prioridade"],["semevid","Sem evidência"]].map(([k,t])=>`<button class="chip" data-f="${k}" aria-pressed="${S.filter===k}">${t}</button>`).join("")}
+    </div><span class="small muted num">${c.avaliados}/${c.total} avaliados · índice ${c.started?pct(c.score):"—"}</span></div></section>`);
+  $("#filters",w).onclick=e=>{const b=e.target.closest(".chip"); if(!b) return; S.filter=b.dataset.f; render();};
+  for(const d of c.dims){
+    const its=ITEMS.filter(i=>i.d===d.k).filter(i=>{
+      const r=S.diag[i.id]||{}; const has=r.nota!=null&&r.nota!=="";
+      if(S.filter==="pendentes") return !has&&!r.na;
+      if(S.filter==="alta") return has&&!r.na&&Number(r.nota)<=1;
+      if(S.filter==="semevid") return !r.na&&!isUrl(r.evidencia);
+      return true;
+    });
+    if(!its.length) continue;
+    const blk=document.createElement("section"); blk.className="dimblock"; w.appendChild(blk);
+    blk.insertAdjacentHTML("beforeend",`<div class="dimhead"><h3>${esc(d.n)}</h3><div class="meta"><span>Peso ${Math.round(d.p*100)}%</span><span class="num">Aderência ${d.ader==null?"—":pct0(d.ader)}</span><span class="num">${d.avaliados}/${d.total} avaliados</span>${driveLink(d.f,"Pasta de evidências")}</div></div>`);
+    its.forEach(i=>blk.appendChild(itemCard(i)));
+  }
+  if(!w.querySelector(".dimblock")) w.insertAdjacentHTML("beforeend",`<div class="empty">Nenhum critério neste filtro.</div>`);
+}
+function itemCard(i){
+  const r=S.diag[i.id]||{}; const has=r.nota!=null&&r.nota!==""; const pr=has&&!r.na?prioridade(Number(r.nota)):"";
+  const el=document.createElement("article"); el.className=`item ${r.na?"na":pr?"pr-"+pr:""}`;
+  const dis=pode("diag")?"":"disabled";
+  el.innerHTML=`<div class="item-h"><div class="item-c"><span class="code">${i.id}</span><p>${esc(i.c)}</p></div>
+    <div class="row">${r.na?`<span class="pill p-mut">Não se aplica</span>`:pr?`<span class="pill ${pr==="Alta"?"p-bad":pr==="Média"?"p-warn":"p-ok"}">Prioridade ${pr.toLowerCase()}</span>`:`<span class="pill p-mut">Sem nota</span>`}</div></div>
+    <details class="how"><summary>Como avaliar e qual evidência guardar</summary><dl>
+      <div><dt>Processo / referência</dt><dd>${esc(i.r)}</dd></div><div><dt>O que avaliar</dt><dd>${esc(i.a)}</dd></div><div><dt>Evidência mínima</dt><dd>${esc(i.e)}</dd></div></dl></details>
+    <div class="notes" role="group" aria-label="Nota de 0 a 3">${NOTAS.map(n=>`<button class="note n${n.v}" data-n="${n.v}" aria-pressed="${!r.na&&has&&Number(r.nota)===n.v}" ${dis}><b>${n.v}</b><span>${n.t}</span></button>`).join("")}</div>
+    <div class="fields">
+      <label class="f"><span>Link da evidência (Drive)</span><div class="inline-link"><input id="ev-${i.id}" type="url" placeholder="Cole aqui o link do arquivo" value="${esc(r.evidencia||"")}" ${dis}>${isUrl(r.evidencia)?`<a class="btn" href="${esc(r.evidencia)}" target="_blank" rel="noopener">Abrir</a>`:""}</div></label>
+      <label class="f"><span>Observações</span><textarea id="ob-${i.id}" rows="2" placeholder="Contexto, pendências, próximos passos" ${dis}>${esc(r.obs||"")}</textarea></label>
+    </div>
+    <div class="row" style="justify-content:space-between">
+      <label class="small row" style="gap:6px"><input type="checkbox" id="na-${i.id}" ${r.na?"checked":""} ${dis}> Não se aplica a este ECP</label>
+      <span class="row">${has&&Number(r.nota)>=2&&!isUrl(r.evidencia)&&!r.na?`<span class="warnline">Nota ${r.nota} pede evidência vinculada</span>`:""}<span class="saved">${r.atualizadoEm?"Salvo em "+new Date(r.atualizadoEm).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})+(r.atualizadoPor?" por "+esc(r.atualizadoPor):""):""}</span></span>
+    </div>`;
+  const save=async(patch)=>{ const cur=semCarimbo({...(S.diag[i.id]||{}),...patch}); salvarLocal("diag",i.id,cur); };
+  el.querySelectorAll(".note").forEach(b=>b.onclick=()=>{const n=Number(b.dataset.n); const same=!r.na&&has&&Number(r.nota)===n; save({nota:same?null:n,na:false}).then(()=>scheduleRender());});
+  const ev=el.querySelector("#ev-"+CSS.escape(i.id)), ob=el.querySelector("#ob-"+CSS.escape(i.id));
+  ev.onchange=()=>{ const v=ev.value.trim(); if(v&&!isUrl(v)){toast("Cole um link completo, começando com https://");return;} save({evidencia:v}).then(()=>{toast("Evidência salva");scheduleRender();}); };
+  ob.onchange=()=>save({obs:ob.value}).then(()=>toast("Observação salva"));
+  el.querySelector("#na-"+CSS.escape(i.id)).onchange=e=>save({na:e.target.checked}).then(()=>scheduleRender());
+  return el;
+}
+
+
+/* ===== Plano de ação ===== */
+function itemsComAcao(){ return ITEMS.filter(i=>{const r=S.diag[i.id];return r&&!r.na&&r.nota!=null&&r.nota!==""&&Number(r.nota)<=2;}); }
+function vPlano(w){
+  const its=itemsComAcao().sort((a,b)=>Number(S.diag[a.id].nota)-Number(S.diag[b.id].nota));
+  const st=its.map(i=>statusPlano(S.plano[i.id]));
+  const cnt=k=>st.filter(s=>s===k).length;
+  w.insertAdjacentHTML("beforeend",`<section class="panel">${ecpHeader()}
+    <p class="small muted" style="margin:12px 0 0">O plano é gerado automaticamente a partir dos itens com nota 0, 1 ou 2. A sugestão da matriz já vem preenchida; ajuste o 5W2H e acompanhe o status.</p>
+    <div class="kpis" style="margin-top:12px">
+      <div class="kpi"><b class="num">${its.length}</b><span>itens com ação</span></div>
+      <div class="kpi"><b class="num">${cnt("Não iniciado")}</b><span>não iniciados</span></div>
+      <div class="kpi"><b class="num">${cnt("Em andamento")}</b><span>em andamento</span></div>
+      <div class="kpi"><b class="num" style="color:${cnt("Atrasado")?"var(--bad)":"inherit"}">${cnt("Atrasado")}</b><span>atrasados</span></div>
+      <div class="kpi"><b class="num">${cnt("Concluído")}</b><span>concluídos</span></div>
+    </div></section>`);
+  if(!its.length){ w.insertAdjacentHTML("beforeend",`<div class="empty">Nenhum item precisa de ação ainda. Os itens aparecem aqui conforme as notas 0, 1 e 2 forem lançadas no Diagnóstico.</div>`); return; }
+  its.forEach(i=>{
+    const r=S.diag[i.id]; const p=S.plano[i.id]||{}; const pr=prioridade(Number(r.nota)); const stt=statusPlano(p);
+    const open=!!S.editing["plano:"+i.id];
+    const el=document.createElement("article"); el.className=`item pr-${pr}`;
+    el.innerHTML=`<div class="item-h"><div class="item-c"><span class="code">${i.id}</span><div style="min-width:0"><p>${esc(p.acao||sugestao(Number(r.nota)))}</p><div class="small muted">${esc(DIMS.find(d=>d.k===i.d).n)} · nota ${r.nota}</div></div></div>
+      <div class="row"><span class="pill ${pr==="Alta"?"p-bad":"p-warn"}">${pr}</span><span class="pill ${stt==="Concluído"?"p-ok":stt==="Atrasado"?"p-bad":stt==="Em andamento"?"p-info":"p-mut"}">${stt}</span></div></div>
+      <div class="row small muted" style="gap:16px">${p.quem?`<span>Quem: <b>${esc(p.quem)}</b></span>`:""}${p.quando?`<span class="num">Prazo: <b>${fmtD(p.quando)}</b></span>`:""}</div>
+      ${open?planoForm(i,p,r):(pode("plano")?`<div><button class="btn" data-edit>Detalhar 5W2H e status</button></div>`:"")}`;
+    const eb=el.querySelector("[data-edit]"); if(eb) eb.onclick=()=>{S.editing["plano:"+i.id]=1;render();};
+    const f=el.querySelector("form"); if(f){
+      f.onsubmit=async ev=>{ev.preventDefault(); const fd=Object.fromEntries(new FormData(f)); salvarLocal("plano",i.id,fd); delete S.editing["plano:"+i.id]; toast("Plano salvo"); render(); };
+      f.querySelector("[data-cancel]").onclick=()=>{delete S.editing["plano:"+i.id];render();};
+    }
+    w.appendChild(el);
+  });
+}
+function statusPlano(p){ p=p||{}; const s=p.status||"Não iniciado"; if(s!=="Concluído"&&p.quando&&p.quando<today()) return "Atrasado"; return s; }
+function planoForm(i,p,r){
+  const v=k=>esc(p[k]||"");
+  return `<form class="form"><div class="formgrid">
+    <label class="f wide"><span>O quê? (ação)</span><textarea name="acao">${esc(p.acao||sugestao(Number(r.nota)))}</textarea></label>
+    <div class="f wide"><span>Por quê? (critério)</span><div class="small">${esc(i.c)}</div></div>
+    <label class="f wide"><span>Como? (método)</span><textarea name="como">${v("como")}</textarea></label>
+    <label class="f"><span>Onde?</span><input name="onde" value="${v("onde")}"></label>
+    <label class="f"><span>Quando? (prazo)</span><input type="date" name="quando" value="${v("quando")}"></label>
+    <label class="f"><span>Quem? (responsável)</span><input name="quem" value="${v("quem")}"></label>
+    <label class="f"><span>Quanto? (recurso)</span><input name="quanto" value="${v("quanto")}"></label>
+    <label class="f"><span>Status</span><select name="status">${["Não iniciado","Em andamento","Concluído"].map(o=>`<option ${p.status===o?"selected":""}>${o}</option>`).join("")}</select></label>
+    <label class="f wide"><span>Evidência / observações</span><textarea name="obs">${v("obs")}</textarea></label>
+  </div><div class="row"><button class="btn primary" type="submit">Salvar</button><button class="btn ghost" type="button" data-cancel>Cancelar</button></div></form>`;
+}
+
+/* ===== Registros genéricos ===== */
+function vAgenda(w){ w.insertAdjacentHTML("beforeend",`<section class="panel">${ecpHeader()}</section>`); crud(w,"cronograma"); crud(w,"reunioes"); }
+function vAtores(w){
+  w.insertAdjacentHTML("beforeend",`<section class="panel">${ecpHeader()}</section>`);
+  crud(w,"stakeholders"); crud(w,"entidades");
+  // matriz de priorização
+  const E=Object.values(S.lists.entidades); if(!E.length) return;
+  const I=["Alta","Média","Baixa"], G=["Alto","Médio","Baixo"];
+  const cell=(i,g)=>E.filter(e=>e.influencia===i&&e.engajamento===g).map(e=>esc(short(e.entidade,40))).join("<br>")||"—";
+  const tone=(i,g)=>{const a=acaoEntidade(i,g);return a==="Gerenciar de perto"?"var(--bad-soft)":a==="Engajar ativamente"?"var(--warn-soft)":a==="Manter informado"?"var(--info-soft)":"var(--surface-2)";};
+  w.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><h3>Matriz de priorização das entidades</h3><span class="small muted">influência × engajamento</span></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Influência ↓ / Engajamento →</th>${G.map(g=>`<th>${g}</th>`).join("")}</tr></thead><tbody>
+    ${I.map(i=>`<tr><th>${i}</th>${G.map(g=>`<td style="background:${tone(i,g)}" class="small">${cell(i,g)}</td>`).join("")}</tr>`).join("")}</tbody></table></div></section>`);
+}
+function vDocs(w){ w.insertAdjacentHTML("beforeend",`<section class="panel">${ecpHeader()}</section>`); crud(w,"documentos"); }
+
+function crud(w,key){
+  const sc=SCHEMAS[key]; const data=S.lists[key];
+  const rows=Object.entries(data).sort((a,b)=>String(a[1][sc.order]||"").localeCompare(String(b[1][sc.order]||"")));
+  const ed=S.editing[key]; const pw=pode(AREA_DE[key]);
+  const sec=document.createElement("section"); sec.className="panel"; w.appendChild(sec);
+  const folderBtn = sc.folder ? driveLink(sc.folder) : "";
+  const extra = key==="reunioes" ? driveLink("presenca","Listas de presença") : "";
+  sec.innerHTML=`<div class="panel-h"><div><h3>${sc.title} <span class="muted small num">(${rows.length})</span></h3><div class="small muted">${sc.sub}</div></div>
+    <div class="row">${folderBtn}${extra}${key==="entidades"&&!rows.length&&pw?`<button class="btn" data-seed>Carregar entidades padrão</button>`:""}${pw?`<button class="btn primary" data-new>+ Novo registro</button>`:""}</div></div>`;
+  if(ed==="new") sec.appendChild(recForm(key,null,{}));
+  if(!rows.length && ed!=="new"){ sec.insertAdjacentHTML("beforeend",`<div class="empty">Nenhum registro ainda.${pw?" Use “+ Novo registro” para incluir o primeiro.":""}</div>`); }
+  else if(rows.length){
+    const wrap=document.createElement("div"); wrap.className="tbl-wrap";
+    wrap.innerHTML=`<table><thead><tr>${sc.cols.map(c=>`<th>${esc(c==="acao"&&key==="entidades"?"Ação sugerida":LABEL[c]||c)}</th>`).join("")}<th></th></tr></thead><tbody></tbody></table>`;
+    const tb=wrap.querySelector("tbody");
+    rows.forEach(([id,r])=>{
+      if(ed===id){ const tr=document.createElement("tr"); const td=document.createElement("td"); td.colSpan=sc.cols.length+1; td.appendChild(recForm(key,id,r)); tr.appendChild(td); tb.appendChild(tr); return; }
+      const tr=document.createElement("tr"); tr.className="click";
+      tr.innerHTML=sc.cols.map(c=>`<td>${cellVal(key,c,r)}</td>`).join("")+`<td class="small muted">${pw?"Editar":""}</td>`;
+      if(!pw) tr.className="";
+      tr.onclick=e=>{ if(e.target.closest("a")) return; if(!pw) return; S.editing[key]=id; render(); };
+      tb.appendChild(tr);
+    });
+    sec.appendChild(wrap);
+  }
+  const bn=sec.querySelector("[data-new]"); if(bn) bn.onclick=()=>{S.editing[key]="new";render();};
+  const sd=sec.querySelector("[data-seed]"); if(sd) sd.onclick=async()=>{
+    sd.disabled=true;
+    ENT_PADRAO.forEach(([n,p],k)=>salvarLocal("entidades","novo_"+Date.now()+"_"+k,{entidade:n,esfera:"Municipal",poder:p}));
+    toast("Entidades padrão carregadas"); render();
+  };
+}
+function cellVal(key,c,r){
+  if(key==="entidades"&&c==="acao"){ const a=acaoEntidade(r.influencia,r.engajamento); const cl=a==="Gerenciar de perto"?"p-bad":a==="Engajar ativamente"?"p-warn":a==="Manter informado"?"p-info":"p-mut"; return a==="—"?"—":`<span class="pill ${cl}">${a}</span>`; }
+  const v=r[c];
+  if(c==="status"){ const late=(key==="cronograma"&&r.dataPrevista&&r.dataPrevista<today()&&!["Concluído","Cancelado"].includes(v))||(key==="reunioes"&&r.dataLimite&&r.dataLimite<today()&&!["Concluído","Cancelado"].includes(v));
+    const cl=v==="Concluído"||v==="Vigente"?"p-ok":v==="Cancelado"||v==="Obsoleto"?"p-mut":late?"p-bad":v==="Em andamento"||v==="Em revisão"?"p-info":"p-warn"; return v?`<span class="pill ${cl}">${late?"Atrasado":esc(v)}</span>`:"—"; }
+  if(/^data|dataLimite|dataPrevista/.test(c)) return `<span class="num">${fmtD(v)}</span>`;
+  if(c==="link") return isUrl(v)?`<a href="${esc(v)}" target="_blank" rel="noopener">Abrir ↗</a>`:"—";
+  return esc(short(v,80))||"—";
+}
+function recForm(key,id,r){
+  const sc=SCHEMAS[key]; const f=document.createElement("form"); f.className="form";
+  f.innerHTML=`<div class="formgrid">${sc.fields.map(x=>{
+    const v=esc(r[x.k]??""); const nm=`name="${x.k}" id="${key}-${x.k}"`;
+    let ctl = x.t==="select" ? `<select ${nm}><option value=""></option>${x.o.map(o=>`<option ${r[x.k]===o?"selected":""}>${o}</option>`).join("")}</select>`
+      : x.t==="textarea" ? `<textarea ${nm}>${v}</textarea>`
+      : `<input ${nm} type="${x.t==="url"?"url":x.t==="number"?"number":x.t==="date"?"date":"text"}" value="${v}" ${x.req?"required":""} ${x.t==="number"?'step="any"':""} ${x.t==="url"?'placeholder="https://drive.google.com/…"':""}>`;
+    return `<label class="f ${x.wide?"wide":""}"><span>${x.l}${x.req?" *":""}</span>${ctl}</label>`;}).join("")}</div>
+    <div class="row" style="justify-content:space-between"><div class="row"><button class="btn primary" type="submit">Salvar</button><button class="btn ghost" type="button" data-cancel>Cancelar</button></div>
+    ${id?`<button class="btn danger" type="button" data-del>Excluir</button>`:""}</div>`;
+  f.onsubmit=async e=>{ e.preventDefault(); const fd=Object.fromEntries(new FormData(f));
+    for(const x of sc.fields) if(x.t==="number"&&fd[x.k]!=="") fd[x.k]=Number(fd[x.k]);
+    for(const x of sc.fields) if(x.t==="url"&&fd[x.k]&&!isUrl(fd[x.k])){toast("Links devem começar com https://");return;}
+    salvarLocal(key, id || ("novo_"+Date.now()), fd);
+    delete S.editing[key]; toast("Registro salvo"); render(); };
+  f.querySelector("[data-cancel]").onclick=()=>{delete S.editing[key];render();};
+  const d=f.querySelector("[data-del]"); if(d) d.onclick=async()=>{
+    if(d.dataset.armed!=="1"){ d.dataset.armed="1"; d.textContent="Confirmar exclusão"; return; }
+    excluirLocal(key,id); delete S.editing[key]; toast("Registro excluído"); render();
+  };
+  return f;
+}
+
+function vRede(w){
+  if(!S.rede){ loadRede(); return; }
+  if(S.rede.loading){ w.innerHTML=`<div class="empty">Consolidando os dados dos escritórios…</div>`; return; }
+  if(S.rede.erro){ w.innerHTML=`<div class="banner warn">${esc(S.rede.erro)}</div>`; }
+  const R=S.rede.rows.filter(r=>!r.err);
+  const iniciados=R.filter(r=>r.c.started); const media=iniciados.length?iniciados.reduce((s,r)=>s+r.c.score,0)/iniciados.length:null;
+  const aptos=iniciados.filter(r=>r.c.score>=.85).length;
+  const evid=R.reduce((s,r)=>s+r.c.comEvid,0), tot=R.reduce((s,r)=>s+r.c.total,0);
+  w.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><div><div class="eyebrow">Programa Compra Paraná</div><h2>Visão da rede de ECPs</h2><div class="small muted">Atualizado às ${S.rede.at.toLocaleTimeString("pt-BR",{timeStyle:"short"})}</div></div>
+    <div class="row"><button class="btn" id="reload">Atualizar</button>${pode("export")?`<button class="btn" id="xlsxRede">Exportar rede (Excel)</button>`:""}</div></div>
+    <div class="kpis"><div class="kpi"><b class="num">${R.length}</b><span>escritórios no painel</span></div>
+    <div class="kpi"><b class="num">${iniciados.length}</b><span>com diagnóstico iniciado</span></div>
+    <div class="kpi"><b class="num">${media==null?"—":pct(media)}</b><span>índice médio (iniciados)</span></div>
+    <div class="kpi"><b class="num">${aptos}</b><span>aptos a Modelo de Referência (≥85%)</span></div>
+    <div class="kpi"><b class="num">${tot?pct0(evid/tot):"—"}</b><span>critérios com evidência</span></div></div></section>`);
+  const heat=v=>v==null?`<span class="heat" style="background:var(--surface-2);color:var(--muted)">—</span>`:`<span class="heat num" style="background:${band(v).c};color:#fff">${Math.round(v*100)}</span>`;
+  w.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><h3>Comparativo por escritório</h3><span class="small muted">Clique na linha para abrir o painel do ECP</span></div>
+    <div class="tbl-wrap"><table><thead><tr><th>ECP</th><th>Índice</th><th>Situação</th>${DIMS.map(d=>`<th title="${esc(d.n)}">${d.k}</th>`).join("")}<th>Avaliados</th><th>Evidências</th><th>Ações concl.</th><th>Atrasadas</th><th>Reuniões</th><th>Última atualização</th></tr></thead><tbody>
+    ${S.rede.rows.map(r=>r.err?`<tr><td>${esc(r.nome)}</td><td colspan="${10+DIMS.length}" class="muted">Não foi possível ler os dados.</td></tr>`:
+      `<tr class="click" data-id="${esc(r.id)}"><td><b>${esc(r.nome)}</b></td><td class="num"><b>${r.c.started?pct(r.c.score):"—"}</b></td>
+      <td>${r.c.started?`<span class="pill ${band(r.c.score).t==="Avançado"?"p-ok":band(r.c.score).t==="Intermediário"?"p-info":band(r.c.score).t==="Básico"?"p-warn":"p-bad"}">${band(r.c.score).t}</span>`:`<span class="pill p-mut">Não iniciado</span>`}</td>
+      ${r.c.dims.map(d=>`<td>${heat(d.ader)}</td>`).join("")}
+      <td class="num">${r.c.avaliados}/${r.c.total}</td><td class="num">${r.c.comEvid}/${r.c.total}</td><td class="num">${r.concl}/${r.acoes}</td><td class="num" style="color:${r.atras?"var(--bad)":"inherit"}">${r.atras}</td><td class="num">${r.reun}</td>
+      <td class="num small">${r.last?new Date(r.last).toLocaleDateString("pt-BR"):"—"}</td></tr>`).join("")}
+    </tbody></table></div>
+    <p class="small muted" style="margin:10px 0 0">Colunas GOV, AC, IE, EC e MPE: aderência (%) de cada dimensão. Faixas: Em Estruturação até 29%, Básico 30–49%, Intermediário 50–84%, Avançado a partir de 85%.</p></section>`);
+  w.querySelectorAll("tr[data-id]").forEach(tr=>tr.onclick=()=>{selectEcp(tr.dataset.id);S.view="painel";render();});
+  $("#reload",w).onclick=()=>loadRede();
+  const xr=$("#xlsxRede",w); if(xr) xr.onclick=()=>exportRede();
+}
+
+/* ===== Cadastro ===== */
+function vCad(w){
+  const e=ecp(); const id=S.ecpId; const adm=pode("cadastro");
+  if(id){
+    const metas={...DEFAULT_METAS,...(e.metas||{})}; const p=e.pastas||{};
+    const sec=document.createElement("section"); sec.className="panel"; w.appendChild(sec);
+    sec.innerHTML=`<div class="panel-h"><h3>Identidade do escritório</h3>${driveLink("raiz","Pasta do ECP")}</div>
+    <form class="form" id="fIdent"><div class="formgrid">
+      <label class="f"><span>Nome do ECP</span><input name="nome" value="${esc(e.nome||"")}" ${adm?"":"readonly"}></label>
+      <label class="f"><span>Município</span><input name="municipio" value="${esc(e.municipio||"")}"></label>
+      <label class="f"><span>Território</span><input name="territorio" value="${esc(e.territorio||"")}"></label>
+      <label class="f"><span>Regional</span><input name="regional" value="${esc(e.regional||"")}"></label>
+      <label class="f"><span>Responsável pelo escritório</span><input name="responsavel" value="${esc(e.responsavel||"")}"></label>
+      <label class="f"><span>E-mail</span><input name="email" type="email" value="${esc(e.email||"")}"></label>
+      <label class="f"><span>Data do diagnóstico</span><input name="dataDiagnostico" type="date" value="${esc(e.dataDiagnostico||"")}"></label>
+      <label class="f"><span>Elaborado por</span><input name="elaboradoPor" value="${esc(e.elaboradoPor||"")}"></label>
+    </div>
+    <div class="eyebrow">Metas dos indicadores de impacto</div>
+    <div class="formgrid">
+      <label class="f"><span>Stakeholders mapeados</span><input type="number" name="m_stakeholders" value="${metas.stakeholders}"></label>
+      <label class="f"><span>Reuniões realizadas</span><input type="number" name="m_reunioes" value="${metas.reunioes}"></label>
+      <label class="f"><span>Ações concluídas</span><input type="number" name="m_acoes" value="${metas.acoes}"></label>
+      <label class="f"><span>Parceiros engajados</span><input type="number" name="m_parceiros" value="${metas.parceiros}"></label>
+    </div>
+    ${adm?`<div class="eyebrow">Pastas no Google Drive (link ou ID)</div><div class="formgrid">
+      ${[["raiz","Pasta do ECP"],["d1","01 Governança"],["d2","02 Integração Compras"],["d3","03 Integração Empresarial"],["d4","04 Estrutura"],["d5","05 Atendimento MPEs"],["reunioes","06 Reuniões e Atas"],["presenca","07 Listas de Presença"],["docs","08 Documentos"],["acoes","09 Ações e Eventos"]]
+        .map(([k,l])=>`<label class="f"><span>${l}</span><input name="p_${k}" value="${esc(p[k]||"")}"></label>`).join("")}</div>`:""}
+    <div class="row"><button class="btn primary" type="submit" ${adm?"":"disabled"}>Salvar cadastro</button></div></form>`;
+    $("#fIdent",sec).onsubmit=async ev=>{ev.preventDefault(); const fd=Object.fromEntries(new FormData(ev.target));
+      const upd={metas:{}}; const pastasU={};
+      for(const [k,v] of Object.entries(fd)){ if(k.startsWith("m_")) upd.metas[k.slice(2)]=Number(v)||0; else if(k.startsWith("p_")) pastasU[k.slice(2)]=v.trim(); else upd[k]=v; }
+      if(adm) upd.pastas=pastasU;
+      delete upd.atualizadoEm; delete upd.atualizadoPor; if(!adm) upd.pastas=e.pastas||{};
+      try{ await api("salvarCadastro",{ecp:id,dados:upd}); toast("Cadastro salvo"); aplicarSessao(await api("sessao"),true); }catch(err){ toast(err.message); } };
+  }
+  if(adm){
+    const sec=document.createElement("section"); sec.className="panel"; w.appendChild(sec);
+    sec.innerHTML=`<div class="panel-h"><div><h3>Novo escritório</h3><div class="small muted">Crie antes as pastas do ECP no Drive (modelo: copie a estrutura de um ECP existente) e cole os links no cadastro.</div></div></div>
+      <form class="form" id="fNovo"><div class="formgrid"><label class="f"><span>Nome do ECP *</span><input name="nome" required placeholder="Ex.: ECP Toledo"></label>
+      <label class="f"><span>Município</span><input name="municipio"></label><label class="f"><span>Território</span><input name="territorio"></label><label class="f"><span>Regional</span><input name="regional"></label></div>
+      <div class="row"><button class="btn primary" type="submit">Cadastrar ECP</button></div></form>`;
+    $("#fNovo",sec).onsubmit=async ev=>{ev.preventDefault(); const fd=Object.fromEntries(new FormData(ev.target));
+      const nid=fd.nome.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/^ecp\s+/,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+      if(!nid) return; if(S.ecps[nid]){toast("Já existe um ECP com esse nome");return;}
+      try{ const r=await api("salvarCadastro",{dados:{...fd,metas:DEFAULT_METAS,pastas:{}}}); toast("ECP cadastrado"); aplicarSessao(await api("sessao"),true); selectEcp(r.id); S.view="cad"; render(); }catch(e){ toast(e.message); } };
+  }
+
+}
+
+/* ===== Campos de senha com "Mostrar" ===== */
+const ICO_OLHO='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>', ICO_OLHO_X='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.2A10.9 10.9 0 0 1 12 4c6.4 0 10 7 10 7a18 18 0 0 1-2.9 3.9M6.6 6.6C3.7 8.4 2 12 2 12s3.6 7 10 7a10.6 10.6 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="M2 2l20 20"/></svg>';
+function campoSenha(nome,rotulo,auto,extra){ return `<label class="f"><span>${rotulo}</span><div class="pw"><input name="${nome}" type="password" autocomplete="${auto}" required ${extra||""}><button type="button" class="pw-ver" aria-label="Mostrar senha" title="Mostrar senha">${ICO_OLHO}</button></div></label>`; }
+function ligarMostrarSenha(root){ root.querySelectorAll(".pw-ver").forEach(b=>b.onclick=()=>{ const i=b.previousElementSibling; const ver=i.type==="password"; i.type=ver?"text":"password"; b.innerHTML=ver?ICO_OLHO_X:ICO_OLHO; b.setAttribute("aria-label",ver?"Ocultar senha":"Mostrar senha"); b.title=ver?"Ocultar senha":"Mostrar senha"; i.focus(); }); }
+
+/* ===== Tela de entrada ===== */
+let ESCRITORIOS_PUBLICOS = LS.get("escritorios",[]);
+function vEntrada(w){
+  const box=document.createElement("div"); box.className="gate"; w.appendChild(box);
+  const opts=()=>ESCRITORIOS_PUBLICOS.map(e=>`<option value="${esc(e.id)}">${esc(e.nome)}</option>`).join("");
+  box.innerHTML=`<section class="panel"><div class="eyebrow">Acesso</div><h2>Entre no Painel de Gestão</h2>
+    <p class="muted" style="margin:6px 0 16px">Escolha o seu escritório e entre com o e-mail e a senha que você recebeu. No primeiro acesso, o painel pede para você criar a sua própria senha.</p>
+    <form class="form" id="fEntrada" style="background:none;border:0;padding:0">
+      <label class="f"><span>Escritório</span><select name="ecp" id="ent-ecp" required><option value="">Selecione</option>${opts()}<option value="*">Sebrae/PR · rede de escritórios (consultores e administração)</option></select></label>
+      <label class="f"><span>E-mail</span><input name="email" id="ent-email" type="email" autocomplete="username" required inputmode="email"></label>
+      ${campoSenha("senha","Senha","current-password",'id="ent-senha"')}
+      <div class="warnline" id="ent-erro" hidden></div>
+      <button class="btn primary" type="submit" style="justify-content:center;padding:10px">Entrar</button>
+    </form></section>
+    <p class="small" style="color:#fff;text-align:center;margin:0">Esqueceu a senha ou não tem acesso? Fale com o administrador do painel ou com o consultor do Sebrae que acompanha o seu escritório.</p>`;
+  ligarMostrarSenha(box);
+  const sel=$("#ent-ecp",box); const ult=LS.get("ultEcp",""); if(ult) sel.value=ult;
+  api("escritorios").then(l=>{ ESCRITORIOS_PUBLICOS=l; LS.set("escritorios",l); const v=sel.value; sel.innerHTML=`<option value="">Selecione</option>${opts()}<option value="*">Sebrae/PR · rede de escritórios (consultores e administração)</option>`; sel.value=v||LS.get("ultEcp",""); }).catch(e=>{ if(!ESCRITORIOS_PUBLICOS.length) mostrarErro(e.message); });
+  const err=$("#ent-erro",box); function mostrarErro(t){ err.textContent=t; err.hidden=false; }
+  $("#fEntrada",box).onsubmit=async ev=>{
+    ev.preventDefault(); err.hidden=true; const fd=Object.fromEntries(new FormData(ev.target)); const btn=ev.target.querySelector("button"); btn.disabled=true; btn.textContent="Entrando…";
+    try{
+      const r=await api("entrar",{email:fd.email,senha:fd.senha,ecp:fd.ecp});
+      S.token=r.token; LS.set("token",r.token); LS.set("ultEcp",fd.ecp); S._senhaLogin=fd.senha;
+      if(fd.ecp && fd.ecp!=="*") LS.set("sel",fd.ecp);
+      aplicarSessao(await api("sessao"),true); processarFila();
+    }catch(e){ mostrarErro(e.message); }
+    finally{ btn.disabled=false; btn.textContent="Entrar"; }
+  };
+}
+function vTrocarSenha(w){
+  const box=document.createElement("div"); box.className="gate"; w.appendChild(box);
+  const primeira=!!(S.me&&S.me.trocarSenha);
+  box.innerHTML=`<section class="panel"><div class="eyebrow">${primeira?"Primeiro acesso":"Segurança"}</div><h2>${primeira?"Crie a sua senha":"Trocar senha"}</h2>
+    <p class="muted" style="margin:6px 0 16px">${primeira?`Olá, ${esc(S.me.nome)}! Para sua segurança, troque a senha provisória por uma senha pessoal, com pelo menos 8 caracteres.`:"Use pelo menos 8 caracteres. Evite datas e nomes fáceis de adivinhar."}</p>
+    <form class="form" id="fSenha" style="background:none;border:0;padding:0">
+      ${campoSenha("atual",primeira?"Senha provisória":"Senha atual","current-password")}
+      ${primeira&&S._senhaLogin?`<div class="small muted" style="margin-top:-6px">É a senha que você acabou de usar para entrar.</div>`:""}
+      ${campoSenha("nova","Nova senha","new-password",'minlength="8"')}
+      ${campoSenha("nova2","Repita a nova senha","new-password",'minlength="8"')}
+      <div class="warnline" id="sen-erro" hidden></div>
+      <div class="row"><button class="btn primary" type="submit" style="flex:1;justify-content:center;padding:10px">Salvar nova senha</button>${primeira?"":`<button class="btn ghost" type="button" id="senVoltar">Cancelar</button>`}</div>
+    </form></section>`;
+  const err=$("#sen-erro",box);
+  ligarMostrarSenha(box);
+  if(primeira && S._senhaLogin) box.querySelector('input[name="atual"]').value=S._senhaLogin;
+  const v=$("#senVoltar",box); if(v) v.onclick=()=>{ S.gate="ok"; render(); };
+  $("#fSenha",box).onsubmit=async ev=>{
+    ev.preventDefault(); err.hidden=true; const fd=Object.fromEntries(new FormData(ev.target));
+    if(fd.nova!==fd.nova2){ err.textContent="As duas senhas novas não são iguais. Toque no olho para conferir."; err.hidden=false; return; }
+    if(fd.nova===fd.atual){ err.textContent="A nova senha precisa ser diferente da provisória."; err.hidden=false; return; }
+    const btn=ev.target.querySelector("button[type=submit]"); btn.disabled=true;
+    try{ await api("trocarSenha",{atual:fd.atual,nova:fd.nova}); S.me.trocarSenha=false; const c=LS.get("sessao",null); if(c){ c.eu.trocarSenha=false; LS.set("sessao",c); }
+      toast("Senha salva"); S._senhaLogin=null; S.gate="ok"; fillSelect(); if(!S.ecpId) escolherEcpInicial(); else render(); }
+    catch(e){ err.textContent=e.message==="A senha atual não confere."?(primeira?"A senha provisória não confere. Toque no olho para conferir o que foi digitado. Se preferir, clique em Sair e entre de novo.":"A senha atual não confere. Toque no olho para conferir."):e.message; err.hidden=false; }
+    finally{ btn.disabled=false; }
+  };
+}
+
+/* ===== Histórico e homologação ===== */
+async function loadHist(){
+  if(S._histLoading) return; S._histLoading=true;
+  try{ S.hist={entries:await api("historico",{ecp:S.histScope==="todos"&&multiEcp()?"*":S.ecpId}),at:new Date(),escopo:S.histScope}; }
+  catch(e){ S.hist={entries:[],at:new Date(),erro:e.message}; }
+  S._histLoading=false; scheduleRender();
+}
+function pendentesHomologacao(){
+  if(!S.hist||!S.hist.entries) return [];
+  return S.hist.entries.filter(e=>e.status==="pendente" && e.ecp===S.ecpId && e.usuarioId!==S.me.id);
+}
+function vHist(w){
+  w.insertAdjacentHTML("beforeend",`<section class="panel">${ecpHeader()}</section>`);
+  if(!S.hist || S.hist.escopo!==S.histScope){ loadHist(); w.insertAdjacentHTML("beforeend",`<div class="empty">Carregando o histórico de alterações…</div>`); return; }
+  const H=S.hist; const podeH=pode("homologar");
+  const ents=H.entries;
+  const status=e=>e.status==="pendente"?"pend":e.status==="homologado"?"homologado":e.status==="nao_homologado"?"nao":"registro";
+  const cont={pend:0,homologado:0,nao:0}; ents.forEach(e=>{const s=status(e); if(cont[s]!==undefined) cont[s]++;});
+  const f=S.histFilter; const vis=ents.filter(e=>f==="todas"||status(e)===f);
+  const meusPend=vis.filter(e=>status(e)==="pend" && e.usuarioId!==S.me.id);
+  const sec=document.createElement("section"); sec.className="panel"; w.appendChild(sec);
+  sec.innerHTML=`<div class="panel-h"><div><h3>Histórico de alterações</h3><div class="small muted">Toda alteração fica registrada com data, autor e o que mudou, e é gravada no GitHub do programa. As alterações valem na hora e depois são homologadas pelo coordenador, consultor do Sebrae, consultor credenciado ou administrador.</div></div>
+    <div class="row">${multiEcp()?`<select id="hScope" class="btn"><option value="ecp" ${S.histScope==="ecp"?"selected":""}>Este escritório</option><option value="todos" ${S.histScope==="todos"?"selected":""}>Todos os meus escritórios</option></select>`:""}<button class="btn" id="hReload">Atualizar</button>${pode("export")?`<button class="btn" id="hXlsx">Exportar histórico</button>`:""}</div></div>
+    ${H.erro?`<div class="banner warn">${esc(H.erro)}</div>`:""}
+    <div class="row" style="justify-content:space-between;margin-bottom:6px"><div class="filters" id="hF">
+      ${[["pend",`Aguardando (${cont.pend})`],["homologado",`Homologadas (${cont.homologado})`],["nao",`Não homologadas (${cont.nao})`],["todas","Todas"]].map(([k,t])=>`<button class="chip" data-f="${k}" aria-pressed="${f===k}">${t}</button>`).join("")}</div>
+      ${podeH&&meusPend.length>1?`<button class="btn primary" id="hAll">Homologar as ${meusPend.length} pendentes</button>`:""}</div>
+    <div id="hList"></div>`;
+  const list=$("#hList",sec);
+  if(!vis.length) list.innerHTML=`<div class="empty">${f==="pend"?"Nenhuma alteração aguardando homologação.":"Nenhum registro neste filtro."}</div>`;
+  vis.slice(0,200).forEach(e=>{
+    const st=status(e);
+    const row=document.createElement("div"); row.className="hist-row";
+    const pill= st==="pend"?`<span class="pill p-warn">Aguardando homologação</span>`: st==="homologado"?`<span class="pill p-ok">Homologado</span>`: st==="nao"?`<span class="pill p-bad">Não homologado</span>`:`<span class="pill p-mut">Registro</span>`;
+    const podeEsta = podeH && st==="pend" && e.usuarioId!==S.me.id;
+    row.innerHTML=`<div class="small num"><b>${new Date(e.em).toLocaleDateString("pt-BR")}</b><br><span class="muted">${new Date(e.em).toLocaleTimeString("pt-BR",{timeStyle:"short"})}</span>${S.histScope==="todos"?`<br><span class="muted">${esc((S.ecps[e.ecp]||{}).nome||e.ecp||"Geral")}</span>`:""}${e.github?`<br><span class="muted" title="Registrado no GitHub">✓ GitHub</span>`:""}</div>
+      <div style="min-width:0"><div><b>${esc(e.usuarioNome||"Usuário")}</b> <span class="muted small">(${esc(perfilNome(e.perfil))})</span> ${esc(e.acao)} <span class="code">${esc(e.area)}</span> ${esc(short(e.ref,60))}</div>${diffHtml(e)}
+        ${e.homologadoEm?`<div class="small muted" style="margin-top:6px">${st==="homologado"?"Homologado":"Não homologado"} por <b>${esc(e.homologadoPorNome)}</b> em ${new Date(e.homologadoEm).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}${e.motivo?` · Motivo: ${esc(e.motivo)}`:""}</div>`:""}
+        ${podeEsta?`<div class="row" data-motivo hidden style="margin-top:8px"><input class="btn" style="flex:1;min-width:180px;font-weight:400" placeholder="Motivo da não homologação" data-mot><button class="btn danger" data-nao-ok>Confirmar</button></div>`:""}</div>
+      <div class="row" style="justify-content:flex-end">${pill}${podeEsta?`<button class="btn primary" data-hom>Homologar</button><button class="btn ghost" data-nao>Não homologar</button>`:""}${podeH&&st==="pend"&&e.usuarioId===S.me.id?`<span class="small muted">Sua alteração: outra pessoa homologa</span>`:""}</div>`;
+    if(podeEsta){
+      row.querySelector("[data-hom]").onclick=()=>homologar([e],"homologado","");
+      row.querySelector("[data-nao]").onclick=()=>{ row.querySelector("[data-motivo]").hidden=false; row.querySelector("[data-mot]").focus(); };
+      row.querySelector("[data-nao-ok]").onclick=()=>{ const m=row.querySelector("[data-mot]").value.trim(); if(!m){toast("Informe o motivo");return;} homologar([e],"nao_homologado",m); };
+    }
+    list.appendChild(row);
+  });
+  sec.querySelector("#hF").onclick=ev=>{const b=ev.target.closest(".chip"); if(!b) return; S.histFilter=b.dataset.f; render();};
+  $("#hReload",sec).onclick=()=>{ S.hist=null; render(); };
+  const hs=$("#hScope",sec); if(hs) hs.onchange=()=>{ S.histScope=hs.value; S.hist=null; render(); };
+  const hx=$("#hXlsx",sec); if(hx) hx.onclick=()=>exportHist(ents,status);
+  const ha=$("#hAll",sec); if(ha) ha.onclick=()=>{ if(ha.dataset.armed!=="1"){ ha.dataset.armed="1"; ha.textContent=`Confirmar homologação de ${meusPend.length}`; return; } homologar(meusPend,"homologado",""); };
+}
+async function homologar(lista,status,motivo){
+  try{ const r=await api("homologar",{ids:lista.map(e=>e.id),status,motivo}); toast(r.homologadas===1?(status==="homologado"?"Alteração homologada":"Registrada como não homologada"):`${r.homologadas} alterações homologadas`); }
+  catch(e){ toast(e.message); }
+  S.hist=null; render();
+}
+
+/* ===== Usuários ===== */
+async function loadUsuarios(){ try{ S.usuarios=await api("usuarios"); }catch(e){ S.usuarios={erro:e.message}; } scheduleRender(); }
+function linkDoPainel(){ return location.origin+location.pathname; }
+function vUsers(w){
+  if(!S.usuarios){ loadUsuarios(); w.innerHTML=`<div class="empty">Carregando usuários…</div>`; return; }
+  if(S.usuarios.erro){ w.innerHTML=`<div class="banner warn">${esc(S.usuarios.erro)}</div>`; return; }
+  const souAdmin = S.me.perfil==="admin";
+  const perfisCriaveis = Object.keys(PERFIS).filter(p=> souAdmin || p!=="admin");
+  const ids=Object.keys(S.ecps).sort((a,b)=>(S.ecps[a].nome||a).localeCompare(S.ecps[b].nome||b));
+  const g=document.createElement("section"); g.className="panel"; w.appendChild(g);
+  g.innerHTML=`<div class="panel-h"><div><h3>Cadastrar usuário</h3><div class="small muted">O painel gera uma senha provisória. No primeiro acesso a pessoa cria a própria senha.</div></div></div>
+    <form class="form" id="fUser"><div class="formgrid">
+      <label class="f"><span>Nome completo *</span><input name="nome" required></label>
+      <label class="f"><span>E-mail *</span><input name="email" type="email" required></label>
+      <label class="f"><span>Perfil *</span><select name="perfil" id="u-perfil">${perfisCriaveis.map(p=>`<option value="${p}" ${p==="atendente"?"selected":""}>${perfilNome(p)}</option>`).join("")}</select></label>
+      <div class="f wide"><span>Escritórios</span><div class="checks" id="u-ecps">
+        <label><input type="checkbox" value="*" data-todos> Todos os escritórios</label>
+        ${ids.map(id=>`<label><input type="checkbox" value="${esc(id)}"> ${esc(S.ecps[id].nome||id)}</label>`).join("")}</div>
+        <span class="small muted" id="u-dica" style="text-transform:none;letter-spacing:0;font-weight:400"></span></div>
+    </div><div class="row"><button class="btn primary" type="submit">Cadastrar e gerar senha</button></div></form>
+    <div id="uOut"></div>`;
+  const perfilSel=$("#u-perfil",g), dica=$("#u-dica",g), box=$("#u-ecps",g);
+  const ajusta=()=>{ const multi=PERFIS[perfilSel.value].multi; dica.textContent= multi ? "Marque os escritórios que a pessoa acompanha, ou “Todos os escritórios”." : "Coordenador e atendente ficam vinculados a um único escritório."; box.querySelector("[data-todos]").parentElement.hidden=!multi; if(!multi) box.querySelector("[data-todos]").checked=false; };
+  perfilSel.onchange=ajusta; ajusta();
+  box.onchange=ev=>{ if(!PERFIS[perfilSel.value].multi && ev.target.checked){ box.querySelectorAll("input").forEach(i=>{ if(i!==ev.target) i.checked=false; }); } };
+  const out=$("#uOut",g);
+  const mostra=()=>{ const u=S.ultimaSenha; if(!u){ out.innerHTML=""; return; }
+    const ecpTxt = u.ecps.includes("*") ? "todos os escritórios" : u.ecps.map(k=>(S.ecps[k]||{}).nome||k).join(", ");
+    const ecpEntrada = PERFIS[u.perfil].multi ? "Sebrae/PR · rede de escritórios" : ((S.ecps[u.ecps[0]]||{}).nome||u.ecps[0]);
+    const msg=`Olá, ${u.nome}!\n\nVocê recebeu acesso ao Painel de Gestão do Escritório de Compras Públicas, com o perfil ${perfilNome(u.perfil)} (${ecpTxt}).\n\n1. Acesse: ${linkDoPainel()}\n2. Escritório: ${ecpEntrada}\n3. E-mail: ${u.email}\n4. Senha provisória: ${u.senha}\n\nNo primeiro acesso o painel pede para você criar a sua própria senha.`;
+    out.innerHTML=`<div class="form" style="margin-top:12px"><div class="eyebrow">Senha provisória de ${esc(u.nome)}</div><div class="codebox">${esc(u.senha)}</div>
+      <div class="small muted">Copie agora: por segurança, a senha não aparece de novo.</div>
+      <div class="msgbox" id="uMsg"></div><div class="row"><button class="btn primary" id="copMsg">Copiar mensagem</button><button class="btn ghost" id="fechaU">Fechar</button></div></div>`;
+    $("#uMsg",out).textContent=msg;
+    $("#copMsg",out).onclick=()=>{ try{ navigator.clipboard.writeText(msg).then(()=>toast("Mensagem copiada"),()=>selecionar($("#uMsg",out))); }catch(e){ selecionar($("#uMsg",out)); } };
+    $("#fechaU",out).onclick=()=>{ S.ultimaSenha=null; mostra(); };
+  };
+  mostra();
+  $("#fUser",g).onsubmit=async ev=>{
+    ev.preventDefault(); const fd=Object.fromEntries(new FormData(ev.target));
+    let ecps=[...box.querySelectorAll("input:checked")].map(i=>i.value); if(ecps.includes("*")) ecps=["*"];
+    if(!ecps.length){ toast("Marque ao menos um escritório"); return; }
+    const btn=ev.target.querySelector("button[type=submit]"); btn.disabled=true;
+    try{ const r=await api("criarUsuario",{dados:{nome:fd.nome,email:fd.email,perfil:fd.perfil,ecps}});
+      S.ultimaSenha={nome:fd.nome,email:fd.email.trim().toLowerCase(),perfil:fd.perfil,ecps,senha:r.senha}; S.usuarios=null; toast("Usuário cadastrado"); render(); }
+    catch(e){ toast(e.message); } finally{ btn.disabled=false; }
+  };
+  const lista=[...S.usuarios].sort((a,b)=>String(a.nome).localeCompare(String(b.nome)));
+  const u=document.createElement("section"); u.className="panel"; w.appendChild(u);
+  u.innerHTML=`<div class="panel-h"><div><h3>Usuários <span class="muted small num">(${lista.length})</span></h3><div class="small muted">Altere o perfil, gere nova senha provisória ou desative quem não deve mais acessar.</div></div></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Pessoa</th><th>Perfil</th><th>Escritórios</th><th>Situação</th><th>Último acesso</th><th></th></tr></thead><tbody>
+    ${lista.map(r=>{ const editavel = r.id!==S.me.id && (souAdmin || r.perfil!=="admin");
+      return `<tr data-id="${esc(r.id)}"><td><b>${esc(r.nome)}</b>${r.id===S.me.id?' <span class="small muted">(você)</span>':""}<br><span class="small muted">${esc(r.email)}</span></td>
+      <td>${editavel?`<select class="btn" data-perfil style="font-weight:400">${Object.keys(PERFIS).filter(p=>souAdmin||p!=="admin").map(p=>`<option value="${p}" ${r.perfil===p?"selected":""}>${perfilNome(p)}</option>`).join("")}</select>`:esc(perfilNome(r.perfil))}</td>
+      <td class="small">${(r.ecps||[]).includes("*")?"Todos":esc((r.ecps||[]).map(k=>(S.ecps[k]||{}).nome||k).join(", "))}</td>
+      <td>${!r.ativo?'<span class="pill p-mut">Desativado</span>':r.trocarSenha?'<span class="pill p-warn">Aguardando 1º acesso</span>':'<span class="pill p-ok">Ativo</span>'}</td>
+      <td class="num small">${r.ultimoAcesso?new Date(r.ultimoAcesso).toLocaleDateString("pt-BR"):"—"}</td>
+      <td><div class="row">${editavel?`<button class="btn ghost" data-senha>Nova senha</button><button class="btn ${r.ativo?"danger":""}" data-ativo>${r.ativo?"Desativar":"Reativar"}</button>`:""}</div></td></tr>`; }).join("")}
+    </tbody></table></div>`;
+  u.querySelectorAll("tr[data-id]").forEach(tr=>{
+    const r=lista.find(x=>x.id===tr.dataset.id);
+    const ps=tr.querySelector("[data-perfil]"); if(ps) ps.onchange=async()=>{ try{ await api("alterarUsuario",{id:r.id,perfil:ps.value}); toast("Perfil alterado"); }catch(e){ toast(e.message); } S.usuarios=null; render(); };
+    const bs=tr.querySelector("[data-senha]"); if(bs) bs.onclick=async()=>{ if(bs.dataset.armed!=="1"){ bs.dataset.armed="1"; bs.textContent="Confirmar"; return; }
+      try{ const x=await api("alterarUsuario",{id:r.id,novaSenha:true}); S.ultimaSenha={nome:r.nome,email:r.email,perfil:r.perfil,ecps:r.ecps,senha:x.senha}; toast("Nova senha gerada"); window.scrollTo({top:0}); }catch(e){ toast(e.message); } S.usuarios=null; render(); };
+    const ba=tr.querySelector("[data-ativo]"); if(ba) ba.onclick=async()=>{ if(r.ativo && ba.dataset.armed!=="1"){ ba.dataset.armed="1"; ba.textContent="Confirmar"; return; }
+      try{ await api("alterarUsuario",{id:r.id,ativo:!r.ativo}); toast(r.ativo?"Acesso desativado":"Acesso reativado"); }catch(e){ toast(e.message); } S.usuarios=null; render(); };
+  });
+  w.insertAdjacentHTML("beforeend",`<section class="panel"><h3>O que cada perfil pode fazer</h3><div class="tbl-wrap" style="margin-top:10px"><table><thead><tr><th>Perfil</th><th>Escritórios</th><th>Alimentar dados</th><th>Plano de ação</th><th>Homologar</th><th>Usuários</th><th>Cadastro</th></tr></thead><tbody>
+    <tr><td><b>Administrador</b></td><td>Todos</td><td>Todas as telas</td><td>Sim</td><td>Sim</td><td>Sim</td><td>Sim</td></tr>
+    <tr><td><b>Consultor do Sebrae</b></td><td>Os vinculados</td><td>Leitura</td><td>Leitura</td><td>Sim</td><td>Sim (exceto administradores)</td><td>Não</td></tr>
+    <tr><td><b>Coordenador do escritório</b></td><td>O seu</td><td>Todas as telas</td><td>Sim</td><td>Sim (de outras pessoas)</td><td>Não</td><td>Não</td></tr>
+    <tr><td><b>Atendente</b></td><td>O seu</td><td>Diagnóstico, agenda, reuniões e documentos</td><td>Leitura</td><td>Não</td><td>Não</td><td>Não</td></tr>
+    <tr><td><b>Consultor credenciado</b></td><td>Os vinculados</td><td>Leitura</td><td>Leitura</td><td>Sim</td><td>Não</td><td>Não</td></tr>
+    </tbody></table></div><p class="small muted" style="margin:10px 0 0">Ninguém homologa a própria alteração. As permissões são conferidas também no servidor.</p></section>`);
+}
+function selecionar(el){ const r=document.createRange(); r.selectNodeContents(el); const s=getSelection(); s.removeAllRanges(); s.addRange(r); toast("Texto selecionado: copie com Ctrl+C"); }
+
+/* ===== Visão da rede ===== */
+async function loadRede(){
+  S.rede={loading:true,rows:[]}; render();
+  try{
+    const d=await api("rede"); const rows=[];
+    for(const id of Object.keys(d)){
+      const x=d[id]; const c=calc(x.diag);
+      const acoes=ITEMS.filter(i=>{const r=x.diag[i.id];return r&&!r.na&&r.nota!=null&&r.nota!==""&&Number(r.nota)<=2;});
+      rows.push({id,nome:(S.ecps[id]||{}).nome||id,c,acoes:acoes.length,concl:acoes.filter(i=>(x.plano[i.id]||{}).status==="Concluído").length,
+        atras:acoes.filter(i=>statusPlano(x.plano[i.id])==="Atrasado").length,reun:x.reunioes,crono:x.cronogramaConcluido,stk:x.stakeholders,last:x.ultima});
+    }
+    rows.sort((a,b)=>(b.c.score||0)-(a.c.score||0));
+    S.rede={rows,at:new Date()};
+  }catch(e){ S.rede={rows:[],at:new Date(),erro:e.message}; toast(e.message); }
+  if(S.view==="rede") render();
+}
+
+const CAMPO={nota:"Nota",evidencia:"Evidência",obs:"Observações",na:"Não se aplica",acao:"Ação",como:"Como",onde:"Onde",quando:"Prazo",quem:"Responsável",quanto:"Recurso",status:"Status",nome:"Nome",municipio:"Município",territorio:"Território",regional:"Regional",responsavel:"Responsável",email:"E-mail",dataDiagnostico:"Data do diagnóstico",elaboradoPor:"Elaborado por",metas:"Metas",pastas:"Pastas do Drive",perfil:"Perfil",ativo:"Ativo",indice:"Índice",avaliados:"Avaliados",quantidade:"Quantidade",motivo:"Motivo",registro:"Registro"};
+function fmtVal(v){ if(v===null||v===undefined||v==="") return "(vazio)"; if(v===true) return "sim"; if(v===false) return "não"; if(typeof v==="object") return short(JSON.stringify(v),70); if(isUrl(v)) return "link do Drive"; return short(String(v),70); }
+function diffHtml(e){
+  const a=e.antes||{}, d=e.depois||{}; const keys=[...new Set([...Object.keys(a),...Object.keys(d)])].filter(k=>JSON.stringify(a[k])!==JSON.stringify(d[k])).filter(k=>e.antes||!(d[k]===""||d[k]===null||d[k]===undefined||d[k]===false));
+  if(!keys.length) return "";
+  return `<div class="diff">${keys.slice(0,8).map(k=>`<div><span class="muted">${esc(CAMPO[k]||LABEL[k]||k)}:</span> ${e.antes?`<span class="old">${esc(fmtVal(a[k]))}</span> → `:""}<span class="new">${esc(fmtVal(d[k]))}</span></div>`).join("")}${e.acao==="excluiu"?`<div class="muted">Registro excluído</div>`:""}</div>`;
+}
+/* ===== Exportação ===== */
+function sheetFrom(rows){ return XLSX.utils.aoa_to_sheet(rows); }
+function ecpWorkbook(){
+  const wb=XLSX.utils.book_new(); const c=calc(S.diag); const e=ecp();
+  XLSX.utils.book_append_sheet(wb,sheetFrom([["ECP",e.nome||""],["Município",e.municipio||""],["Território",e.territorio||""],["Regional",e.regional||""],["Responsável",e.responsavel||""],["Índice ponderado",+(c.score.toFixed(4))],["Situação",c.started?band(c.score).t:"Não iniciado"],[],
+    ["Dimensão","Peso","Aderência","Contribuição","Avaliados","Itens alta"],...c.dims.map(d=>[d.n,d.p,d.ader==null?"":+d.ader.toFixed(4),+d.contrib.toFixed(4),`${d.avaliados}/${d.total}`,d.alta])]),"Resumo");
+  XLSX.utils.book_append_sheet(wb,sheetFrom([["Dimensão","Item","Critério","Atende?","Nota (0–3)","Score","Prioridade","Link da evidência","Observações","Não se aplica"],
+    ...ITEMS.map(i=>{const r=S.diag[i.id]||{};const has=r.nota!=null&&r.nota!=="";const n=Number(r.nota);
+      return [DIMS.find(d=>d.k===i.d).n,i.id,i.c,r.na?"Não se aplica":has?(n===3?"Sim":n===0?"Não":"Parcialmente"):"",has?n:"",has?+(n/3).toFixed(4):"",has&&!r.na?prioridade(n):"",r.evidencia||"",r.obs||"",r.na?"Sim":""];})]),"Diagnóstico");
+  XLSX.utils.book_append_sheet(wb,sheetFrom([["Item","Prioridade","Nota","O quê","Como","Onde","Quando","Quem","Quanto","Status","Obs."],
+    ...itemsComAcao().map(i=>{const p=S.plano[i.id]||{};const n=Number(S.diag[i.id].nota);return [i.id,prioridade(n),n,p.acao||sugestao(n),p.como||"",p.onde||"",p.quando||"",p.quem||"",p.quanto||"",statusPlano(p),p.obs||""];})]),"Plano de ação");
+  for(const k of Object.keys(SCHEMAS)){ const sc=SCHEMAS[k]; XLSX.utils.book_append_sheet(wb,sheetFrom([sc.fields.map(f=>f.l),...Object.values(S.lists[k]).map(r=>sc.fields.map(f=>r[f.k]??""))]),sc.title.slice(0,31)); }
+  return wb;
+}
+let _xlsx=null;
+function carregarXlsx(){ if(window.XLSX) return Promise.resolve(); if(_xlsx) return _xlsx;
+  _xlsx=new Promise((ok,falha)=>{ const sc=document.createElement("script"); sc.src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"; sc.onload=ok; sc.onerror=()=>{ _xlsx=null; falha(new Error("Não foi possível baixar o gerador de Excel. Verifique a conexão.")); }; document.head.appendChild(sc); });
+  return _xlsx; }
+async function comExcel(fn){ toast("Preparando o arquivo…"); try{ await carregarXlsx(); fn(); }catch(e){ toast(e.message); } }
+function saveXlsx(wb,name){
+  const buf=XLSX.write(wb,{bookType:"xlsx",type:"array"});
+  const url=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
+  const a=document.createElement("a"); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),4000); toast("Arquivo gerado");
+}
+function exportEcp(){ comExcel(()=>saveXlsx(ecpWorkbook(),`Painel_ECP_${S.ecpId}_${today()}.xlsx`)); }
+function exportHist(ents,status){ comExcel(()=>{
+  const nomeSt={pend:"Aguardando homologação",homologado:"Homologado",nao:"Não homologado",registro:"Registro"};
+  const rows=[["Data","Hora","Escritório","Pessoa","Perfil","Ação","Área","Referência","O que mudou","Situação","Homologado por","Data da homologação","Motivo","No GitHub"]];
+  ents.forEach(e=>{ const a=e.antes||{}, d=e.depois||{};
+    const mud=[...new Set([...Object.keys(a),...Object.keys(d)])].filter(k=>JSON.stringify(a[k])!==JSON.stringify(d[k])).map(k=>`${CAMPO[k]||LABEL[k]||k}: ${e.antes?fmtVal(a[k])+" → ":""}${fmtVal(d[k])}`).join(" | ");
+    rows.push([new Date(e.em).toLocaleDateString("pt-BR"),new Date(e.em).toLocaleTimeString("pt-BR",{timeStyle:"short"}),(S.ecps[e.ecp]||{}).nome||e.ecp||"Geral",e.usuarioNome,perfilNome(e.perfil),e.acao,e.area,e.ref,mud,nomeSt[status(e)],e.homologadoPorNome||"",e.homologadoEm?new Date(e.homologadoEm).toLocaleString("pt-BR"):"",e.motivo||"",e.github?"sim":"pendente"]); });
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,sheetFrom(rows),"Histórico");
+  saveXlsx(wb,`Historico_ECP_${S.histScope==="todos"?"rede":S.ecpId}_${today()}.xlsx`);
+}); }
+function exportRede(){ comExcel(()=>{
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,sheetFrom([["ECP","Índice","Situação",...DIMS.map(d=>d.n),"Avaliados","Evidências","Ações concluídas","Ações com item","Atrasadas","Reuniões","Ações do cronograma concluídas","Stakeholders","Última atualização"],
+    ...S.rede.rows.filter(r=>!r.err).map(r=>[r.nome,+r.c.score.toFixed(4),r.c.started?band(r.c.score).t:"Não iniciado",...r.c.dims.map(d=>d.ader==null?"":+d.ader.toFixed(4)),r.c.avaliados,r.c.comEvid,r.concl,r.acoes,r.atras,r.reun,r.crono,r.stk,r.last?r.last.slice(0,10):""])]),"Rede ECP");
+  saveXlsx(wb,`Painel_ECP_Rede_${today()}.xlsx`);
+}); }
+
+init();
+
+</script>
+</body>
+</html>
