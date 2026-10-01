@@ -219,7 +219,7 @@ details.how dd{margin:0}
 .checks label{display:flex;gap:6px;align-items:center;font-size:.88rem}
 .f .checks input{width:auto}
 [hidden]{display:none!important}
-main{min-height:calc(100vh - 220px)}
+main{min-height:calc(100vh - 220px);align-content:start}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#15234d;color:#fff;padding:9px 16px;border-radius:6px;font-weight:700;z-index:50;box-shadow:0 4px 18px rgba(0,0,0,.25)}
 .banner{border-radius:var(--r);padding:12px 14px;font-size:.9rem}
 .banner.warn{background:var(--warn-soft);color:var(--warn)}
@@ -233,6 +233,36 @@ svg text{fill:var(--muted);font-family:var(--f-body)}
 .pw-ver{position:absolute;top:50%;right:4px;transform:translateY(-50%);width:36px;height:36px;display:grid;place-items:center;border:0;background:none;color:var(--muted);border-radius:6px;cursor:pointer;padding:0}
 .pw-ver:hover,.pw-ver:focus-visible{color:var(--teal);background:var(--surface-2)}
 .filabar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#b26a00;color:#fff;text-align:center;font-weight:700;font-size:.85rem;padding:8px 16px calc(8px + env(safe-area-inset-bottom,0px))}
+
+/* ---- filtros ---- */
+.fbar{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center;padding:12px 14px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r)}
+.fsearch{position:relative;flex:1 1 240px;max-width:380px;display:block}
+.fsearch svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.fsearch input{width:100%;border:1px solid var(--line);border-radius:999px;padding:8px 14px 8px 36px;background:var(--surface);font:inherit;font-size:.9rem;color:var(--fg)}
+.fsearch input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-soft)}
+.fgroup{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
+.flabel{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:6px 13px;font:inherit;font-size:.84rem;font-weight:600;cursor:pointer;line-height:1.2;transition:background .15s,border-color .15s}
+.chip:hover{border-color:var(--teal);color:var(--teal)}
+.chip[aria-pressed="true"]:hover{color:#fff;filter:brightness(1.08)}
+.tag{display:inline-block;white-space:nowrap;font-size:.76rem;font-weight:700;color:var(--teal);background:var(--teal-soft);border-radius:4px;padding:1px 7px;vertical-align:1px}
+.chip[aria-pressed="true"]{background:var(--hex);border-color:var(--hex);color:#fff}
+.chip .cnt{font-size:.72rem;font-weight:700;min-width:20px;text-align:center;padding:1px 6px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
+.chip[aria-pressed="true"] .cnt{background:rgba(255,255,255,.22);color:#fff}
+.flimpar{border:0;background:none;color:var(--teal);font:inherit;font-size:.84rem;font-weight:700;cursor:pointer;padding:6px 4px;text-decoration:underline;text-underline-offset:3px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--surface-2)}
+.seg button{border:0;background:none;color:var(--muted);font:inherit;font-size:.84rem;font-weight:700;padding:6px 14px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.sel{appearance:none;-webkit-appearance:none;border:1px solid var(--line);border-radius:8px;padding:7px 34px 7px 11px;background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235f6878' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 11px center;font:inherit;font-size:.86rem;color:var(--fg);cursor:pointer}
+.switch{display:inline-flex;align-items:center;gap:10px;border:0;background:none;font:inherit;font-size:.86rem;color:var(--fg);cursor:pointer;padding:4px 0}
+.switch .track{position:relative;width:38px;height:22px;border-radius:999px;background:var(--line);transition:background .2s;flex:none}
+.switch .thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:left .2s}
+.switch[aria-checked="true"] .track{background:var(--hex)}
+.switch[aria-checked="true"] .thumb{left:19px}
+.switch[disabled]{opacity:.55;cursor:not-allowed}
+@media (max-width:640px){.fbar{gap:10px}.fsearch{max-width:none;flex-basis:100%}.fgroup{width:100%}}
+@media (prefers-reduced-motion:reduce){.switch .track,.switch .thumb,.chip{transition:none}}
 </style>
 </head>
 <body>
@@ -402,7 +432,7 @@ const perfilNome = p => (PERFIS[p]||{}).n || p || "—";
 /* ---------- estado ---------- */
 const S = {token:null,me:null,gate:"loading",ecps:{},ecpId:null,view:"painel",
   diag:{},plano:{},lists:{cronograma:{},reunioes:{},stakeholders:{},entidades:{},documentos:{}},ciclos:{},
-  filter:"todos",editing:{},rede:null,ready:false,hist:null,histFilter:"pend",histScope:"ecp",usuarios:null,ultimaSenha:null,carregando:false};
+  filter:"todos",editing:{},rede:null,ready:false,hist:null,histScope:"ecp",usuarios:null,ultimaSenha:null,carregando:false};
 const LS={ get(k,d){ try{ const v=localStorage.getItem("ecp."+k); return v?JSON.parse(v):d; }catch(e){ return d; } },
            set(k,v){ try{ localStorage.setItem("ecp."+k,JSON.stringify(v)); }catch(e){} },
            del(k){ try{ localStorage.removeItem("ecp."+k); }catch(e){} } };
@@ -521,6 +551,32 @@ function excluirLocal(colecao,id){
   enfileirar({acao:"excluir",ecp:S.ecpId,dados:{ecp:S.ecpId,colecao,id}});
 }
 
+/* ---------- barra de filtros ---------- */
+const FILTROS={};
+function filtro(id){ return FILTROS[id]||(FILTROS[id]={q:"",g:{}}); }
+const semAcento = t => String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+function valorFiltro(id,k,padrao){ const v=filtro(id).g[k]; return v===undefined?padrao:v; }
+function buscaOk(id,...textos){ const q=semAcento(filtro(id).q).trim(); if(!q) return true; const t=semAcento(textos.join(" ")); return q.split(/\s+/).every(p=>t.includes(p)); }
+const ICO_LUPA='<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
+/* cfg: {busca:"texto de ajuda", grupos:[{k,rotulo,padrao,opcoes:[{v,t,n}]}]} */
+function barraFiltros(id,cfg){
+  const st=filtro(id);
+  const ativo = !!st.q || cfg.grupos.some(g=>st.g[g.k]!==undefined && st.g[g.k]!==g.padrao);
+  const el=document.createElement("div"); el.className="fbar";
+  el.innerHTML=`${cfg.busca?`<label class="fsearch">${ICO_LUPA}<input id="fq-${id}" type="search" placeholder="${esc(cfg.busca)}" value="${esc(st.q)}" aria-label="${esc(cfg.busca)}"></label>`:""}
+    ${cfg.grupos.map(g=>{ const atual=valorFiltro(id,g.k,g.padrao);
+      if(g.tipo==="select") return `<label class="fgroup"><span class="flabel">${esc(g.rotulo)}</span><select class="sel" data-k="${esc(g.k)}">${g.opcoes.map(o=>`<option value="${esc(o.v)}" ${atual===o.v?"selected":""}>${esc(o.t)}${o.n!=null?` (${o.n})`:""}</option>`).join("")}</select></label>`;
+      return `<div class="fgroup" role="group" aria-label="${esc(g.rotulo)}"><span class="flabel">${esc(g.rotulo)}</span><div class="chips">${g.opcoes.map(o=>`<button type="button" class="chip" data-k="${esc(g.k)}" data-v="${esc(o.v)}" aria-pressed="${atual===o.v}">${esc(o.t)}${o.n!=null?`<span class="cnt num">${o.n}</span>`:""}</button>`).join("")}</div></div>`; }).join("")}
+    ${ativo?`<button type="button" class="flimpar">Limpar filtros</button>`:""}`;
+  el.addEventListener("click",e=>{
+    const b=e.target.closest(".chip"); if(b){ st.g[b.dataset.k]=b.dataset.v; render(); return; }
+    if(e.target.closest(".flimpar")){ st.q=""; st.g={}; render(); }
+  });
+  el.querySelectorAll("select[data-k]").forEach(s=>s.onchange=()=>{ st.g[s.dataset.k]=s.value; render(); });
+  const inp=el.querySelector("input"); if(inp){ let t=null; inp.addEventListener("input",()=>{ clearTimeout(t); t=setTimeout(()=>{ st.q=inp.value; render(); },250); }); }
+  return el;
+}
+
 /* Re-render sem atrapalhar quem está digitando */
 let rT=null;
 function scheduleRender(){ clearTimeout(rT); rT=setTimeout(()=>{
@@ -535,6 +591,7 @@ function bindTabs(){
 /* ---------- render ---------- */
 const TAB_OK = { rede:()=>multiEcp(), painel:()=>true, diag:()=>true, plano:()=>true, agenda:()=>true, atores:()=>true, docs:()=>true, hist:()=>true, users:()=>pode("usuarios"), cad:()=>pode("cadastro") };
 function render(){
+  const ae=document.activeElement, aid=ae&&ae.id&&ae.id.startsWith("fq-")?ae.id:null, pos=aid?ae.selectionStart:0;
   const m=$("#main");
   const ok = S.gate==="ok";
   if(ok && !(TAB_OK[S.view]||(()=>false))()) S.view="painel";
@@ -548,6 +605,7 @@ function render(){
   const sy=window.scrollY; m.innerHTML=""; const wrap=document.createElement("div"); wrap.className="view"; m.appendChild(wrap);
   if(S.carregando && ["painel","diag","plano","agenda","atores","docs"].includes(S.view)){ wrap.innerHTML=`<div class="empty">Carregando ${esc((S.ecps[S.ecpId]||{}).nome||"escritório")}…</div>`; return; }
   v(wrap); window.scrollTo({top:sy});
+  if(aid){ const n=document.getElementById(aid); if(n){ n.focus(); try{ n.setSelectionRange(pos,pos); }catch(e){} } }
 }
 const ecp = () => S.ecps[S.ecpId]||{};
 const pastas = () => ecp().pastas||{};
@@ -639,7 +697,7 @@ function nextStep(c){
   let t,d,btn,go,f;
   const pend=pendentesHomologacao().length;
   const alimenta=pode("diag");
-  if(pend>0 && pode("homologar") && (!alimenta || sem===0 || S.me.perfil!=="atendente")){ t=`${pend} ${pend===1?"alteração aguarda":"alterações aguardam"} sua homologação`; d="Confira o que mudou, quem alterou e homologue para validar o histórico do escritório."; btn="Homologar alterações"; go="hist"; S.histFilter="pend"; }
+  if(pend>0 && pode("homologar") && (!alimenta || sem===0 || S.me.perfil!=="atendente")){ t=`${pend} ${pend===1?"alteração aguarda":"alterações aguardam"} sua homologação`; d="Confira o que mudou, quem alterou e homologue para validar o histórico do escritório."; btn="Homologar alterações"; go="hist"; }
   else if(!alimenta){ t="Acompanhe a evolução do escritório"; d="Seu perfil tem acesso de leitura aos painéis. As alterações feitas pela equipe aparecem no Histórico."; btn="Ver histórico"; go="hist"; }
   else if(sem>0){ t=c.avaliados?`Faltam ${sem} critérios para fechar o diagnóstico`:"Comece o diagnóstico do seu ECP"; d=c.avaliados?"Continue de onde parou: os critérios sem nota já aparecem filtrados.":"São 24 critérios em 5 dimensões. Leva cerca de 30 minutos e tudo é salvo automaticamente."; btn=c.avaliados?"Continuar diagnóstico":"Começar agora"; go="diag"; f="pendentes"; }
   else if(c.semEvid>0){ t=`${c.semEvid} notas aguardam evidência`; d="Guarde os arquivos na pasta da dimensão no Drive e cole o link no critério."; btn="Vincular evidências"; go="diag"; f="semevid"; }
@@ -647,7 +705,7 @@ function nextStep(c){
   else { t="Diagnóstico completo e plano em dia"; d="Registre a fotografia do ciclo e acompanhe a evolução do índice."; btn="Ver agenda e reuniões"; go="agenda"; }
   const el=document.createElement("section"); el.className="next";
   el.innerHTML=`<div class="next-hex num">${Math.round(pr*100)}%</div><div style="min-width:0"><div class="eyebrow">Próximo passo</div><h3>${esc(t)}</h3><div class="small muted">${esc(d)}</div><div class="prog" title="Avanço: critérios avaliados e evidências vinculadas"><i style="width:${pr*100}%"></i></div></div><button class="btn primary">${esc(btn)} →</button>`;
-  el.querySelector("button").onclick=()=>{ if(f) S.filter=f; S.view=go; render(); window.scrollTo({top:0}); };
+  el.querySelector("button").onclick=()=>{ if(f){ filtro("diag").g.sit=f; filtro("diag").g.dim="todas"; } if(go==="hist") filtro("hist").g.st="pend"; S.view=go; render(); window.scrollTo({top:0}); };
   return el;
 }
 function short(s,n){s=String(s||"");return s.length>n?s.slice(0,n-1)+"…":s;}
@@ -664,29 +722,30 @@ function evoChart(cic){
 }
 
 /* ===== Diagnóstico ===== */
+const DIM_CURTO={GOV:"Governança",AC:"Integração Compras",IE:"Integração Empresarial",EC:"Estrutura",MPE:"Atendimento MPEs"};
 function vDiag(w){
   const c=calc(S.diag);
   w.insertAdjacentHTML("beforeend",`<section class="panel">${ecpHeader()}
     <div class="banner info" style="margin-top:12px">Para cada critério: escolha a nota, guarde o arquivo na pasta da dimensão no Drive e cole o link da evidência. Tudo é salvo automaticamente. Notas 2 e 3 exigem evidência vinculada.</div>
     ${!pode("diag")?`<div class="banner warn" style="margin-top:10px">Seu perfil (${esc(perfilNome(S.me&&S.me.perfil))}) consulta o diagnóstico, mas não altera as notas.</div>`:""}
-    <div class="row" style="margin-top:12px;justify-content:space-between"><div class="filters" id="filters">
-      ${[["todos","Todos"],["pendentes","Sem nota"],["alta","Alta prioridade"],["semevid","Sem evidência"]].map(([k,t])=>`<button class="chip" data-f="${k}" aria-pressed="${S.filter===k}">${t}</button>`).join("")}
-    </div><span class="small muted num">${c.avaliados}/${c.total} avaliados · índice ${c.started?pct(c.score):"—"}</span></div></section>`);
-  $("#filters",w).onclick=e=>{const b=e.target.closest(".chip"); if(!b) return; S.filter=b.dataset.f; render();};
+    <p class="small muted num" style="margin:10px 0 0">${c.avaliados}/${c.total} critérios avaliados · índice ${c.started?pct(c.score):"—"}</p></section>`);
+  const sit=(i,k)=>{ const r=S.diag[i.id]||{}; const has=r.nota!=null&&r.nota!=="";
+    if(k==="pendentes") return !has&&!r.na; if(k==="alta") return has&&!r.na&&Number(r.nota)<=1;
+    if(k==="semevid") return !r.na&&!isUrl(r.evidencia); if(k==="na") return !!r.na; return true; };
+  const fSit=valorFiltro("diag","sit","todos"), fDim=valorFiltro("diag","dim","todas");
+  w.appendChild(barraFiltros("diag",{busca:"Buscar critério",grupos:[
+    {k:"sit",rotulo:"Situação",padrao:"todos",opcoes:[["todos","Todos"],["pendentes","Sem nota"],["alta","Alta prioridade"],["semevid","Sem evidência"],["na","Não se aplica"]].map(([v,t])=>({v,t,n:ITEMS.filter(i=>sit(i,v)).length}))},
+    {k:"dim",rotulo:"Dimensão",padrao:"todas",opcoes:[{v:"todas",t:"Todas"},...DIMS.map(d=>({v:d.k,t:DIM_CURTO[d.k],n:ITEMS.filter(i=>i.d===d.k&&sit(i,fSit)).length}))]}
+  ]}));
   for(const d of c.dims){
-    const its=ITEMS.filter(i=>i.d===d.k).filter(i=>{
-      const r=S.diag[i.id]||{}; const has=r.nota!=null&&r.nota!=="";
-      if(S.filter==="pendentes") return !has&&!r.na;
-      if(S.filter==="alta") return has&&!r.na&&Number(r.nota)<=1;
-      if(S.filter==="semevid") return !r.na&&!isUrl(r.evidencia);
-      return true;
-    });
+    if(fDim!=="todas" && fDim!==d.k) continue;
+    const its=ITEMS.filter(i=>i.d===d.k).filter(i=>sit(i,fSit) && buscaOk("diag",i.id,i.c,(S.diag[i.id]||{}).obs));
     if(!its.length) continue;
     const blk=document.createElement("section"); blk.className="dimblock"; w.appendChild(blk);
     blk.insertAdjacentHTML("beforeend",`<div class="dimhead"><h3>${esc(d.n)}</h3><div class="meta"><span>Peso ${Math.round(d.p*100)}%</span><span class="num">Aderência ${d.ader==null?"—":pct0(d.ader)}</span><span class="num">${d.avaliados}/${d.total} avaliados</span>${driveLink(d.f,"Pasta de evidências")}</div></div>`);
     its.forEach(i=>blk.appendChild(itemCard(i)));
   }
-  if(!w.querySelector(".dimblock")) w.insertAdjacentHTML("beforeend",`<div class="empty">Nenhum critério neste filtro.</div>`);
+  if(!w.querySelector(".dimblock")) w.insertAdjacentHTML("beforeend",`<div class="empty">Nenhum critério encontrado com esses filtros.</div>`);
 }
 function itemCard(i){
   const r=S.diag[i.id]||{}; const has=r.nota!=null&&r.nota!==""; const pr=has&&!r.na?prioridade(Number(r.nota)):"";
@@ -702,7 +761,7 @@ function itemCard(i){
       <label class="f"><span>Observações</span><textarea id="ob-${i.id}" rows="2" placeholder="Contexto, pendências, próximos passos" ${dis}>${esc(r.obs||"")}</textarea></label>
     </div>
     <div class="row" style="justify-content:space-between">
-      <label class="small row" style="gap:6px"><input type="checkbox" id="na-${i.id}" ${r.na?"checked":""} ${dis}> Não se aplica a este ECP</label>
+      <button type="button" class="switch" id="na-${i.id}" role="switch" aria-checked="${!!r.na}" ${dis}><span class="track"><span class="thumb"></span></span>Não se aplica a este ECP</button>
       <span class="row">${has&&Number(r.nota)>=2&&!isUrl(r.evidencia)&&!r.na?`<span class="warnline">Nota ${r.nota} pede evidência vinculada</span>`:""}<span class="saved">${r.atualizadoEm?"Salvo em "+new Date(r.atualizadoEm).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})+(r.atualizadoPor?" por "+esc(r.atualizadoPor):""):""}</span></span>
     </div>`;
   const save=async(patch)=>{ const cur=semCarimbo({...(S.diag[i.id]||{}),...patch}); salvarLocal("diag",i.id,cur); };
@@ -710,7 +769,7 @@ function itemCard(i){
   const ev=el.querySelector("#ev-"+CSS.escape(i.id)), ob=el.querySelector("#ob-"+CSS.escape(i.id));
   ev.onchange=()=>{ const v=ev.value.trim(); if(v&&!isUrl(v)){toast("Cole um link completo, começando com https://");return;} save({evidencia:v}).then(()=>{toast("Evidência salva");scheduleRender();}); };
   ob.onchange=()=>save({obs:ob.value}).then(()=>toast("Observação salva"));
-  el.querySelector("#na-"+CSS.escape(i.id)).onchange=e=>save({na:e.target.checked}).then(()=>scheduleRender());
+  el.querySelector("#na-"+CSS.escape(i.id)).onclick=()=>save({na:!r.na}).then(()=>scheduleRender());
   return el;
 }
 
@@ -731,7 +790,15 @@ function vPlano(w){
       <div class="kpi"><b class="num">${cnt("Concluído")}</b><span>concluídos</span></div>
     </div></section>`);
   if(!its.length){ w.insertAdjacentHTML("beforeend",`<div class="empty">Nenhum item precisa de ação ainda. Os itens aparecem aqui conforme as notas 0, 1 e 2 forem lançadas no Diagnóstico.</div>`); return; }
-  its.forEach(i=>{
+  const fSt=valorFiltro("plano","st","todos"), fPr=valorFiltro("plano","pr","todas");
+  const prio=i=>prioridade(Number(S.diag[i.id].nota));
+  w.appendChild(barraFiltros("plano",{busca:"Buscar ação, código ou responsável",grupos:[
+    {k:"st",rotulo:"Status",padrao:"todos",opcoes:[{v:"todos",t:"Todos",n:its.length},...["Não iniciado","Em andamento","Atrasado","Concluído"].map(v=>({v,t:v,n:cnt(v)}))]},
+    {k:"pr",rotulo:"Prioridade",padrao:"todas",opcoes:[{v:"todas",t:"Todas"},...["Alta","Média"].map(v=>({v,t:v,n:its.filter(i=>prio(i)===v).length}))]}
+  ]}));
+  const vis=its.filter(i=>{ const p=S.plano[i.id]||{}; return (fSt==="todos"||statusPlano(p)===fSt) && (fPr==="todas"||prio(i)===fPr) && buscaOk("plano",i.id,p.acao||sugestao(Number(S.diag[i.id].nota)),p.quem,i.c); });
+  if(!vis.length) w.insertAdjacentHTML("beforeend",`<div class="empty">Nenhuma ação encontrada com esses filtros.</div>`);
+  vis.forEach(i=>{
     const r=S.diag[i.id]; const p=S.plano[i.id]||{}; const pr=prioridade(Number(r.nota)); const stt=statusPlano(p);
     const open=!!S.editing["plano:"+i.id];
     const el=document.createElement("article"); el.className=`item pr-${pr}`;
@@ -781,15 +848,27 @@ function vDocs(w){ w.insertAdjacentHTML("beforeend",`<section class="panel">${ec
 
 function crud(w,key){
   const sc=SCHEMAS[key]; const data=S.lists[key];
-  const rows=Object.entries(data).sort((a,b)=>String(a[1][sc.order]||"").localeCompare(String(b[1][sc.order]||"")));
+  const todas=Object.entries(data).sort((a,b)=>String(a[1][sc.order]||"").localeCompare(String(b[1][sc.order]||"")));
+  const FK={cronograma:"status",reunioes:"status",stakeholders:"tipo",entidades:"acao",documentos:"tipo"}[key];
+  const valorDe=(r)=> FK==="acao"? acaoEntidade(r.influencia,r.engajamento) : (FK==="status"&&statusReg(key,r)==="Atrasado"?"Atrasado":(r[FK]||"Sem informação"));
+  const fv=valorFiltro("crud-"+key,"v","todos");
+  const rows=todas.filter(([id,r])=>(fv==="todos"||valorDe(r)===fv) && buscaOk("crud-"+key,...sc.fields.map(x=>r[x.k])));
   const ed=S.editing[key]; const pw=pode(AREA_DE[key]);
   const sec=document.createElement("section"); sec.className="panel"; w.appendChild(sec);
   const folderBtn = sc.folder ? driveLink(sc.folder) : "";
   const extra = key==="reunioes" ? driveLink("presenca","Listas de presença") : "";
-  sec.innerHTML=`<div class="panel-h"><div><h3>${sc.title} <span class="muted small num">(${rows.length})</span></h3><div class="small muted">${sc.sub}</div></div>
+  sec.innerHTML=`<div class="panel-h"><div><h3>${sc.title} <span class="muted small num">(${todas.length})</span></h3><div class="small muted">${sc.sub}</div></div>
     <div class="row">${folderBtn}${extra}${key==="entidades"&&!rows.length&&pw?`<button class="btn" data-seed>Carregar entidades padrão</button>`:""}${pw?`<button class="btn primary" data-new>+ Novo registro</button>`:""}</div></div>`;
   if(ed==="new") sec.appendChild(recForm(key,null,{}));
-  if(!rows.length && ed!=="new"){ sec.insertAdjacentHTML("beforeend",`<div class="empty">Nenhum registro ainda.${pw?" Use “+ Novo registro” para incluir o primeiro.":""}</div>`); }
+  if(todas.length>2){
+    const cont={}; todas.forEach(([id,r])=>{ const v=valorDe(r); cont[v]=(cont[v]||0)+1; });
+    const ordem=FK==="acao"?["Gerenciar de perto","Engajar ativamente","Manter informado","Monitorar","—"]:[...((sc.fields.find(x=>x.k===FK)||{}).o||[]),"Atrasado","Sem informação"];
+    const opcoes=[{v:"todos",t:"Todos",n:todas.length},...ordem.filter(v=>cont[v]).map(v=>({v,t:v==="—"?"Sem classificação":v,n:cont[v]}))];
+    const fb=barraFiltros("crud-"+key,{busca:"Buscar",grupos:[{k:"v",rotulo:{status:"Status",tipo:"Tipo",acao:"Ação sugerida"}[FK],padrao:"todos",opcoes}]});
+    fb.style.marginBottom="12px"; sec.appendChild(fb);
+  }
+  if(!todas.length && ed!=="new"){ sec.insertAdjacentHTML("beforeend",`<div class="empty">Nenhum registro ainda.${pw?" Use “+ Novo registro” para incluir o primeiro.":""}</div>`); }
+  else if(!rows.length && ed!=="new"){ sec.insertAdjacentHTML("beforeend",`<div class="empty">Nenhum registro encontrado com esses filtros.</div>`); }
   else if(rows.length){
     const wrap=document.createElement("div"); wrap.className="tbl-wrap";
     wrap.innerHTML=`<table><thead><tr>${sc.cols.map(c=>`<th>${esc(c==="acao"&&key==="entidades"?"Ação sugerida":LABEL[c]||c)}</th>`).join("")}<th></th></tr></thead><tbody></tbody></table>`;
@@ -811,6 +890,7 @@ function crud(w,key){
     toast("Entidades padrão carregadas"); render();
   };
 }
+function statusReg(key,r){ const v=r.status; const late=(key==="cronograma"&&r.dataPrevista&&r.dataPrevista<today()&&!["Concluído","Cancelado"].includes(v))||(key==="reunioes"&&r.dataLimite&&r.dataLimite<today()&&!["Concluído","Cancelado"].includes(v)); return late?"Atrasado":v; }
 function cellVal(key,c,r){
   if(key==="entidades"&&c==="acao"){ const a=acaoEntidade(r.influencia,r.engajamento); const cl=a==="Gerenciar de perto"?"p-bad":a==="Engajar ativamente"?"p-warn":a==="Manter informado"?"p-info":"p-mut"; return a==="—"?"—":`<span class="pill ${cl}">${a}</span>`; }
   const v=r[c];
@@ -859,16 +939,22 @@ function vRede(w){
     <div class="kpi"><b class="num">${aptos}</b><span>aptos a Modelo de Referência (≥85%)</span></div>
     <div class="kpi"><b class="num">${tot?pct0(evid/tot):"—"}</b><span>critérios com evidência</span></div></div></section>`);
   const heat=v=>v==null?`<span class="heat" style="background:var(--surface-2);color:var(--muted)">—</span>`:`<span class="heat num" style="background:${band(v).c};color:#fff">${Math.round(v*100)}</span>`;
+  const faixa=r=>r.err?"erro":!r.c.started?"nao":band(r.c.score).t;
+  const fF=valorFiltro("rede","faixa","todas");
+  const linhas=S.rede.rows.filter(r=>(fF==="todas"||faixa(r)===fF)&&buscaOk("rede",r.nome,(S.ecps[r.id]||{}).municipio,(S.ecps[r.id]||{}).territorio,(S.ecps[r.id]||{}).regional));
+  const fb=barraFiltros("rede",{busca:"Buscar escritório, município ou território",grupos:[{k:"faixa",rotulo:"Situação",padrao:"todas",opcoes:[{v:"todas",t:"Todas",n:S.rede.rows.length},...["Avançado","Intermediário","Básico","Em Estruturação"].map(v=>({v,t:v,n:S.rede.rows.filter(r=>faixa(r)===v).length})).filter(o=>o.n),{v:"nao",t:"Não iniciado",n:S.rede.rows.filter(r=>faixa(r)==="nao").length}]}]});
   w.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><h3>Comparativo por escritório</h3><span class="small muted">Clique na linha para abrir o painel do ECP</span></div>
-    <div class="tbl-wrap"><table><thead><tr><th>ECP</th><th>Índice</th><th>Situação</th>${DIMS.map(d=>`<th title="${esc(d.n)}">${d.k}</th>`).join("")}<th>Avaliados</th><th>Evidências</th><th>Ações concl.</th><th>Atrasadas</th><th>Reuniões</th><th>Última atualização</th></tr></thead><tbody>
-    ${S.rede.rows.map(r=>r.err?`<tr><td>${esc(r.nome)}</td><td colspan="${10+DIMS.length}" class="muted">Não foi possível ler os dados.</td></tr>`:
-      `<tr class="click" data-id="${esc(r.id)}"><td><b>${esc(r.nome)}</b></td><td class="num"><b>${r.c.started?pct(r.c.score):"—"}</b></td>
+    <div id="redeF" style="margin-bottom:12px"></div>${linhas.length?"":`<div class="empty">Nenhum escritório encontrado com esses filtros.</div>`}
+    <div class="tbl-wrap" ${linhas.length?"":"hidden"}><table><thead><tr><th>ECP</th><th>Índice</th><th>Situação</th>${DIMS.map(d=>`<th title="${esc(d.n)}">${d.k}</th>`).join("")}<th>Avaliados</th><th>Evidências</th><th>Ações concl.</th><th>Atrasadas</th><th>Reuniões</th><th>Última atualização</th></tr></thead><tbody>
+    ${linhas.map(r=>r.err?`<tr><td>${esc(r.nome)}</td><td colspan="${10+DIMS.length}" class="muted">Não foi possível ler os dados.</td></tr>`:
+      `<tr class="click" data-id="${esc(r.id)}"><td style="white-space:nowrap"><b>${esc(String(r.nome).replace(/^ECP /,""))}</b></td><td class="num"><b>${r.c.started?pct(r.c.score):"—"}</b></td>
       <td>${r.c.started?`<span class="pill ${band(r.c.score).t==="Avançado"?"p-ok":band(r.c.score).t==="Intermediário"?"p-info":band(r.c.score).t==="Básico"?"p-warn":"p-bad"}">${band(r.c.score).t}</span>`:`<span class="pill p-mut">Não iniciado</span>`}</td>
       ${r.c.dims.map(d=>`<td>${heat(d.ader)}</td>`).join("")}
       <td class="num">${r.c.avaliados}/${r.c.total}</td><td class="num">${r.c.comEvid}/${r.c.total}</td><td class="num">${r.concl}/${r.acoes}</td><td class="num" style="color:${r.atras?"var(--bad)":"inherit"}">${r.atras}</td><td class="num">${r.reun}</td>
       <td class="num small">${r.last?new Date(r.last).toLocaleDateString("pt-BR"):"—"}</td></tr>`).join("")}
     </tbody></table></div>
     <p class="small muted" style="margin:10px 0 0">Colunas GOV, AC, IE, EC e MPE: aderência (%) de cada dimensão. Faixas: Em Estruturação até 29%, Básico 30–49%, Intermediário 50–84%, Avançado a partir de 85%.</p></section>`);
+  $("#redeF",w).appendChild(fb);
   w.querySelectorAll("tr[data-id]").forEach(tr=>tr.onclick=()=>{selectEcp(tr.dataset.id);S.view="painel";render();});
   $("#reload",w).onclick=()=>loadRede();
   const xr=$("#xlsxRede",w); if(xr) xr.onclick=()=>exportRede();
@@ -1005,25 +1091,26 @@ function vHist(w){
   const ents=H.entries;
   const status=e=>e.status==="pendente"?"pend":e.status==="homologado"?"homologado":e.status==="nao_homologado"?"nao":"registro";
   const cont={pend:0,homologado:0,nao:0}; ents.forEach(e=>{const s=status(e); if(cont[s]!==undefined) cont[s]++;});
-  const f=S.histFilter; const vis=ents.filter(e=>f==="todas"||status(e)===f);
+  const f=valorFiltro("hist","st","pend"), fA=valorFiltro("hist","area","todas");
+  const areas=[...new Set(ents.map(e=>e.area))].sort();
+  const vis=ents.filter(e=>(f==="todas"||status(e)===f)&&(fA==="todas"||e.area===fA)&&buscaOk("hist",e.usuarioNome,e.ref,e.acao,e.area));
   const meusPend=vis.filter(e=>status(e)==="pend" && e.usuarioId!==S.me.id);
   const sec=document.createElement("section"); sec.className="panel"; w.appendChild(sec);
   sec.innerHTML=`<div class="panel-h"><div><h3>Histórico de alterações</h3><div class="small muted">Toda alteração fica registrada com data, autor e o que mudou, e é gravada no GitHub do programa. As alterações valem na hora e depois são homologadas pelo coordenador, consultor do Sebrae, consultor credenciado ou administrador.</div></div>
-    <div class="row">${multiEcp()?`<select id="hScope" class="btn"><option value="ecp" ${S.histScope==="ecp"?"selected":""}>Este escritório</option><option value="todos" ${S.histScope==="todos"?"selected":""}>Todos os meus escritórios</option></select>`:""}<button class="btn" id="hReload">Atualizar</button>${pode("export")?`<button class="btn" id="hXlsx">Exportar histórico</button>`:""}</div></div>
+    <div class="row">${multiEcp()?`<div class="seg" id="hScope" role="group" aria-label="Abrangência"><button type="button" data-v="ecp" aria-pressed="${S.histScope==="ecp"}">Este escritório</button><button type="button" data-v="todos" aria-pressed="${S.histScope==="todos"}">Todos os escritórios</button></div>`:""}<button class="btn" id="hReload">Atualizar</button>${pode("export")?`<button class="btn" id="hXlsx">Exportar histórico</button>`:""}</div></div>
     ${H.erro?`<div class="banner warn">${esc(H.erro)}</div>`:""}
-    <div class="row" style="justify-content:space-between;margin-bottom:6px"><div class="filters" id="hF">
-      ${[["pend",`Aguardando (${cont.pend})`],["homologado",`Homologadas (${cont.homologado})`],["nao",`Não homologadas (${cont.nao})`],["todas","Todas"]].map(([k,t])=>`<button class="chip" data-f="${k}" aria-pressed="${f===k}">${t}</button>`).join("")}</div>
-      ${podeH&&meusPend.length>1?`<button class="btn primary" id="hAll">Homologar as ${meusPend.length} pendentes</button>`:""}</div>
+    <div id="hF" style="margin-bottom:10px"></div>
+    ${podeH&&meusPend.length>1?`<div class="row" style="justify-content:flex-end;margin-bottom:6px"><button class="btn primary" id="hAll">Homologar as ${meusPend.length} pendentes</button></div>`:""}
     <div id="hList"></div>`;
   const list=$("#hList",sec);
-  if(!vis.length) list.innerHTML=`<div class="empty">${f==="pend"?"Nenhuma alteração aguardando homologação.":"Nenhum registro neste filtro."}</div>`;
+  if(!vis.length) list.innerHTML=`<div class="empty">${f==="pend"&&!filtro("hist").q&&fA==="todas"?"Nenhuma alteração aguardando homologação.":"Nenhum registro encontrado com esses filtros."}</div>`;
   vis.slice(0,200).forEach(e=>{
     const st=status(e);
     const row=document.createElement("div"); row.className="hist-row";
     const pill= st==="pend"?`<span class="pill p-warn">Aguardando homologação</span>`: st==="homologado"?`<span class="pill p-ok">Homologado</span>`: st==="nao"?`<span class="pill p-bad">Não homologado</span>`:`<span class="pill p-mut">Registro</span>`;
     const podeEsta = podeH && st==="pend" && e.usuarioId!==S.me.id;
     row.innerHTML=`<div class="small num"><b>${new Date(e.em).toLocaleDateString("pt-BR")}</b><br><span class="muted">${new Date(e.em).toLocaleTimeString("pt-BR",{timeStyle:"short"})}</span>${S.histScope==="todos"?`<br><span class="muted">${esc((S.ecps[e.ecp]||{}).nome||e.ecp||"Geral")}</span>`:""}${e.github?`<br><span class="muted" title="Registrado no GitHub">✓ GitHub</span>`:""}</div>
-      <div style="min-width:0"><div><b>${esc(e.usuarioNome||"Usuário")}</b> <span class="muted small">(${esc(perfilNome(e.perfil))})</span> ${esc(e.acao)} <span class="code">${esc(e.area)}</span> ${esc(short(e.ref,60))}</div>${diffHtml(e)}
+      <div style="min-width:0"><div><b>${esc(e.usuarioNome||"Usuário")}</b> <span class="muted small">(${esc(perfilNome(e.perfil))})</span> ${esc(e.acao)} <span class="tag">${esc(e.area)}</span> ${esc(short(e.ref,60))}</div>${diffHtml(e)}
         ${e.homologadoEm?`<div class="small muted" style="margin-top:6px">${st==="homologado"?"Homologado":"Não homologado"} por <b>${esc(e.homologadoPorNome)}</b> em ${new Date(e.homologadoEm).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}${e.motivo?` · Motivo: ${esc(e.motivo)}`:""}</div>`:""}
         ${podeEsta?`<div class="row" data-motivo hidden style="margin-top:8px"><input class="btn" style="flex:1;min-width:180px;font-weight:400" placeholder="Motivo da não homologação" data-mot><button class="btn danger" data-nao-ok>Confirmar</button></div>`:""}</div>
       <div class="row" style="justify-content:flex-end">${pill}${podeEsta?`<button class="btn primary" data-hom>Homologar</button><button class="btn ghost" data-nao>Não homologar</button>`:""}${podeH&&st==="pend"&&e.usuarioId===S.me.id?`<span class="small muted">Sua alteração: outra pessoa homologa</span>`:""}</div>`;
@@ -1034,9 +1121,12 @@ function vHist(w){
     }
     list.appendChild(row);
   });
-  sec.querySelector("#hF").onclick=ev=>{const b=ev.target.closest(".chip"); if(!b) return; S.histFilter=b.dataset.f; render();};
+  $("#hF",sec).appendChild(barraFiltros("hist",{busca:"Buscar pessoa, código ou registro",grupos:[
+    {k:"st",rotulo:"Situação",padrao:"pend",opcoes:[{v:"pend",t:"Aguardando",n:cont.pend},{v:"homologado",t:"Homologadas",n:cont.homologado},{v:"nao",t:"Não homologadas",n:cont.nao},{v:"todas",t:"Todas",n:ents.length}]},
+    ...(areas.length>1?[{k:"area",rotulo:"Área",padrao:"todas",opcoes:[{v:"todas",t:"Todas"},...areas.map(a=>({v:a,t:a,n:ents.filter(e=>e.area===a).length}))]}]:[])
+  ]}));
   $("#hReload",sec).onclick=()=>{ S.hist=null; render(); };
-  const hs=$("#hScope",sec); if(hs) hs.onchange=()=>{ S.histScope=hs.value; S.hist=null; render(); };
+  const hs=$("#hScope",sec); if(hs) hs.onclick=ev=>{ const b=ev.target.closest("button"); if(!b||b.dataset.v===S.histScope) return; S.histScope=b.dataset.v; S.hist=null; render(); };
   const hx=$("#hXlsx",sec); if(hx) hx.onclick=()=>exportHist(ents,status);
   const ha=$("#hAll",sec); if(ha) ha.onclick=()=>{ if(ha.dataset.armed!=="1"){ ha.dataset.armed="1"; ha.textContent=`Confirmar homologação de ${meusPend.length}`; return; } homologar(meusPend,"homologado",""); };
 }
@@ -1061,16 +1151,21 @@ function vUsers(w){
       <label class="f"><span>Nome completo *</span><input name="nome" required></label>
       <label class="f"><span>E-mail *</span><input name="email" type="email" required></label>
       <label class="f"><span>Perfil *</span><select name="perfil" id="u-perfil">${perfisCriaveis.map(p=>`<option value="${p}" ${p==="atendente"?"selected":""}>${perfilNome(p)}</option>`).join("")}</select></label>
-      <div class="f wide"><span>Escritórios</span><div class="checks" id="u-ecps">
-        <label><input type="checkbox" value="*" data-todos> Todos os escritórios</label>
-        ${ids.map(id=>`<label><input type="checkbox" value="${esc(id)}"> ${esc(S.ecps[id].nome||id)}</label>`).join("")}</div>
-        <span class="small muted" id="u-dica" style="text-transform:none;letter-spacing:0;font-weight:400"></span></div>
+      <div class="f wide"><span>Escritórios</span><div class="chips" id="u-ecps" role="group" aria-label="Escritórios">
+        <button type="button" class="chip" data-v="*" aria-pressed="false">Todos os escritórios</button>
+        ${ids.map(id=>`<button type="button" class="chip" data-v="${esc(id)}" aria-pressed="false">${esc((S.ecps[id].nome||id).replace(/^ECP /,""))}</button>`).join("")}</div>
+        <span class="small muted" id="u-dica" style="text-transform:none;letter-spacing:0;font-weight:400;margin-top:4px"></span></div>
     </div><div class="row"><button class="btn primary" type="submit">Cadastrar e gerar senha</button></div></form>
     <div id="uOut"></div>`;
   const perfilSel=$("#u-perfil",g), dica=$("#u-dica",g), box=$("#u-ecps",g);
-  const ajusta=()=>{ const multi=PERFIS[perfilSel.value].multi; dica.textContent= multi ? "Marque os escritórios que a pessoa acompanha, ou “Todos os escritórios”." : "Coordenador e atendente ficam vinculados a um único escritório."; box.querySelector("[data-todos]").parentElement.hidden=!multi; if(!multi) box.querySelector("[data-todos]").checked=false; };
+  const todosBtn=box.querySelector('[data-v="*"]');
+  const ajusta=()=>{ const multi=PERFIS[perfilSel.value].multi; dica.textContent= multi ? "Selecione os escritórios que a pessoa acompanha, ou “Todos os escritórios”." : "Coordenador e atendente ficam vinculados a um único escritório: selecione um."; todosBtn.hidden=!multi;
+    if(!multi){ todosBtn.setAttribute("aria-pressed","false"); const on=[...box.querySelectorAll('.chip[aria-pressed="true"]')]; on.slice(1).forEach(b=>b.setAttribute("aria-pressed","false")); } };
   perfilSel.onchange=ajusta; ajusta();
-  box.onchange=ev=>{ if(!PERFIS[perfilSel.value].multi && ev.target.checked){ box.querySelectorAll("input").forEach(i=>{ if(i!==ev.target) i.checked=false; }); } };
+  box.onclick=ev=>{ const b=ev.target.closest(".chip"); if(!b) return; const multi=PERFIS[perfilSel.value].multi; const on=b.getAttribute("aria-pressed")!=="true";
+    if(!multi){ box.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); return; }
+    if(b===todosBtn){ box.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed","false")); todosBtn.setAttribute("aria-pressed",String(on)); return; }
+    todosBtn.setAttribute("aria-pressed","false"); b.setAttribute("aria-pressed",String(on)); };
   const out=$("#uOut",g);
   const mostra=()=>{ const u=S.ultimaSenha; if(!u){ out.innerHTML=""; return; }
     const ecpTxt = u.ecps.includes("*") ? "todos os escritórios" : u.ecps.map(k=>(S.ecps[k]||{}).nome||k).join(", ");
@@ -1086,25 +1181,35 @@ function vUsers(w){
   mostra();
   $("#fUser",g).onsubmit=async ev=>{
     ev.preventDefault(); const fd=Object.fromEntries(new FormData(ev.target));
-    let ecps=[...box.querySelectorAll("input:checked")].map(i=>i.value); if(ecps.includes("*")) ecps=["*"];
+    let ecps=[...box.querySelectorAll('.chip[aria-pressed="true"]')].map(b=>b.dataset.v); if(ecps.includes("*")) ecps=["*"];
     if(!ecps.length){ toast("Marque ao menos um escritório"); return; }
     const btn=ev.target.querySelector("button[type=submit]"); btn.disabled=true;
     try{ const r=await api("criarUsuario",{dados:{nome:fd.nome,email:fd.email,perfil:fd.perfil,ecps}});
       S.ultimaSenha={nome:fd.nome,email:fd.email.trim().toLowerCase(),perfil:fd.perfil,ecps,senha:r.senha}; S.usuarios=null; toast("Usuário cadastrado"); render(); }
     catch(e){ toast(e.message); } finally{ btn.disabled=false; }
   };
-  const lista=[...S.usuarios].sort((a,b)=>String(a.nome).localeCompare(String(b.nome)));
+  const todosU=[...S.usuarios].sort((a,b)=>String(a.nome).localeCompare(String(b.nome)));
+  const situ=r=>!r.ativo?"inativo":r.trocarSenha?"aguardando":"ativo";
+  const fP=valorFiltro("users","perfil","todos"), fS=valorFiltro("users","sit","todos"), fE=valorFiltro("users","ecp","todos");
+  const lista=todosU.filter(r=>(fP==="todos"||r.perfil===fP)&&(fS==="todos"||situ(r)===fS)&&(fE==="todos"||(r.ecps||[]).includes(fE)||(r.ecps||[]).includes("*"))&&buscaOk("users",r.nome,r.email));
   const u=document.createElement("section"); u.className="panel"; w.appendChild(u);
-  u.innerHTML=`<div class="panel-h"><div><h3>Usuários <span class="muted small num">(${lista.length})</span></h3><div class="small muted">Altere o perfil, gere nova senha provisória ou desative quem não deve mais acessar.</div></div></div>
-    <div class="tbl-wrap"><table><thead><tr><th>Pessoa</th><th>Perfil</th><th>Escritórios</th><th>Situação</th><th>Último acesso</th><th></th></tr></thead><tbody>
+  u.innerHTML=`<div class="panel-h"><div><h3>Usuários <span class="muted small num">(${todosU.length})</span></h3><div class="small muted">Altere o perfil, gere nova senha provisória ou desative quem não deve mais acessar.</div></div></div>
+    <div id="uFiltros" style="margin-bottom:12px"></div>
+    ${lista.length?"":`<div class="empty">Nenhum usuário encontrado com esses filtros.</div>`}
+    <div class="tbl-wrap" ${lista.length?"":"hidden"}><table><thead><tr><th>Pessoa</th><th>Perfil</th><th>Escritórios</th><th>Situação</th><th>Último acesso</th><th></th></tr></thead><tbody>
     ${lista.map(r=>{ const editavel = r.id!==S.me.id && (souAdmin || r.perfil!=="admin");
       return `<tr data-id="${esc(r.id)}"><td><b>${esc(r.nome)}</b>${r.id===S.me.id?' <span class="small muted">(você)</span>':""}<br><span class="small muted">${esc(r.email)}</span></td>
-      <td>${editavel?`<select class="btn" data-perfil style="font-weight:400">${Object.keys(PERFIS).filter(p=>souAdmin||p!=="admin").map(p=>`<option value="${p}" ${r.perfil===p?"selected":""}>${perfilNome(p)}</option>`).join("")}</select>`:esc(perfilNome(r.perfil))}</td>
+      <td>${editavel?`<select class="sel" data-perfil>${Object.keys(PERFIS).filter(p=>souAdmin||p!=="admin").map(p=>`<option value="${p}" ${r.perfil===p?"selected":""}>${perfilNome(p)}</option>`).join("")}</select>`:esc(perfilNome(r.perfil))}</td>
       <td class="small">${(r.ecps||[]).includes("*")?"Todos":esc((r.ecps||[]).map(k=>(S.ecps[k]||{}).nome||k).join(", "))}</td>
       <td>${!r.ativo?'<span class="pill p-mut">Desativado</span>':r.trocarSenha?'<span class="pill p-warn">Aguardando 1º acesso</span>':'<span class="pill p-ok">Ativo</span>'}</td>
       <td class="num small">${r.ultimoAcesso?new Date(r.ultimoAcesso).toLocaleDateString("pt-BR"):"—"}</td>
       <td><div class="row">${editavel?`<button class="btn ghost" data-senha>Nova senha</button><button class="btn ${r.ativo?"danger":""}" data-ativo>${r.ativo?"Desativar":"Reativar"}</button>`:""}</div></td></tr>`; }).join("")}
     </tbody></table></div>`;
+  $("#uFiltros",u).appendChild(barraFiltros("users",{busca:"Buscar por nome ou e-mail",grupos:[
+    {k:"perfil",rotulo:"Perfil",padrao:"todos",opcoes:[{v:"todos",t:"Todos",n:todosU.length},...Object.keys(PERFIS).map(p=>({v:p,t:perfilNome(p),n:todosU.filter(r=>r.perfil===p).length})).filter(o=>o.n)]},
+    {k:"sit",rotulo:"Situação",padrao:"todos",opcoes:[{v:"todos",t:"Todas"},{v:"ativo",t:"Ativos",n:todosU.filter(r=>situ(r)==="ativo").length},{v:"aguardando",t:"Aguardando 1º acesso",n:todosU.filter(r=>situ(r)==="aguardando").length},{v:"inativo",t:"Desativados",n:todosU.filter(r=>situ(r)==="inativo").length}]},
+    {k:"ecp",rotulo:"Escritório",tipo:"select",padrao:"todos",opcoes:[{v:"todos",t:"Todos"},...ids.map(id=>({v:id,t:(S.ecps[id].nome||id).replace(/^ECP /,"")}))]}
+  ]}));
   u.querySelectorAll("tr[data-id]").forEach(tr=>{
     const r=lista.find(x=>x.id===tr.dataset.id);
     const ps=tr.querySelector("[data-perfil]"); if(ps) ps.onchange=async()=>{ try{ await api("alterarUsuario",{id:r.id,perfil:ps.value}); toast("Perfil alterado"); }catch(e){ toast(e.message); } S.usuarios=null; render(); };
