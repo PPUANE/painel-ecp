@@ -261,6 +261,7 @@ svg text{fill:var(--muted);font-family:var(--f-body)}
 .switch[aria-checked="true"] .track{background:var(--hex)}
 .switch[aria-checked="true"] .thumb{left:19px}
 .switch[disabled]{opacity:.55;cursor:not-allowed}
+.tperm th:not(:first-child),.tperm td:not(:first-child){text-align:left;white-space:nowrap}.tperm td:first-child{min-width:220px}.tperm .switch{font-weight:600}
 @media (max-width:640px){.fbar{gap:10px}.fsearch{max-width:none;flex-basis:100%}.fgroup{width:100%}}
 @media (prefers-reduced-motion:reduce){.switch .track,.switch .thumb,.chip{transition:none}}
 </style>
@@ -484,7 +485,7 @@ async function init(){
   catch(e){ if(!(e instanceof ErroRede)){ if(e.cod!=="sessao") toast(e.message); } else { toast("Sem conexão: mostrando os últimos dados salvos neste aparelho."); } }
 }
 function aplicarSessao(d,salvar){
-  S.me=d.eu; S.ecps={}; (d.ecps||[]).forEach(e=>S.ecps[e.id]=e);
+  S.me=d.eu; if(d.perm){ Object.keys(d.perm).forEach(p=>PERM[p]=d.perm[p]); S.permEdit=null; } S.ecps={}; (d.ecps||[]).forEach(e=>S.ecps[e.id]=e);
   if(salvar) LS.set("sessao",d);
   S.gate = S.me.trocarSenha ? "senha" : "ok"; S.ready=true;
   $("#mePerfil").hidden=false; $("#mePerfil").textContent=perfilNome(S.me.perfil); $("#meNome").textContent=S.me.nome; $("#me").hidden=false;
@@ -1218,13 +1219,47 @@ function vUsers(w){
     const ba=tr.querySelector("[data-ativo]"); if(ba) ba.onclick=async()=>{ if(r.ativo && ba.dataset.armed!=="1"){ ba.dataset.armed="1"; ba.textContent="Confirmar"; return; }
       try{ await api("alterarUsuario",{id:r.id,ativo:!r.ativo}); toast(r.ativo?"Acesso desativado":"Acesso reativado"); }catch(e){ toast(e.message); } S.usuarios=null; render(); };
   });
-  w.insertAdjacentHTML("beforeend",`<section class="panel"><h3>O que cada perfil pode fazer</h3><div class="tbl-wrap" style="margin-top:10px"><table><thead><tr><th>Perfil</th><th>Escritórios</th><th>Alimentar dados</th><th>Plano de ação</th><th>Homologar</th><th>Usuários</th><th>Cadastro</th></tr></thead><tbody>
-    <tr><td><b>Administrador</b></td><td>Todos</td><td>Todas as telas</td><td>Sim</td><td>Sim</td><td>Sim</td><td>Sim</td></tr>
-    <tr><td><b>Consultor do Sebrae</b></td><td>Os vinculados</td><td>Leitura</td><td>Leitura</td><td>Sim</td><td>Sim (exceto administradores)</td><td>Não</td></tr>
-    <tr><td><b>Coordenador do escritório</b></td><td>O seu</td><td>Todas as telas</td><td>Sim</td><td>Sim (de outras pessoas)</td><td>Não</td><td>Não</td></tr>
-    <tr><td><b>Atendente</b></td><td>O seu</td><td>Diagnóstico, agenda, reuniões e documentos</td><td>Leitura</td><td>Não</td><td>Não</td><td>Não</td></tr>
-    <tr><td><b>Consultor credenciado</b></td><td>Os vinculados</td><td>Leitura</td><td>Leitura</td><td>Sim</td><td>Não</td><td>Não</td></tr>
-    </tbody></table></div><p class="small muted" style="margin:10px 0 0">Ninguém homologa a própria alteração. As permissões são conferidas também no servidor.</p></section>`);
+  painelPerfis(w);
+}
+/* ===== O que cada perfil pode fazer (a administração liga e desliga cada serviço) ===== */
+const SERVICOS=[
+  ["diag","Diagnóstico","Lançar notas, evidências e observações dos critérios"],
+  ["plano","Plano de ação","Detalhar ações, responsáveis, prazos e status"],
+  ["agenda","Agenda e reuniões","Cadastrar o cronograma de ações e o histórico de reuniões"],
+  ["atores","Atores","Cadastrar stakeholders e o mapa de entidades"],
+  ["docs","Documentos","Cadastrar documentos de referência"],
+  ["ciclo","Evolução","Registrar a fotografia do índice de maturidade"],
+  ["homologar","Homologar","Homologar alterações feitas por outras pessoas"],
+  ["usuarios","Usuários","Cadastrar pessoas, gerar senha provisória e desativar acessos"],
+  ["export","Exportar","Baixar os dados em Excel"],
+  ["cadastro","Cadastro","Editar os dados e as pastas dos escritórios e criar novos"]
+];
+function painelPerfis(w){
+  const adm = S.me.perfil==="admin";
+  const perfis=Object.keys(PERFIS);
+  if(!S.permEdit){ S.permEdit={}; perfis.forEach(p=>S.permEdit[p]=(PERM[p]||[]).slice()); }
+  const E=S.permEdit;
+  const mudou = perfis.some(p=> SERVICOS.some(([k])=> E[p].includes(k)!==(PERM[p]||[]).includes(k)));
+  const sec=document.createElement("section"); sec.className="panel";
+  sec.innerHTML=`<h3>O que cada perfil pode fazer</h3>
+    <p class="small muted" style="margin:4px 0 10px">${adm?"Ligue ou desligue cada serviço para cada perfil e salve. A mudança vale para todos os escritórios assim que a pessoa abrir o painel de novo.":"Quem altera esta tabela é a administração."}</p>
+    <div class="tbl-wrap"><table class="tperm"><thead><tr><th>Serviço</th>${perfis.map(p=>`<th>${esc(PERFIS[p].n)}</th>`).join("")}</tr></thead><tbody>
+    ${SERVICOS.map(([k,n,d])=>`<tr><td><b>${n}</b><div class="small muted">${d}</div></td>${perfis.map(p=>{ const on=E[p].includes(k); const trava=!adm||p==="admin";
+      return `<td><button type="button" class="switch" role="switch" aria-checked="${on}" aria-label="${n}: ${esc(PERFIS[p].n)}" data-p="${p}" data-k="${k}" ${trava?"disabled":""}><span class="track"><span class="thumb"></span></span>${on?"Sim":"Não"}</button></td>`; }).join("")}</tr>`).join("")}
+    </tbody></table></div>
+    ${adm?`<div class="row" style="margin-top:12px"><button class="btn primary" id="permSalvar" ${mudou?"":"disabled"}>Salvar permissões</button>${mudou?`<button class="btn" id="permDesfazer">Desfazer</button><span class="small muted">Há alterações ainda não salvas.</span>`:""}</div>`:""}
+    <p class="small muted" style="margin:10px 0 0">Todos os perfis consultam as telas dos escritórios a que estão vinculados. O administrador tem sempre todos os serviços. Ninguém homologa a própria alteração, e o consultor do Sebrae não cadastra administradores. As permissões são conferidas também no servidor.</p>`;
+  w.appendChild(sec);
+  if(!adm) return;
+  sec.querySelectorAll(".switch:not([disabled])").forEach(b=>b.onclick=()=>{ const {p,k}=b.dataset; const a=E[p]; const ix=a.indexOf(k); if(ix>=0) a.splice(ix,1); else a.push(k); render(); });
+  const bd=$("#permDesfazer",sec); if(bd) bd.onclick=()=>{ S.permEdit=null; render(); };
+  $("#permSalvar",sec).onclick=async ev=>{ ev.target.disabled=true;
+    try{ const dados={}; perfis.filter(p=>p!=="admin").forEach(p=>dados[p]=E[p].filter(k=>k!=="ver"));
+      const r=await api("salvarPermissoes",{dados}); Object.keys(r).forEach(p=>PERM[p]=r[p]);
+      const c=LS.get("sessao",null); if(c){ c.perm=r; LS.set("sessao",c); }
+      S.permEdit=null; toast("Permissões salvas"); }
+    catch(e){ toast(/desconhecid|inválid/i.test(e.message)?"Atualize o servidor (Code.gs) para salvar permissões.":e.message); }
+    render(); };
 }
 function selecionar(el){ const r=document.createRange(); r.selectNodeContents(el); const s=getSelection(); s.removeAllRanges(); s.addRange(r); toast("Texto selecionado: copie com Ctrl+C"); }
 
