@@ -332,6 +332,7 @@ details.how dd{margin:0}
 .diff{display:grid;gap:3px;font-size:.84rem;margin-top:6px}
 .diff-d{margin-top:6px}.diff-d summary{cursor:pointer;color:var(--teal);font-weight:600;font-size:.84rem;width:max-content;max-width:100%}.diff-d[open] summary{margin-bottom:2px}
 .edit-c{text-align:right;white-space:nowrap}.lnk{color:var(--teal);font-weight:700;font-size:.84rem}tr.click:hover .lnk{text-decoration:underline}
+tr.edit-row>td{background:var(--surface-2);padding:14px}
 .row.acoes{flex-wrap:nowrap;justify-content:flex-end;gap:6px}.row.acoes .btn{white-space:nowrap;padding:6px 10px;font-size:.82rem}
 .tperm th,.tperm td{padding-inline:8px}
 .rede-t th,.rede-t td{padding-inline:8px}
@@ -1439,16 +1440,16 @@ function vUsers(w){
   const fP=valorFiltro("users","perfil","todos"), fS=valorFiltro("users","sit","todos"), fE=valorFiltro("users","ecp","todos");
   const lista=todosU.filter(r=>(fP==="todos"||r.perfil===fP)&&(fS==="todos"||situ(r)===fS)&&(fE==="todos"||(r.ecps||[]).includes(fE)||(r.ecps||[]).includes("*"))&&buscaOk("users",r.nome,r.email));
   const u=document.createElement("section"); u.className="panel"; w.appendChild(u);
-  u.innerHTML=`<div class="panel-h"><div><h3>Usuários <span class="muted small num">(${todosU.length})</span></h3><div class="small muted">Altere o perfil, gere nova senha provisória ou desative quem não deve mais acessar.</div></div></div>
+  u.innerHTML=`<div class="panel-h"><div><h3>Usuários <span class="muted small num">(${todosU.length})</span></h3><div class="small muted">Em <b>Editar</b> você corrige o nome e o e-mail e troca o perfil e os escritórios da pessoa. Também dá para gerar nova senha provisória ou desativar o acesso.</div></div></div>
     <div id="uFiltros" style="margin-bottom:12px"></div>
     ${lista.length?"":`<div class="empty">Nenhum usuário encontrado com esses filtros.</div>`}
     <div class="tbl-wrap" ${lista.length?"":"hidden"}><table><thead><tr><th>Pessoa</th><th>Perfil</th><th>Escritórios</th><th>Situação</th><th></th></tr></thead><tbody>
     ${lista.map(r=>{ const editavel = r.id!==S.me.id && (souAdmin || r.perfil!=="admin");
       return `<tr data-id="${esc(r.id)}"><td><b>${esc(r.nome)}</b>${r.id===S.me.id?' <span class="small muted">(você)</span>':""}<br><span class="small muted">${esc(r.email)}</span></td>
-      <td>${editavel?`<select class="sel" data-perfil>${Object.keys(PERFIS).filter(p=>souAdmin||p!=="admin").map(p=>`<option value="${p}" ${r.perfil===p?"selected":""}>${perfilNome(p)}</option>`).join("")}</select>`:esc(perfilNome(r.perfil))}</td>
+      <td>${esc(perfilNome(r.perfil))}</td>
       <td class="small">${(r.ecps||[]).includes("*")?"Todos":esc((r.ecps||[]).map(k=>(S.ecps[k]||{}).nome||k).join(", "))}</td>
       <td>${!r.ativo?'<span class="pill p-mut">Desativado</span>':r.trocarSenha?'<span class="pill p-warn">Aguardando 1º acesso</span>':'<span class="pill p-ok">Ativo</span>'}${r.ultimoAcesso?`<div class="small muted num" style="margin-top:3px">Último acesso em ${new Date(r.ultimoAcesso).toLocaleDateString("pt-BR")}</div>`:""}</td>
-      <td><div class="row acoes">${editavel?`<button class="btn ghost" data-senha>Nova senha</button><button class="btn ${r.ativo?"danger":""}" data-ativo>${r.ativo?"Desativar":"Reativar"}</button>`:""}</div></td></tr>`; }).join("")}
+      <td><div class="row acoes">${editavel?`<button class="btn" data-editar>Editar</button><button class="btn ghost" data-senha>Nova senha</button><button class="btn ${r.ativo?"danger":""}" data-ativo>${r.ativo?"Desativar":"Reativar"}</button>`:""}</div></td></tr>`; }).join("")}
     </tbody></table></div>`;
   $("#uFiltros",u).appendChild(barraFiltros("users",{busca:"Buscar por nome ou e-mail",grupos:[
     {k:"perfil",rotulo:"Perfil",padrao:"todos",opcoes:[{v:"todos",t:"Todos",n:todosU.length},...Object.keys(PERFIS).map(p=>({v:p,t:perfilNome(p),n:todosU.filter(r=>r.perfil===p).length})).filter(o=>o.n)]},
@@ -1457,7 +1458,8 @@ function vUsers(w){
   ]}));
   u.querySelectorAll("tr[data-id]").forEach(tr=>{
     const r=lista.find(x=>x.id===tr.dataset.id);
-    const ps=tr.querySelector("[data-perfil]"); if(ps) ps.onchange=async()=>{ try{ await api("alterarUsuario",{id:r.id,perfil:ps.value}); toast("Perfil alterado"); }catch(e){ toast(e.message); } S.usuarios=null; render(); };
+    const be=tr.querySelector("[data-editar]"); if(be) be.onclick=()=>{ S.editUser = S.editUser===r.id ? null : r.id; render(); };
+    if(S.editUser===r.id) tr.after(formEditarUsuario(r,ids,souAdmin));
     const bs=tr.querySelector("[data-senha]"); if(bs) bs.onclick=async()=>{ if(bs.dataset.armed!=="1"){ bs.dataset.armed="1"; bs.textContent="Confirmar"; return; }
       try{ const x=await api("alterarUsuario",{id:r.id,novaSenha:true}); S.ultimaSenha={nome:r.nome,email:r.email,perfil:r.perfil,ecps:r.ecps,senha:x.senha}; toast("Nova senha gerada"); window.scrollTo({top:0}); }catch(e){ toast(e.message); } S.usuarios=null; render(); };
     const ba=tr.querySelector("[data-ativo]"); if(ba) ba.onclick=async()=>{ if(r.ativo && ba.dataset.armed!=="1"){ ba.dataset.armed="1"; ba.textContent="Confirmar"; return; }
@@ -1505,6 +1507,37 @@ function painelPerfis(w){
       S.permEdit=null; toast("Permissões salvas"); }
     catch(e){ toast(/desconhecid|inválid/i.test(e.message)?"Atualize o servidor (Code.gs) para salvar permissões.":e.message); }
     render(); };
+}
+/* edição de um usuário: nome, e-mail, perfil e escritórios, tudo no mesmo lugar */
+function formEditarUsuario(r,ids,souAdmin){
+  const tr=document.createElement("tr"); tr.className="edit-row"; const td=document.createElement("td"); td.colSpan=5; tr.appendChild(td);
+  const sel=new Set(r.ecps||[]);
+  td.innerHTML=`<form class="form" style="margin:0"><div class="eyebrow">Editar ${esc(r.nome)}</div><div class="formgrid">
+      <label class="f"><span>Nome completo *</span><input name="nome" required value="${esc(r.nome)}"></label>
+      <label class="f"><span>E-mail *</span><input name="email" type="email" required value="${esc(r.email)}"></label>
+      <label class="f"><span>Perfil *</span><select name="perfil">${Object.keys(PERFIS).filter(p=>souAdmin||p!=="admin").map(p=>`<option value="${p}" ${r.perfil===p?"selected":""}>${perfilNome(p)}</option>`).join("")}</select></label>
+      <div class="f wide"><span>Escritórios</span><div class="chips" role="group" aria-label="Escritórios">
+        <button type="button" class="chip" data-v="*" aria-pressed="${sel.has("*")}">Todos os escritórios</button>
+        ${ids.map(id=>`<button type="button" class="chip" data-v="${esc(id)}" aria-pressed="${sel.has(id)}">${esc((S.ecps[id].nome||id).replace(/^ECP /,""))}</button>`).join("")}</div>
+        <span class="small muted" data-dica style="text-transform:none;letter-spacing:0;font-weight:400;margin-top:4px"></span></div>
+    </div><div class="row"><button class="btn primary" type="submit">Salvar alterações</button><button class="btn ghost" type="button" data-cancela>Cancelar</button></div></form>`;
+  const f=td.querySelector("form"), box=td.querySelector(".chips"), todos=box.querySelector('[data-v="*"]'), dica=td.querySelector("[data-dica]");
+  const ajusta=()=>{ const multi=PERFIS[f.perfil.value].multi; todos.hidden=!multi;
+    dica.textContent = multi ? "Marque os escritórios que a pessoa acompanha, ou “Todos os escritórios”." : "Coordenador e atendente ficam em um único escritório: escolha um.";
+    if(!multi){ todos.setAttribute("aria-pressed","false"); [...box.querySelectorAll('.chip[aria-pressed="true"]')].slice(1).forEach(b=>b.setAttribute("aria-pressed","false")); } };
+  f.perfil.onchange=ajusta; ajusta();
+  box.onclick=ev=>{ const b=ev.target.closest(".chip"); if(!b) return; const multi=PERFIS[f.perfil.value].multi; const on=b.getAttribute("aria-pressed")!=="true";
+    if(!multi){ box.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); return; }
+    if(b===todos){ box.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed","false")); todos.setAttribute("aria-pressed",String(on)); return; }
+    todos.setAttribute("aria-pressed","false"); b.setAttribute("aria-pressed",String(on)); };
+  td.querySelector("[data-cancela]").onclick=()=>{ S.editUser=null; render(); };
+  f.onsubmit=async ev=>{ ev.preventDefault();
+    let ecps=[...box.querySelectorAll('.chip[aria-pressed="true"]')].map(b=>b.dataset.v); if(ecps.includes("*")) ecps=["*"];
+    if(!ecps.length){ toast("Marque ao menos um escritório"); return; }
+    const bt=f.querySelector("button[type=submit]"); bt.disabled=true;
+    try{ await api("alterarUsuario",{id:r.id,nome:f.nome.value.trim(),email:f.email.value.trim(),perfil:f.perfil.value,ecps}); toast("Usuário atualizado"); S.editUser=null; S.usuarios=null; render(); }
+    catch(e){ toast(e.message); bt.disabled=false; } };
+  return tr;
 }
 function selecionar(el){ const r=document.createRange(); r.selectNodeContents(el); const s=getSelection(); s.removeAllRanges(); s.addRange(r); toast("Texto selecionado: copie com Ctrl+C"); }
 
