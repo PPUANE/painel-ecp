@@ -622,7 +622,7 @@ function aplicarSessao(d,salvar){
   S.me=d.eu; if(d.perm){ Object.keys(d.perm).forEach(p=>PERM[p]=d.perm[p]); S.permEdit=null; } S.ecps={}; (d.ecps||[]).forEach(e=>S.ecps[e.id]=e);
   if(salvar) LS.set("sessao",d);
   S.gate = S.me.trocarSenha ? "senha" : "ok"; S.ready=true;
-  $("#mePerfil").hidden=false; $("#mePerfil").textContent=perfilNome(S.me.perfil); $("#meNome").textContent=S.me.nome; $("#me").hidden=false;
+  $("#mePerfil").hidden=false; $("#mePerfil").textContent=perfilNome(S.me.perfil)+(S.me.perfil==="admin"||S.me.perfil==="consultor"?" · Gestão Estadual":""); $("#meNome").textContent=S.me.nome; $("#me").hidden=false;
   fillSelect();
   if(S.gate==="ok") escolherEcpInicial(); else render();
 }
@@ -640,7 +640,7 @@ function escolherEcpInicial(){
 }
 function fillSelect(){
   const sel=$("#ecpSel"); const ids=(S.gate==="ok"?ecpsPermitidos():[]).sort((a,b)=>(S.ecps[a].nome||a).localeCompare(S.ecps[b].nome||b));
-  const vis = S.gate==="ok" ? "" : "none"; $(".ecp-pick label").style.display=vis; sel.style.display=vis; $("#btnSairTopo").hidden = S.gate!=="senha";
+  const vis = S.gate==="ok" ? "" : "none"; $(".ecp-pick label").style.display=vis; $(".ecp-pick label").textContent = multiEcp() ? "Visualizando" : "Escritório"; sel.style.display=vis; $("#btnSairTopo").hidden = S.gate!=="senha";
   sel.innerHTML = ids.length ? ids.map(id=>`<option value="${esc(id)}">${esc(S.ecps[id].nome||id)}</option>`).join("") : `<option value="">—</option>`;
   if(S.ecpId) sel.value=S.ecpId;
 }
@@ -1280,6 +1280,8 @@ function vEntrada(w){
       S.token=r.token; LS.set("token",r.token); LS.set("ultEcp",fd.ecp); S._senhaLogin=fd.senha;
       if(fd.ecp && fd.ecp[0]!=="*") LS.set("sel",fd.ecp);
       aplicarSessao(await api("sessao"),true); processarFila();
+      // quem acompanha vários escritórios entra pela visão geral, não por um escritório específico
+      if(S.gate==="ok" && multiEcp()){ S.view="rede"; LS.set("view","rede"); render(); } window.scrollTo(0,0);
     }catch(e){ mostrarErro(e.message); }
     finally{ btn.disabled=false; btn.textContent="Entrar"; }
   };
@@ -1307,7 +1309,7 @@ function vTrocarSenha(w){
     if(fd.nova===fd.atual){ err.textContent="A nova senha precisa ser diferente da provisória."; err.hidden=false; return; }
     const btn=ev.target.querySelector("button[type=submit]"); btn.disabled=true;
     try{ await api("trocarSenha",{atual:fd.atual,nova:fd.nova}); S.me.trocarSenha=false; const c=LS.get("sessao",null); if(c){ c.eu.trocarSenha=false; LS.set("sessao",c); }
-      toast("Senha salva"); S._senhaLogin=null; S.gate="ok"; fillSelect(); if(!S.ecpId) escolherEcpInicial(); else render(); }
+      toast("Senha salva"); const primeiro=!!S._senhaLogin; S._senhaLogin=null; S.gate="ok"; if(primeiro && multiEcp()){ S.view="rede"; LS.set("view","rede"); } fillSelect(); if(!S.ecpId) escolherEcpInicial(); else render(); }
     catch(e){ err.textContent=e.message==="A senha atual não confere."?(primeira?"A senha provisória não confere. Toque no olho para conferir o que foi digitado. Se preferir, clique em Sair e entre de novo.":"A senha atual não confere. Toque no olho para conferir."):e.message; err.hidden=false; }
     finally{ btn.disabled=false; }
   };
