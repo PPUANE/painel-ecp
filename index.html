@@ -715,7 +715,7 @@ function selectEcp(id){
   if(pode("homologar")) loadHist();
 }
 /* grava localmente na hora e envia ao servidor pela fila */
-function salvarLocal(colecao,id,dados){
+function salvarLocal(colecao,id,dados){ S.redeSuja=true;
   const alvo = colecao==="diag"?S.diag : colecao==="plano"?S.plano : colecao==="ciclos"?S.ciclos : S.lists[colecao];
   const agora=new Date().toISOString();
   alvo[id]={...dados,atualizadoEm:agora,atualizadoPor:S.me.nome};
@@ -724,7 +724,7 @@ function salvarLocal(colecao,id,dados){
   if(tmp){ const q=fila.find(o=>o.tmp===id); if(q){ q.dados.dados=dados; LS.set("fila",fila); processarFila(); return; } }
   enfileirar({acao:"salvar",ecp:S.ecpId,tmp:tmp?id:null,dados:{ecp:S.ecpId,colecao,id:tmp?null:id,dados}});
 }
-function excluirLocal(colecao,id){
+function excluirLocal(colecao,id){ S.redeSuja=true;
   delete S.lists[colecao][id];
   if(String(id).startsWith("novo_")) { fila=fila.filter(o=>o.tmp!==id); LS.set("fila",fila); mostrarFila(); return; }
   enfileirar({acao:"excluir",ecp:S.ecpId,dados:{ecp:S.ecpId,colecao,id}});
@@ -1186,7 +1186,7 @@ function recForm(key,id,r){
 }
 
 function vRede(w){
-  if(!S.rede){ loadRede(); return; }
+  if(!S.rede || (S.redeSuja && !S.rede.loading)){ S.redeSuja=false; loadRede(); return; }
   if(S.rede.loading){ w.innerHTML=`<div class="empty">Consolidando os dados dos escritórios…</div>`; return; }
   if(S.rede.erro){ w.innerHTML=`<div class="banner warn">${esc(S.rede.erro)}</div>`; }
   const R=S.rede.rows.filter(r=>!r.err);
@@ -1791,7 +1791,7 @@ function painelImportar(w){
   const sd=$("#impDest",sec); if(sd) sd.onchange=()=>{ I.destino=sd.value; I.confirmado=false; render(); };
   const cf=$("#impConf",sec); if(cf) cf.onchange=()=>{ I.confirmado=cf.checked; render(); };
   const ok=$("#impOk",sec); if(ok) ok.onclick=async()=>{ const destino=I.destino; if(!destino) return; ok.disabled=true; ok.textContent="Importando…";
-    try{ const r=await api("importar",{ecp:destino,arquivo:I.arquivo,itens:I.itens}); S.importa=null; S.diagUI={};
+    try{ const r=await api("importar",{ecp:destino,arquivo:I.arquivo,itens:I.itens}); S.importa=null; S.redeSuja=true; S.diagUI={};
       if(S.ecpId!==destino) selectEcp(destino); else await carregarEcp(destino,true);
       toast(`Importação concluída em ${(S.ecps[destino]||{}).nome||destino}: ${r.total} registros`); if(pode("homologar")) loadHist(); }
     catch(e){ toast(/desconhecid/i.test(e.message)?"Atualize o servidor (Code.gs) para importar planilhas.":e.message); }
