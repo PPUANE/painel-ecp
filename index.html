@@ -234,8 +234,8 @@ details.how dd{margin:0}
 @media (max-width:900px){.fields{grid-template-columns:1fr 1fr}.fields .fnota{grid-column:1/-1;max-width:320px}}
 .nota-sel{width:100%;font-weight:600}.nota-sel.n0{border-color:var(--bad);color:var(--bad)}.nota-sel.n1{border-color:var(--warn);color:var(--warn)}.nota-sel.n2{border-color:var(--info);color:var(--info)}.nota-sel.n3{border-color:var(--ok);color:var(--ok)}.nota-sel option{color:var(--fg);font-weight:400}
 .ecp-dir{display:flex;align-items:center;gap:10px 22px;flex-wrap:wrap;justify-content:flex-end}
-.ecp-logos{display:flex;align-items:center;gap:18px;flex-wrap:wrap}.ecp-logos img{height:44px;max-width:130px;object-fit:contain;display:block}
-@media (max-width:640px){.ecp-dir{justify-content:flex-start}.ecp-logos{gap:12px}.ecp-logos img{height:32px;max-width:92px}}
+.ecp-logos{display:flex;align-items:center;gap:22px;flex-wrap:wrap}.ecp-logos img{height:68px;max-width:190px;object-fit:contain;display:block}
+@media (max-width:640px){.ecp-dir{justify-content:flex-start}.ecp-logos{gap:14px}.ecp-logos img{height:46px;max-width:120px}}
 .logo-ecp{height:44px;max-width:130px;object-fit:contain}
 @media (max-width:640px){.logo-ecp{height:34px;max-width:96px}}
 .logos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin:12px 0}
@@ -1223,7 +1223,7 @@ function reduzirImagem(arq){ return new Promise((ok,erro)=>{
   im.onerror=()=>{ URL.revokeObjectURL(url); erro(new Error("Não foi possível ler esta imagem.")); };
   im.onload=()=>{ URL.revokeObjectURL(url);
     const w0=im.naturalWidth||300, h0=im.naturalHeight||150;
-    for(const lado of [320,240,180,128]){
+    for(const lado of [420,320,240,180,128]){
       const f=Math.min(1,lado/Math.max(w0,h0)); const cv=document.createElement("canvas"); cv.width=Math.max(1,Math.round(w0*f)); cv.height=Math.max(1,Math.round(h0*f));
       cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);
       let d=cv.toDataURL("image/png"); if(d.length<=40000) return ok(d);
