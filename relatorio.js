@@ -61,10 +61,10 @@ window.renderRelatorio=function(w){
   w.insertAdjacentHTML("beforeend",`<section class="panel noprint">${ecpHeader()}
     <div class="fbar" style="margin-top:12px"><div class="fgroup" role="group" aria-label="Período"><span class="flabel">Período das ações e reuniões</span><div class="chips">${PERIODOS.map(([v,t])=>`<button type="button" class="chip" data-per="${v}" aria-pressed="${periodo===v}">${t}</button>`).join("")}</div></div></div></section>
   <section class="panel info-wrap"><div id="infografico">${infografico(D)}</div></section>
-  <section class="panel noprint"><div class="panel-h"><div><h3>Imprimir e apresentar</h3><div class="small muted">Gerados com os dados lançados no painel, o período escolhido acima e as logos do Cadastro.</div></div></div>
+  <section class="panel noprint"><div class="panel-h"><div><h3>Imprimir e apresentar</h3><div class="small muted">Usam os dados do painel, o período escolhido e as logos do Cadastro.</div></div></div>
     <div class="rel-cards" style="margin-top:0">
-      <div class="rel-card"><b>Infográfico</b><span class="small muted">O relatório de monitoramento desta tela, em uma página A4.</span><button class="btn primary" id="relPrint" ${pe?"":"disabled"}>Imprimir ou salvar em PDF</button></div>
-      <div class="rel-card"><b>Apresentação</b><span class="small muted">Slides em PowerPoint no padrão do Escritório de Compras Públicas, prontos para a reunião de governança. Você pode editar depois.</span><button class="btn primary" id="relPptx" ${pe?"":"disabled"}>Baixar apresentação (PowerPoint)</button></div>
+      <div class="rel-card"><b>Infográfico</b><span class="small muted">Relatório de monitoramento em uma página A4.</span><button class="btn primary" id="relPrint" ${pe?"":"disabled"}>Imprimir ou salvar em PDF</button></div>
+      <div class="rel-card"><b>Apresentação</b><span class="small muted">Slides editáveis para a reunião de governança.</span><button class="btn primary" id="relPptx" ${pe?"":"disabled"}>Baixar em PowerPoint</button></div>
     </div>${pe?"":`<p class="small muted" style="margin:10px 0 0">Seu perfil visualiza o relatório na tela. Para imprimir ou baixar a apresentação é preciso ter o serviço Exportar.</p>`}</section>`);
   w.querySelectorAll("[data-per]").forEach(b=>b.onclick=()=>{ filtro("relat").g.per=b.dataset.per; render(); });
   const bp=$("#relPrint",w); if(bp) bp.onclick=()=>window.print();

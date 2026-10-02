@@ -240,8 +240,11 @@ details.how dd{margin:0}
 .logo-box{width:100%;height:84px;display:grid;place-items:center;background:#fff;border-radius:6px;border:1px dashed var(--line)}.logo-box img{max-width:90%;max-height:70px;object-fit:contain}
 .logo-card figcaption{display:grid;gap:1px;font-size:.86rem}
 .rel-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:12px}
-.rel-card{border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:8px;align-content:start;justify-items:start}
-.rel-card b{font-family:var(--f-display);font-size:1.02rem}
+.rel-card{border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.rel-card b{font-family:var(--f-display);font-size:.98rem;font-weight:700}
+.rel-card .small{line-height:1.45}
+.rel-card .btn{margin-top:10px;align-self:flex-start;width:250px;max-width:100%;justify-content:center;padding:9px 14px}
+@media (max-width:640px){.rel-card .btn{align-self:stretch;width:auto}}
 .info-wrap{padding:0;overflow:hidden;background:#fff}
 .ig{--n:#16234d;--a:#2a4fda;background:#fff;color:#16234d;font-size:12.5px;line-height:1.35;display:grid;gap:12px;padding:0 0 14px}
 .ig>*:not(.ig-top){margin-inline:18px}
