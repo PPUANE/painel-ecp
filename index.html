@@ -300,6 +300,7 @@ details.how dd{margin:0}
   .ig-box,.ig-row{break-inside:avoid}
   .ig-top{gap:12px;padding:12px 16px;flex-wrap:nowrap}.ig-logo{height:44px}.ig-loc{padding:5px 9px;gap:9px}.ig-loc img{height:30px;max-width:84px}.ig-tit{padding-left:12px}.ig-tit b{font-size:18px;white-space:nowrap}.ig-tit span{font-size:9px}.ig-data{flex:none}
 }
+.imp-res{display:grid;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}.imp-chips{display:flex;flex-wrap:wrap;gap:6px}.imp-chips span{background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:4px 11px;font-size:.82rem}
 .nalist{display:grid;gap:2px}.nalist .switch{align-items:flex-start;text-align:left;line-height:1.35;padding:7px 0}.nalist .switch .track{margin-top:1px}
 @media (max-width:640px){.fields{grid-template-columns:1fr}}
 .f{display:grid;gap:4px;min-width:0}
@@ -554,7 +555,7 @@ const PERFIS={
   credenciado:{n:"Consultor credenciado",multi:true}
 };
 const PERM={
-  admin:["ver","diag","plano","agenda","atores","docs","ciclo","cadastro","usuarios","homologar","export"],
+  admin:["ver","diag","plano","agenda","atores","docs","ciclo","cadastro","usuarios","homologar","export","importar"],
   consultor:["ver","usuarios","homologar","export"],
   coordenador:["ver","diag","plano","agenda","atores","docs","ciclo","homologar","export"],
   atendente:["ver","diag","agenda","docs"],
@@ -835,6 +836,8 @@ function vPainel(w){
   w.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><div><h3>Evolução do índice</h3><div class="small muted">Registre uma fotografia ao fechar cada ciclo de diagnóstico para acompanhar a trajetória do ECP.</div></div>
     <div class="row">${pode("ciclo")?`<button class="btn" id="btnCiclo" ${!c.started?"disabled":""}>Registrar fotografia de hoje</button>`:""}${pode("export")?`<button class="btn" id="btnXlsx">Exportar ECP (Excel)</button>`:""}</div></div>
     ${cic.length?evoChart(cic):`<div class="empty">Nenhuma fotografia registrada ainda.</div>`}</section>`);
+  if(S.importa && S.importa.ecp!==S.ecpId) S.importa=null;
+  painelImportar(w);
   w.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{S.view=b.dataset.go;render();});
   const bc=$("#btnCiclo",w); if(bc) bc.onclick=async()=>{
     const id=today(); const snap={data:id,score:c.score,avaliados:c.avaliados,evidencias:c.comEvid,dims:Object.fromEntries(c.dims.map(d=>[d.k,d.ader]))};
@@ -1473,6 +1476,7 @@ const SERVICOS=[
   ["homologar","Homologar","Homologar alterações feitas por outras pessoas"],
   ["usuarios","Usuários","Cadastrar pessoas, gerar senha provisória e desativar acessos"],
   ["export","Exportar e relatórios","Baixar os dados em Excel, imprimir o infográfico e gerar a apresentação"],
+  ["importar","Importar planilha","Subir o Excel do diagnóstico já preenchido para lançar tudo de uma vez"],
   ["cadastro","Cadastro","Editar os dados e as pastas dos escritórios e criar novos"]
 ];
 function painelPerfis(w){
@@ -1583,6 +1587,87 @@ function vRelat(w){
   carregarRelatorio().then(()=>{ if(S.view==="relat") render(); }).catch(()=>{ if(S.view!=="relat") return;
     w.innerHTML=`<section class="panel"><h3>Não foi possível abrir os relatórios</h3><p class="muted">Verifique a conexão e tente de novo. Se o aviso continuar, o arquivo relatorio.js ainda não foi enviado ao site.</p><button class="btn primary" id="relRetry">Tentar de novo</button></section>`;
     $("#relRetry",w).onclick=()=>render(); });
+}
+
+/* ===== Importação da planilha já preenchida (serviço "importar", liberado pela administração) ===== */
+const impNorm = t => semAcento(String(t==null?"":t)).replace(/[^a-z0-9]+/g," ").trim();
+const impData = v => { if(v instanceof Date && !isNaN(v)) return new Date(v.getTime()-v.getTimezoneOffset()*60000).toISOString().slice(0,10);
+  const s=String(v==null?"":v).trim(); let m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/); if(m) return `${m[3].length===2?"20"+m[3]:m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;
+  m=s.match(/^(\d{4})-(\d{2})-(\d{2})/); return m?`${m[1]}-${m[2]}-${m[3]}`:""; };
+const impTxt = v => v instanceof Date ? impData(v) : String(v==null?"":v).trim();
+const IMP_APELIDO={ stakeholders:{"contato email fone":"contato","observacoes notas":"obs"}, documentos:{"local link":"link"}, entidades:{"no pncp":"pncp","vol est r":"volume"}, cronograma:{}, reunioes:{} };
+const IMP_PLANO=[["acao",/^o que/],["como",/^como/],["onde",/^onde/],["quando",/^quando/],["quem",/^quem/],["quanto",/^quanto/],["status",/^status/],["obs",/^(evidencia obs|obs)/]];
+function lerPlanilha(wb){
+  const ids=new Set(ITEMS.map(i=>i.id)); const itens=[]; const cont={}; const avisos=[];
+  const soma=c=>cont[c]=(cont[c]||0)+1;
+  // o código do critério vem da coluna Item; se ela estiver vazia (fórmula sem valor), vale qualquer célula da linha com um código válido
+  const idDaLinha=(l,i)=>{ const a=impTxt(l[i]).toUpperCase(); if(ids.has(a)) return a; for(const c of l){ const t=impTxt(c).toUpperCase(); if(ids.has(t)) return t; } return ""; };
+  for(const nome of wb.SheetNames){
+    const linhas=XLSX.utils.sheet_to_json(wb.Sheets[nome],{header:1,raw:true,defval:""});
+    // procura a linha de cabeçalho nas primeiras linhas da aba
+    let achou=null;
+    for(let r=0;r<Math.min(linhas.length,15)&&!achou;r++){
+      const cab=linhas[r].map(impNorm); const iItem=cab.indexOf("item");
+      if(iItem>=0 && cab.some(c=>/^o que/.test(c)) && cab.some(c=>/^como/.test(c))) achou={tipo:"plano",r,cab,iItem};
+      else if(iItem>=0 && cab.some(c=>/^nota/.test(c)) && cab.includes("criterio")) achou={tipo:"diag",r,cab,iItem};
+      else { let melhor=null;
+        for(const [k,sc] of Object.entries(SCHEMAS)){ const mapa={}; sc.fields.forEach(f=>mapa[impNorm(f.l)]=f.k); Object.assign(mapa,IMP_APELIDO[k]||{});
+          const cols={}; cab.forEach((c,i)=>{ if(mapa[c] && cols[mapa[c]]===undefined) cols[mapa[c]]=i; });
+          const req=sc.fields.find(f=>f.req).k; const n=Object.keys(cols).length;
+          if(cols[req]!==undefined && n>=3 && (!melhor||n>melhor.n)) melhor={tipo:k,r,cols,n,req}; }
+        if(melhor) achou=melhor; }
+    }
+    if(!achou) continue;
+    const corpo=linhas.slice(achou.r+1);
+    if(achou.tipo==="diag"){
+      const c=achou.cab; const iNota=c.findIndex(x=>/^nota/.test(x)); const iEv=c.findIndex(x=>/^(documento de evidencia|link da evidencia)/.test(x)||x==="evidencia"); const iObs=c.findIndex(x=>/^observac/.test(x));
+      corpo.forEach(l=>{ const id=idDaLinha(l,achou.iItem); if(!id) return; const d={};
+        const n=impTxt(l[iNota]); if(n!==""){ const v=Number(n.replace(",",".")); if(Number.isInteger(v)&&v>=0&&v<=3) d.nota=v; else avisos.push(`${id}: nota "${n}" ignorada (use 0, 1, 2 ou 3).`); }
+        let obs=iObs>=0?impTxt(l[iObs]):""; const ev=iEv>=0?impTxt(l[iEv]):"";
+        if(isUrl(ev)) d.evidencia=ev; else if(ev && !/^insira a evid/i.test(ev)) obs=(obs?obs+" · ":"")+"Evidência informada na planilha: "+ev;
+        if(obs) d.obs=obs;
+        if(Object.keys(d).length){ itens.push({colecao:"diag",id,dados:d}); soma("diag"); } });
+    } else if(achou.tipo==="plano"){
+      const cols={}; IMP_PLANO.forEach(([k,re])=>{ const i=achou.cab.findIndex(x=>re.test(x)); if(i>=0) cols[k]=i; });
+      corpo.forEach(l=>{ const id=idDaLinha(l,achou.iItem); if(!id) return; const d={};
+        for(const k of Object.keys(cols)){ let v=k==="quando"?impData(l[cols[k]]):impTxt(l[cols[k]]); if(k==="status"){ v=["Não iniciado","Em andamento","Concluído"].find(o=>impNorm(o)===impNorm(v))||""; } if(v) d[k]=v; }
+        // a planilha já traz a sugestão de ação em todas as linhas: só entra o que tem algo preenchido além dela
+        if(Object.keys(d).some(k=>k!=="acao")){ itens.push({colecao:"plano",id,dados:d}); soma("plano"); } });
+    } else {
+      const sc=SCHEMAS[achou.tipo];
+      corpo.forEach(l=>{ const d={};
+        sc.fields.forEach(f=>{ const i=achou.cols[f.k]; if(i===undefined) return; let v=l[i];
+          if(f.t==="date") v=impData(v); else if(f.t==="number"){ const t=impTxt(v).replace(/\./g,"").replace(",","."); v=t!==""&&!isNaN(Number(t))?Number(t):(typeof l[i]==="number"?l[i]:""); }
+          else if(f.t==="url"){ v=impTxt(v); if(!isUrl(v)) v=""; }
+          else if(f.t==="select"){ const t=impTxt(v); v=f.o.find(o=>impNorm(o)===impNorm(t))||""; }
+          else v=impTxt(v);
+          if(v!==""&&v!==null&&v!==undefined) d[f.k]=v; });
+        if(d[achou.req]===undefined || /^\[.*\]$/.test(String(d[achou.req]))) return;
+        itens.push({colecao:achou.tipo,dados:d}); soma(achou.tipo); });
+    }
+  }
+  return {itens,cont,avisos};
+}
+function painelImportar(w){
+  if(!pode("importar")) return;
+  const sec=document.createElement("section"); sec.className="panel"; w.appendChild(sec);
+  const I=S.importa; const NOMES={diag:"notas do diagnóstico",plano:"ações do plano",cronograma:"atividades do cronograma",reunioes:"reuniões",stakeholders:"stakeholders",entidades:"entidades compradoras",documentos:"documentos"};
+  sec.innerHTML=`<div class="panel-h"><div><h3>Importar planilha preenchida</h3><div class="small muted">Suba o Excel do Diagnóstico de Maturidade já preenchido (ou um Excel exportado deste painel) para lançar tudo de uma vez em ${esc(ecp().nome||"este escritório")}.</div></div></div>
+    <div class="row"><label class="btn" style="cursor:pointer">Escolher arquivo Excel<input type="file" id="impArq" accept=".xlsx,.xls,.xlsm" hidden></label>${I?`<span class="small"><b>${esc(I.arquivo)}</b></span>`:`<span class="small muted">Formatos .xlsx ou .xls</span>`}</div>
+    ${I?(I.itens.length?`<div class="imp-res"><div class="small muted">Encontrado na planilha:</div><div class="imp-chips">${Object.keys(NOMES).filter(k=>I.cont[k]).map(k=>`<span><b>${I.cont[k]}</b> ${NOMES[k]}</span>`).join("")}</div>
+      ${I.avisos.length?`<div class="banner warn">${I.avisos.slice(0,5).map(esc).join("<br>")}${I.avisos.length>5?`<br>e mais ${I.avisos.length-5} aviso(s).`:""}</div>`:""}
+      <p class="small muted" style="margin:0">Notas e ações do plano substituem as que já existem neste escritório para os mesmos critérios. Nas listas (cronograma, reuniões, atores e documentos) os registros são acrescentados, e os repetidos são pulados. "Não se aplica" e os dados do Cadastro não mudam. A importação fica no Histórico para homologação.</p>
+      <div class="row"><button class="btn primary" id="impOk">Importar para ${esc(ecp().nome||"o escritório")}</button><button class="btn ghost" id="impCancela">Cancelar</button></div></div>`
+      :`<div class="banner warn" style="margin-top:10px">Não encontrei informações preenchidas nesta planilha. Confira se é o modelo do Diagnóstico de Maturidade, com as abas e os títulos das colunas originais.</div>`):""}`;
+  $("#impArq",sec).onchange=async ev=>{ const arq=ev.target.files[0]; if(!arq) return; toast("Lendo a planilha…");
+    try{ await carregarXlsx(); const wb=XLSX.read(await arq.arrayBuffer(),{type:"array",cellDates:true}); S.importa={arquivo:arq.name,ecp:S.ecpId,...lerPlanilha(wb)}; }
+    catch(e){ S.importa=null; toast(/Excel/.test(e.message)?e.message:"Não foi possível ler este arquivo. Use um Excel .xlsx ou .xls."); }
+    render(); };
+  const ok=$("#impOk",sec); if(ok) ok.onclick=async()=>{ ok.disabled=true; ok.textContent="Importando…";
+    try{ const r=await api("importar",{ecp:S.ecpId,arquivo:I.arquivo,itens:I.itens}); S.importa=null; S.diagUI={}; await carregarEcp(S.ecpId,true); toast(`Importação concluída: ${r.total} registros`); if(pode("homologar")) loadHist(); }
+    catch(e){ toast(/desconhecid/i.test(e.message)?"Atualize o servidor (Code.gs) para importar planilhas.":e.message); ok.disabled=false; ok.textContent="Importar"; }
+    render(); };
+  const ca=$("#impCancela",sec); if(ca) ca.onclick=()=>{ S.importa=null; render(); };
 }
 
 init();
