@@ -190,7 +190,7 @@ tr.click{cursor:pointer} tr.click:hover td{background:var(--surface-2)}
 .dim-t{display:flex;align-items:center;gap:10px;min-width:0}
 .dimhead h3{margin:0;color:var(--fg);display:flex;align-items:center;gap:10px;font-size:.96rem}
 .diag-resumo{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
-.diag-dica{flex:1 1 380px;font-size:.82rem;color:var(--muted);line-height:1.45}
+.diag-dica{flex:1 1 240px;font-size:.76rem;color:var(--muted);line-height:1.4}
 .diag-stat{display:flex;gap:8px;font-size:.8rem;color:var(--muted)}.diag-stat>span{background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:4px 11px;white-space:nowrap}.diag-stat b{color:var(--fg)}
 .fbar .sel{padding-block:6px;font-size:.84rem;min-width:0;max-width:100%;flex:1 1 auto;text-overflow:ellipsis}
 .dimhead h3::before{content:"";width:18px;height:18px;background:var(--hex);clip-path:polygon(25% 6.7%,75% 6.7%,100% 50%,75% 93.3%,25% 93.3%,0 50%);flex:none}
@@ -862,7 +862,7 @@ const DIM_CURTO={GOV:"Governança",AC:"Integração Compras",IE:"Integração Em
 function vDiag(w){
   const c=calc(S.diag);
   w.insertAdjacentHTML("beforeend",`<section class="panel">${ecpHeader()}
-    <div class="diag-resumo"><span class="diag-dica">Escolha a nota de cada critério, guarde o arquivo na pasta da dimensão no Drive e cole o link. Tudo é salvo automaticamente; notas 2 e 3 pedem evidência.</span>
+    <div class="diag-resumo"><span class="diag-dica">Dê a nota e cole o link da evidência. Salvamento automático.</span>
       <span class="diag-stat num"><span><b>${c.avaliados}/${c.total}</b> avaliados</span><span>índice <b>${c.started?pct(c.score):"—"}</b></span></span></div>
     ${!pode("diag")?`<div class="banner warn" style="margin-top:10px">Seu perfil (${esc(perfilNome(S.me&&S.me.perfil))}) consulta o diagnóstico, mas não altera as notas.</div>`:""}</section>`);
   const sit=(i,k)=>{ const r=S.diag[i.id]||{}; const has=r.nota!=null&&r.nota!=="";
