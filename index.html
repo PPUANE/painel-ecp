@@ -183,12 +183,27 @@ tr.click{cursor:pointer} tr.click:hover td{background:var(--surface-2)}
 .filters{display:flex;flex-wrap:wrap;gap:6px}
 .chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:.85rem;cursor:pointer;font-weight:700}
 .chip[aria-pressed="true"]{background:var(--hex);color:#fff;border-color:var(--hex)}
-.dimblock{display:grid;gap:10px}
-.dimhead{position:relative;overflow:hidden;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--head);color:var(--fg);border:1px solid var(--line);border-radius:var(--r)}
-.dimhead h3{color:var(--fg);display:flex;align-items:center;gap:10px}
+.dimblock{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;min-width:0}
+.dimhead{width:100%;border:0;background:var(--surface);color:var(--fg);font:inherit;text-align:left;cursor:pointer;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:14px 16px}
+.dimhead:hover{background:var(--surface-2)}
+.dimblock.aberta .dimhead{border-bottom:1px solid var(--line)}
+.dim-t{display:flex;align-items:center;gap:10px;min-width:0}
+.dimhead h3{margin:0;color:var(--fg);display:flex;align-items:center;gap:10px}
 .dimhead h3::before{content:"";width:18px;height:18px;background:var(--hex);clip-path:polygon(25% 6.7%,75% 6.7%,100% 50%,75% 93.3%,25% 93.3%,0 50%);flex:none}
+.chev{width:18px;height:18px;flex:none;fill:none;stroke:var(--muted);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+.dimblock.aberta .dimhead .chev{transform:rotate(90deg)}
 .dimhead .meta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:.85rem;color:var(--muted)}
-.dimhead a{color:var(--teal)}
+.dim-prog{display:inline-flex;align-items:center;gap:8px}.dim-prog i{display:block;width:90px;height:8px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden}.dim-prog em{display:block;height:100%;background:var(--hex)}.dim-prog b{color:var(--fg)}
+.dimbody{display:grid;gap:8px;padding:12px;background:var(--surface-2)}
+.dim-pasta{font-size:.85rem;padding:0 4px 2px}.dim-pasta a{color:var(--teal)}
+.qrow{width:100%;font:inherit;text-align:left;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:var(--r);padding:10px 12px;display:flex;gap:10px;align-items:center;min-width:0;color:var(--fg)}
+.qrow:hover{border-color:var(--hex);border-left-color:var(--hex)}
+.qrow.pr-Alta{border-left-color:var(--bad)}.qrow.pr-Média{border-left-color:var(--warn)}.qrow.pr-Baixa{border-left-color:var(--ok)}.qrow.na{border-left-color:var(--muted)}
+.qtxt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.9rem}
+.qst{display:flex;align-items:center;gap:8px;flex:none}
+.item.aberto{box-shadow:0 0 0 2px var(--hex);border-color:var(--hex)}
+@media (max-width:640px){.qrow{flex-wrap:wrap}.qtxt{flex-basis:calc(100% - 70px);white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.qst{margin-left:auto}.dim-prog i{width:60px}}
+@media (prefers-reduced-motion:reduce){.chev{transition:none}}
 .item{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:10px;min-width:0}
 .item.pr-Alta{border-left-color:var(--bad)} .item.pr-Média{border-left-color:var(--warn)} .item.pr-Baixa{border-left-color:var(--ok)} .item.na{border-left-color:var(--muted)}
 .item-h{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
@@ -634,7 +649,7 @@ async function carregarEcp(id,silencioso){
   S.carregando=false; scheduleRender();
 }
 function selectEcp(id){
-  S.ecpId=id; S.diag={}; S.plano={}; S.ciclos={}; for(const k in S.lists) S.lists[k]={}; S.editing={}; S.hist=null;
+  S.ecpId=id; S.diag={}; S.plano={}; S.ciclos={}; for(const k in S.lists) S.lists[k]={}; S.editing={}; S.hist=null; S.diagUI={};
   if(id) LS.set("sel",id);
   $("#ecpSel").value=id||"";
   if(!id){ render(); return; }
@@ -822,7 +837,7 @@ function nextStep(c){
   else { t="Diagnóstico completo e plano em dia"; d="Registre a fotografia do ciclo e acompanhe a evolução do índice."; btn="Ver agenda e reuniões"; go="agenda"; }
   const el=document.createElement("section"); el.className="next";
   el.innerHTML=`<div class="next-hex num">${Math.round(pr*100)}%</div><div style="min-width:0"><div class="eyebrow">Próximo passo</div><h3>${esc(t)}</h3><div class="small muted">${esc(d)}</div><div class="prog" title="Avanço: critérios avaliados e evidências vinculadas"><i style="width:${pr*100}%"></i></div></div><button class="btn primary">${esc(btn)} →</button>`;
-  el.querySelector("button").onclick=()=>{ if(f){ filtro("diag").g.sit=f; filtro("diag").g.dim="todas"; } if(go==="hist") filtro("hist").g.st="pend"; S.view=go; render(); window.scrollTo({top:0}); };
+  el.querySelector("button").onclick=()=>{ if(f){ filtro("diag").g.sit=f; filtro("diag").g.dim="todas"; } S.diagUI={}; if(go==="hist") filtro("hist").g.st="pend"; S.view=go; render(); window.scrollTo({top:0}); };
   return el;
 }
 function short(s,n){s=String(s||"");return s.length>n?s.slice(0,n-1)+"…":s;}
@@ -854,19 +869,61 @@ function vDiag(w){
     {k:"sit",rotulo:"Situação",padrao:"todos",opcoes:[["todos","Todos"],["pendentes","Sem nota"],["alta","Alta prioridade"],["semevid","Sem evidência"],["na","Não se aplica"]].map(([v,t])=>({v,t,n:ITEMS.filter(i=>sit(i,v)).length}))},
     {k:"dim",rotulo:"Dimensão",padrao:"todas",opcoes:[{v:"todas",t:"Todas"},...DIMS.map(d=>({v:d.k,t:DIM_CURTO[d.k],n:ITEMS.filter(i=>i.d===d.k&&sit(i,fSit)).length}))]}
   ]}));
+  // sanfona: uma dimensão aberta por vez e, dentro dela, um critério aberto por vez
+  const U=S.diagUI||(S.diagUI={});
+  const semNota=i=>{ const r=S.diag[i.id]||{}; return !r.na && (r.nota==null||r.nota===""); };
+  const filtrando = fSit!=="todos" || !!filtro("diag").q.trim();
+  if(U.dim===undefined){ const p=c.dims.find(d=>ITEMS.some(i=>i.d===d.k&&semNota(i))); U.dim=(p||c.dims[0]).k; U.item=undefined; }
   for(const d of c.dims){
     if(fDim!=="todas" && fDim!==d.k) continue;
-    const its=ITEMS.filter(i=>i.d===d.k).filter(i=>sit(i,fSit) && buscaOk("diag",i.id,i.c,(S.diag[i.id]||{}).obs));
+    const todos=ITEMS.filter(i=>i.d===d.k);
+    const its=todos.filter(i=>sit(i,fSit) && buscaOk("diag",i.id,i.c,(S.diag[i.id]||{}).obs));
     if(!its.length) continue;
-    const blk=document.createElement("section"); blk.className="dimblock"; w.appendChild(blk);
-    blk.insertAdjacentHTML("beforeend",`<div class="dimhead"><h3>${esc(d.n)}</h3><div class="meta"><span>Peso ${Math.round(d.p*100)}%</span><span class="num">Aderência ${d.ader==null?"—":pct0(d.ader)}</span><span class="num">${d.avaliados}/${d.total} avaliados</span>${driveLink(d.f,"Pasta de evidências")}</div></div>`);
-    its.forEach(i=>blk.appendChild(itemCard(i)));
+    const aberta = filtrando || fDim===d.k || U.dim===d.k;
+    const feitos=d.avaliados, tot=d.total, completa=tot>0&&feitos>=tot;
+    const blk=document.createElement("section"); blk.className="dimblock"+(aberta?" aberta":""); w.appendChild(blk);
+    blk.insertAdjacentHTML("beforeend",`<button type="button" class="dimhead" aria-expanded="${aberta}" data-dim="${d.k}">
+      <span class="dim-t"><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><h3>${esc(d.n)}</h3></span>
+      <span class="meta"><span>Peso ${Math.round(d.p*100)}%</span><span class="num">Aderência ${d.ader==null?"—":pct0(d.ader)}</span>
+        <span class="dim-prog" title="${feitos} de ${tot} critérios avaliados"><i><em style="width:${tot?Math.round(feitos/tot*100):0}%"></em></i><b class="num">${feitos}/${tot}</b></span>
+        ${completa?`<span class="pill p-ok">Concluída</span>`:""}</span></button>`);
+    blk.querySelector(".dimhead").onclick=()=>{ U.dim = U.dim===d.k ? "" : d.k; U.item=undefined; render(); };
+    if(!aberta) continue;
+    const corpo=document.createElement("div"); corpo.className="dimbody"; blk.appendChild(corpo);
+    const pasta=driveLink(d.f,"Pasta de evidências desta dimensão"); if(pasta) corpo.insertAdjacentHTML("beforeend",`<div class="dim-pasta">${pasta}</div>`);
+    // critério aberto: o escolhido pela pessoa ou, na falta, o primeiro ainda sem nota
+    let abertoId = U.dim===d.k || fDim===d.k ? U.item : undefined;
+    if(abertoId===undefined && (U.dim===d.k||fDim===d.k)){ const p=its.find(semNota); abertoId=p?p.id:null; }
+    its.forEach(i=>corpo.appendChild(i.id===abertoId?itemCard(i,todos):itemLinha(i,d.k)));
   }
   if(!w.querySelector(".dimblock")) w.insertAdjacentHTML("beforeend",`<div class="empty">Nenhum critério encontrado com esses filtros.</div>`);
+  if(U.foco){ const f=U.foco; U.foco=null; requestAnimationFrame(()=>{ const n=document.getElementById(f); if(n) n.focus(); }); }
+  if(U.rolar){ const alvo=U.rolar; U.rolar=null; requestAnimationFrame(()=>{ const n=document.getElementById("it-"+alvo)||w.querySelector(`[data-dim="${alvo}"]`); if(n){ const y=n.getBoundingClientRect().top+window.scrollY-90; window.scrollTo({top:Math.max(0,y),behavior:"smooth"}); } }); }
 }
-function itemCard(i){
+/* critério fechado: uma linha com código, pergunta e situação */
+function itemLinha(i,dimK){
   const r=S.diag[i.id]||{}; const has=r.nota!=null&&r.nota!==""; const pr=has&&!r.na?prioridade(Number(r.nota)):"";
-  const el=document.createElement("article"); el.className=`item ${r.na?"na":pr?"pr-"+pr:""}`;
+  const el=document.createElement("button"); el.type="button"; el.id="it-"+i.id; el.className=`qrow ${r.na?"na":pr?"pr-"+pr:""}`; el.setAttribute("aria-expanded","false");
+  const falta=has&&!r.na&&Number(r.nota)>=2&&!isUrl(r.evidencia);
+  el.innerHTML=`<span class="code">${i.id}</span><span class="qtxt">${esc(i.c)}</span>
+    <span class="qst">${falta?`<span class="pill p-warn">Falta evidência</span>`:""}${r.na?`<span class="pill p-mut">Não se aplica</span>`:has?`<span class="pill ${pr==="Alta"?"p-bad":pr==="Média"?"p-warn":"p-ok"}">Nota ${Number(r.nota)}</span>`:`<span class="pill p-mut">Sem nota</span>`}<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span>`;
+  el.onclick=()=>{ const U=S.diagUI; U.dim=dimK; U.item=i.id; U.rolar=i.id; render(); };
+  return el;
+}
+/* depois de responder um critério, abre o próximo ainda sem nota (na mesma dimensão ou na seguinte) */
+function proximoCriterio(i){
+  const U=S.diagUI; const semNota=x=>{ const r=S.diag[x.id]||{}; return !r.na && (r.nota==null||r.nota===""); };
+  const daDim=ITEMS.filter(x=>x.d===i.d); const pos=daDim.findIndex(x=>x.id===i.id);
+  const prox=[...daDim.slice(pos+1),...daDim.slice(0,pos)].find(semNota);
+  if(prox){ U.dim=i.d; U.item=prox.id; U.rolar=prox.id; return; }
+  const ordem=DIMS.map(d=>d.k); const k=ordem.indexOf(i.d);
+  const outra=[...ordem.slice(k+1),...ordem.slice(0,k)].find(dk=>ITEMS.some(x=>x.d===dk&&semNota(x)));
+  if(outra){ U.dim=outra; U.item=undefined; U.rolar=outra; toast("Dimensão concluída. Abrindo a próxima."); return; }
+  U.item=null; toast("Todos os critérios foram avaliados.");
+}
+function itemCard(i,daDim){
+  const r=S.diag[i.id]||{}; const has=r.nota!=null&&r.nota!==""; const pr=has&&!r.na?prioridade(Number(r.nota)):"";
+  const el=document.createElement("article"); el.id="it-"+i.id; el.className=`item aberto ${r.na?"na":pr?"pr-"+pr:""}`;
   const dis=pode("diag")?"":"disabled"; const disNa=(dis||r.na)?"disabled":"";
   el.innerHTML=`<div class="item-h"><div class="item-c"><span class="code">${i.id}</span><p>${esc(i.c)}</p></div>
     <div class="row">${r.na?`<span class="pill p-mut">Não se aplica</span>`:pr?`<span class="pill ${pr==="Alta"?"p-bad":pr==="Média"?"p-warn":"p-ok"}">Prioridade ${pr.toLowerCase()}</span>`:`<span class="pill p-mut">Sem nota</span>`}</div></div>
@@ -878,13 +935,18 @@ function itemCard(i){
       <label class="f"><span>Observações</span><textarea id="ob-${i.id}" rows="2" placeholder="Contexto, pendências, próximos passos" ${disNa}>${esc(r.obs||"")}</textarea></label>
     </div>
     <div class="row" style="justify-content:space-between">
-      <span class="small muted">${r.na?"Este critério não se aplica a este ECP (definido pela Gestão Estadual no Cadastro).":""}</span>
+      <span class="row"><button type="button" class="btn ${has||r.na?"primary":""}" data-prox>Próximo critério →</button><button type="button" class="btn ghost" data-fechar>Fechar</button><span class="small muted">${r.na?"Este critério não se aplica a este ECP (definido pela Gestão Estadual no Cadastro).":""}</span></span>
       <span class="row">${has&&Number(r.nota)>=2&&!isUrl(r.evidencia)&&!r.na?`<span class="warnline">Nota ${r.nota} pede evidência vinculada</span>`:""}<span class="saved">${r.atualizadoEm?"Salvo em "+new Date(r.atualizadoEm).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})+(r.atualizadoPor?" por "+esc(r.atualizadoPor):""):""}</span></span>
     </div>`;
   const save=async(patch)=>{ const cur=semCarimbo({...(S.diag[i.id]||{}),...patch}); salvarLocal("diag",i.id,cur); };
-  const nt=el.querySelector("#nt-"+CSS.escape(i.id)); nt.onchange=()=>save({nota:nt.value===""?null:Number(nt.value)}).then(()=>scheduleRender());
+  const nt=el.querySelector("#nt-"+CSS.escape(i.id)); nt.onchange=()=>{ const n=nt.value===""?null:Number(nt.value); save({nota:n}).then(()=>{
+    // o critério continua aberto: só o botão "Próximo critério" avança
+    S.diagUI.dim=i.d; S.diagUI.item=i.id; if(n!==null && n>=2 && !isUrl((S.diag[i.id]||{}).evidencia)) S.diagUI.foco="ev-"+i.id;
+    render(); }); };
+  el.querySelector("[data-prox]").onclick=()=>{ proximoCriterio(i); render(); };
+  el.querySelector("[data-fechar]").onclick=()=>{ S.diagUI.item=null; render(); };
   const ev=el.querySelector("#ev-"+CSS.escape(i.id)), ob=el.querySelector("#ob-"+CSS.escape(i.id));
-  ev.onchange=()=>{ const v=ev.value.trim(); if(v&&!isUrl(v)){toast("Cole um link completo, começando com https://");return;} save({evidencia:v}).then(()=>{toast("Evidência salva");scheduleRender();}); };
+  ev.onchange=()=>{ const v=ev.value.trim(); if(v&&!isUrl(v)){toast("Cole um link completo, começando com https://");return;} save({evidencia:v}).then(()=>{toast("Evidência salva"); const r2=S.diag[i.id]||{}; S.diagUI.dim=i.d; S.diagUI.item=i.id; scheduleRender(); }); };
   ob.onchange=()=>save({obs:ob.value}).then(()=>toast("Observação salva"));
   return el;
 }
