@@ -66,7 +66,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .ecp-pick label{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--bar-muted)}
 .ecp-pick select{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:6px;padding:7px 10px;min-width:210px;max-width:100%}
 .ecp-pick select option{color:#1b2235;background:#fff}
-.me{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--bar-muted)}
+.ecp-pick{flex:1 1 420px;justify-content:flex-start;padding-left:14px}
+.me{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--bar-muted)}
 .me img{width:26px;height:26px;border-radius:50%}
 .shell{display:grid;grid-template-columns:236px minmax(0,1fr);max-width:1440px;margin:0 auto;align-items:start}
 body.sem-menu .shell{display:block}
@@ -359,7 +360,7 @@ svg text{fill:var(--muted);font-family:var(--f-body)}
       <div class="ecp-pick">
         <label for="ecpSel">Escritório</label>
         <select id="ecpSel"><option value="">Carregando escritórios…</option></select>
-        <div class="me" id="me" hidden><span id="meNome"></span><b class="perfil" id="mePerfil" hidden></b><button type="button" id="btnSenha">Trocar senha</button><button type="button" id="btnSair">Sair</button></div>
+        <div class="me" id="me" hidden><span id="meNome"></span><b class="perfil" id="mePerfil" hidden></b><button type="button" id="btnSairTopo" hidden>Sair</button></div>
       </div>
     </div>
 
@@ -381,6 +382,8 @@ svg text{fill:var(--muted);font-family:var(--f-body)}
       <button class="tab" role="tab" data-v="hist"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.200 12a8 8 0 1 0 2.400-5.700"/><path d="M4 4.500v3.800h3.800M12 7.800v4.600l3 1.800"/></svg>Histórico</button>
       <button class="tab" role="tab" data-v="users"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.600"/><path d="M4.500 20.500c.6-4.200 3.500-6.300 7.500-6.300s6.900 2.100 7.500 6.300"/></svg>Usuários</button>
       <button class="tab" role="tab" data-v="cad"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3.500v2.300M12 18.200v2.300M3.500 12h2.300M18.200 12h2.300M6 6l1.600 1.600M16.400 16.400L18 18M18 6l-1.600 1.600M7.600 16.400L6 18"/></svg>Cadastro</button>
+      <button type="button" class="tab tab-acao" id="btnSenha"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12.2l8.500-8.500M16.500 6.700l2.300 2.300M14 9.200l1.800 1.800"/></svg>Trocar senha</button>
+      <button type="button" class="tab tab-acao" id="btnSair"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4.500H6.500a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2H10M15 8l4 4-4 4M19 12H9.500"/></svg>Sair</button>
     </nav><button type="button" class="tab-seta d" id="tabD" aria-label="Ver mais telas" hidden>›</button></aside>
 <main id="main"><div class="empty">Carregando o painel…</div></main>
 </div>
@@ -597,13 +600,14 @@ function escolherEcpInicial(){
 }
 function fillSelect(){
   const sel=$("#ecpSel"); const ids=(S.gate==="ok"?ecpsPermitidos():[]).sort((a,b)=>(S.ecps[a].nome||a).localeCompare(S.ecps[b].nome||b));
-  const vis = S.gate==="ok" ? "" : "none"; $(".ecp-pick label").style.display=vis; sel.style.display=vis; $("#btnSenha").style.display = S.gate==="ok" ? "" : "none";
+  const vis = S.gate==="ok" ? "" : "none"; $(".ecp-pick label").style.display=vis; sel.style.display=vis; $("#btnSairTopo").hidden = S.gate!=="senha";
   sel.innerHTML = ids.length ? ids.map(id=>`<option value="${esc(id)}">${esc(S.ecps[id].nome||id)}</option>`).join("") : `<option value="">—</option>`;
   if(S.ecpId) sel.value=S.ecpId;
 }
 $("#ecpSel").addEventListener("change",e=>selectEcp(e.target.value));
 window.addEventListener("hashchange",()=>{const h=location.hash.replace("#",""); if(S.gate==="ok" && ecpsPermitidos().includes(h)) selectEcp(h);});
-$("#btnSair").addEventListener("click",async()=>{ try{ await api("sair"); }catch(e){} encerrar("Você saiu do painel."); });
+const sairDoPainel=async()=>{ try{ await api("sair"); }catch(e){} encerrar("Você saiu do painel."); };
+$("#btnSair").addEventListener("click",sairDoPainel); $("#btnSairTopo").addEventListener("click",sairDoPainel);
 $("#btnSenha").addEventListener("click",()=>{ S.gate="senha"; S.trocaVoluntaria=true; render(); });
 
 function aplicarDados(d){
@@ -677,7 +681,7 @@ function scheduleRender(){ clearTimeout(rT); rT=setTimeout(()=>{
   render();
 },120); }
 function bindTabs(){
-  $("#tabs").addEventListener("click",e=>{const b=e.target.closest(".tab"); if(!b) return; S.view=b.dataset.v; LS.set("view",S.view); render(); window.scrollTo({top:0});});
+  $("#tabs").addEventListener("click",e=>{const b=e.target.closest(".tab"); if(!b || !b.dataset.v) return; S.view=b.dataset.v; LS.set("view",S.view); render(); window.scrollTo({top:0});});
 }
 
 /* ---------- render ---------- */
@@ -687,7 +691,7 @@ function render(){
   const m=$("#main");
   const ok = S.gate==="ok"; document.body.classList.toggle("sem-menu",!ok);
   if(ok && !(TAB_OK[S.view]||(()=>false))()) S.view="painel";
-  document.querySelectorAll(".tab").forEach(t=>{ t.hidden = !ok || !(TAB_OK[t.dataset.v]||(()=>false))(); t.setAttribute("aria-selected",t.dataset.v===S.view); });
+  document.querySelectorAll(".tab[data-v]").forEach(t=>{ t.hidden = !ok || !(TAB_OK[t.dataset.v]||(()=>false))(); t.setAttribute("aria-selected",t.dataset.v===S.view); });
   ajustarAbas(true);
   if(!S.ready || S.gate==="loading"){ m.innerHTML=`<div class="empty">Carregando o painel…</div>`; return; }
   if(S.gate!=="ok"){ m.innerHTML=""; const wrap=document.createElement("div"); wrap.className="view"; m.appendChild(wrap); (S.gate==="senha"?vTrocarSenha:vEntrada)(wrap); return; }
@@ -703,7 +707,7 @@ function render(){
 /* barra de telas: mostra setas quando há telas fora da vista e traz a tela atual para dentro */
 function ajustarAbas(centralizar){ const n=$("#tabs"); if(!n) return;
   if(centralizar){ const a=n.querySelector('.tab[aria-selected="true"]'); if(a && !a.hidden){ const esq=a.offsetLeft-44, dir=a.offsetLeft+a.offsetWidth+44; if(esq<n.scrollLeft) n.scrollLeft=Math.max(0,esq); else if(dir>n.scrollLeft+n.clientWidth) n.scrollLeft=dir-n.clientWidth; } }
-  const sep=n.querySelector(".tab-sep"); if(sep) sep.hidden=![...n.querySelectorAll(".tab-sep ~ .tab")].some(t=>!t.hidden);
+  const sep=n.querySelector(".tab-sep"); if(sep) sep.textContent=[...n.querySelectorAll(".tab-sep ~ .tab[data-v]")].some(t=>!t.hidden)?"Gestão":"Conta";
   $("#tabE").hidden = n.scrollLeft<=4; $("#tabD").hidden = n.scrollLeft+n.clientWidth>=n.scrollWidth-4; }
 $("#tabs").addEventListener("scroll",()=>ajustarAbas(false),{passive:true});
 window.addEventListener("resize",()=>ajustarAbas(false));
