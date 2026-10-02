@@ -184,7 +184,16 @@ details.how dd{margin:0}
 .note.n1[aria-pressed="true"]{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
 .note.n2[aria-pressed="true"]{background:var(--info-soft);border-color:var(--info);color:var(--info)}
 .note.n3[aria-pressed="true"]{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
-.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fields{display:grid;grid-template-columns:minmax(200px,280px) 1fr 1fr;gap:10px;align-items:start}
+@media (max-width:900px){.fields{grid-template-columns:1fr 1fr}.fields .fnota{grid-column:1/-1;max-width:320px}}
+.nota-sel{width:100%;font-weight:600}.nota-sel.n0{border-color:var(--bad);color:var(--bad)}.nota-sel.n1{border-color:var(--warn);color:var(--warn)}.nota-sel.n2{border-color:var(--info);color:var(--info)}.nota-sel.n3{border-color:var(--ok);color:var(--ok)}.nota-sel option{color:var(--fg);font-weight:400}
+.logo-ecp{height:44px;max-width:130px;object-fit:contain}
+@media (max-width:640px){.logo-ecp{height:34px;max-width:96px}}
+.logos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin:12px 0}
+.logo-card{margin:0;border:1px solid var(--line);border-radius:10px;padding:10px;display:grid;gap:8px;justify-items:start}
+.logo-box{width:100%;height:84px;display:grid;place-items:center;background:#fff;border-radius:6px;border:1px dashed var(--line)}.logo-box img{max-width:90%;max-height:70px;object-fit:contain}
+.logo-card figcaption{display:grid;gap:1px;font-size:.86rem}
+.nalist{display:grid;gap:2px}.nalist .switch{align-items:flex-start;text-align:left;line-height:1.35;padding:7px 0}.nalist .switch .track{margin-top:1px}
 @media (max-width:640px){.fields{grid-template-columns:1fr}}
 .f{display:grid;gap:4px;min-width:0}
 .f > span{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
@@ -424,7 +433,7 @@ const PERM={
   atendente:["ver","diag","agenda","docs"],
   credenciado:["ver","homologar","export"]
 };
-const AREA_DE={cronograma:"agenda",reunioes:"agenda",stakeholders:"atores",entidades:"atores",documentos:"docs"};
+const AREA_DE={logos:"cadastro",cronograma:"agenda",reunioes:"agenda",stakeholders:"atores",entidades:"atores",documentos:"docs"};
 function pode(a){ const u=S.me; return !!(u && u.ativo!==false && (PERM[u.perfil]||[]).includes(a)); }
 const multiEcp = () => !!(S.me && PERFIS[S.me.perfil] && PERFIS[S.me.perfil].multi);
 function ecpsPermitidos(){ return Object.keys(S.ecps); }
@@ -432,7 +441,7 @@ const perfilNome = p => (PERFIS[p]||{}).n || p || "—";
 
 /* ---------- estado ---------- */
 const S = {token:null,me:null,gate:"loading",ecps:{},ecpId:null,view:"painel",
-  diag:{},plano:{},lists:{cronograma:{},reunioes:{},stakeholders:{},entidades:{},documentos:{}},ciclos:{},
+  diag:{},plano:{},lists:{cronograma:{},reunioes:{},stakeholders:{},entidades:{},documentos:{},logos:{}},ciclos:{},
   filter:"todos",editing:{},rede:null,ready:false,hist:null,histScope:"ecp",usuarios:null,ultimaSenha:null,carregando:false};
 const LS={ get(k,d){ try{ const v=localStorage.getItem("ecp."+k); return v?JSON.parse(v):d; }catch(e){ return d; } },
            set(k,v){ try{ localStorage.setItem("ecp."+k,JSON.stringify(v)); }catch(e){} },
@@ -612,11 +621,12 @@ const ecp = () => S.ecps[S.ecpId]||{};
 const pastas = () => ecp().pastas||{};
 
 function driveLink(key,label){ const u=folderUrl(pastas()[key]); return u?`<a class="drive" href="${esc(u)}" target="_blank" rel="noopener">↗ ${esc(label||"Abrir pasta no Drive")}</a>`:""; }
+function logosOrdenadas(){ return Object.entries(S.lists.logos||{}).map(([id,l])=>({id,...l})).filter(l=>/^data:image\//.test(l.img||"")).sort((a,b)=>(a.tipo==="municipio"?0:1)-(b.tipo==="municipio"?0:1) || String(a.id).localeCompare(String(b.id))); }
 function ecpHeader(){
   const e=ecp();
   return `<div class="panel-h" style="margin:0"><div><div class="eyebrow">${esc([e.territorio,e.regional?("Regional "+e.regional):""].filter(Boolean).join(" · ")||"Escritório de Compras Públicas")}</div><h2>${esc(e.nome||"")}</h2>
   <div class="small muted">Responsável: ${esc(e.responsavel||"não informado")}${e.dataDiagnostico?` · Diagnóstico de ${fmtD(e.dataDiagnostico)}`:""}</div></div>
-  <div class="row">${driveLink("raiz","Pasta do ECP no Drive")}</div></div>`;
+  <div class="row">${logosOrdenadas().map(l=>`<img class="logo-ecp" src="${esc(l.img)}" alt="${esc(l.nome||"Logo")}" title="${esc(l.nome||"")}">`).join("")}${driveLink("raiz","Pasta do ECP no Drive")}</div></div>`;
 }
 
 /* ===== Painel do ECP ===== */
@@ -751,26 +761,25 @@ function vDiag(w){
 function itemCard(i){
   const r=S.diag[i.id]||{}; const has=r.nota!=null&&r.nota!==""; const pr=has&&!r.na?prioridade(Number(r.nota)):"";
   const el=document.createElement("article"); el.className=`item ${r.na?"na":pr?"pr-"+pr:""}`;
-  const dis=pode("diag")?"":"disabled";
+  const dis=pode("diag")?"":"disabled"; const disNa=(dis||r.na)?"disabled":"";
   el.innerHTML=`<div class="item-h"><div class="item-c"><span class="code">${i.id}</span><p>${esc(i.c)}</p></div>
     <div class="row">${r.na?`<span class="pill p-mut">Não se aplica</span>`:pr?`<span class="pill ${pr==="Alta"?"p-bad":pr==="Média"?"p-warn":"p-ok"}">Prioridade ${pr.toLowerCase()}</span>`:`<span class="pill p-mut">Sem nota</span>`}</div></div>
     <details class="how"><summary>Como avaliar e qual evidência guardar</summary><dl>
       <div><dt>Processo / referência</dt><dd>${esc(i.r)}</dd></div><div><dt>O que avaliar</dt><dd>${esc(i.a)}</dd></div><div><dt>Evidência mínima</dt><dd>${esc(i.e)}</dd></div></dl></details>
-    <div class="notes" role="group" aria-label="Nota de 0 a 3">${NOTAS.map(n=>`<button class="note n${n.v}" data-n="${n.v}" aria-pressed="${!r.na&&has&&Number(r.nota)===n.v}" ${dis}><b>${n.v}</b><span>${n.t}</span></button>`).join("")}</div>
     <div class="fields">
-      <label class="f"><span>Link da evidência (Drive)</span><div class="inline-link"><input id="ev-${i.id}" type="url" placeholder="Cole aqui o link do arquivo" value="${esc(r.evidencia||"")}" ${dis}>${isUrl(r.evidencia)?`<a class="btn" href="${esc(r.evidencia)}" target="_blank" rel="noopener">Abrir</a>`:""}</div></label>
-      <label class="f"><span>Observações</span><textarea id="ob-${i.id}" rows="2" placeholder="Contexto, pendências, próximos passos" ${dis}>${esc(r.obs||"")}</textarea></label>
+      <label class="f fnota"><span>Nota</span><select class="sel nota-sel ${has&&!r.na?"n"+Number(r.nota):""}" id="nt-${i.id}" ${disNa}><option value="">${r.na?"Não se aplica":"Selecione a nota"}</option>${NOTAS.map(n=>`<option value="${n.v}" ${!r.na&&has&&Number(r.nota)===n.v?"selected":""}>${n.v} · ${n.t}</option>`).join("")}</select></label>
+      <label class="f"><span>Link da evidência (Drive)</span><div class="inline-link"><input id="ev-${i.id}" type="url" placeholder="Cole aqui o link do arquivo" value="${esc(r.evidencia||"")}" ${disNa}>${isUrl(r.evidencia)?`<a class="btn" href="${esc(r.evidencia)}" target="_blank" rel="noopener">Abrir</a>`:""}</div></label>
+      <label class="f"><span>Observações</span><textarea id="ob-${i.id}" rows="2" placeholder="Contexto, pendências, próximos passos" ${disNa}>${esc(r.obs||"")}</textarea></label>
     </div>
     <div class="row" style="justify-content:space-between">
-      <button type="button" class="switch" id="na-${i.id}" role="switch" aria-checked="${!!r.na}" ${dis}><span class="track"><span class="thumb"></span></span>Não se aplica a este ECP</button>
+      <span class="small muted">${r.na?"Este critério não se aplica a este ECP (definido pela Gestão Estadual no Cadastro).":""}</span>
       <span class="row">${has&&Number(r.nota)>=2&&!isUrl(r.evidencia)&&!r.na?`<span class="warnline">Nota ${r.nota} pede evidência vinculada</span>`:""}<span class="saved">${r.atualizadoEm?"Salvo em "+new Date(r.atualizadoEm).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})+(r.atualizadoPor?" por "+esc(r.atualizadoPor):""):""}</span></span>
     </div>`;
   const save=async(patch)=>{ const cur=semCarimbo({...(S.diag[i.id]||{}),...patch}); salvarLocal("diag",i.id,cur); };
-  el.querySelectorAll(".note").forEach(b=>b.onclick=()=>{const n=Number(b.dataset.n); const same=!r.na&&has&&Number(r.nota)===n; save({nota:same?null:n,na:false}).then(()=>scheduleRender());});
+  const nt=el.querySelector("#nt-"+CSS.escape(i.id)); nt.onchange=()=>save({nota:nt.value===""?null:Number(nt.value)}).then(()=>scheduleRender());
   const ev=el.querySelector("#ev-"+CSS.escape(i.id)), ob=el.querySelector("#ob-"+CSS.escape(i.id));
   ev.onchange=()=>{ const v=ev.value.trim(); if(v&&!isUrl(v)){toast("Cole um link completo, começando com https://");return;} save({evidencia:v}).then(()=>{toast("Evidência salva");scheduleRender();}); };
   ob.onchange=()=>save({obs:ob.value}).then(()=>toast("Observação salva"));
-  el.querySelector("#na-"+CSS.escape(i.id)).onclick=()=>save({na:!r.na}).then(()=>scheduleRender());
   return el;
 }
 
@@ -996,6 +1005,15 @@ function vCad(w){
       delete upd.atualizadoEm; delete upd.atualizadoPor; if(!adm) upd.pastas=e.pastas||{};
       try{ await api("salvarCadastro",{ecp:id,dados:upd}); toast("Cadastro salvo"); aplicarSessao(await api("sessao"),true); }catch(err){ toast(err.message); } };
   }
+  if(id && adm) painelLogos(w,e);
+  if(id && adm){
+    const sec=document.createElement("section"); sec.className="panel"; w.appendChild(sec);
+    const nNa=ITEMS.filter(i=>(S.diag[i.id]||{}).na).length;
+    sec.innerHTML=`<div class="panel-h"><div><h3>Critérios que não se aplicam a este ECP <span class="small muted">(${nNa})</span></h3><div class="small muted">Ligue o critério que não faz sentido para a realidade de ${esc(e.nome||"este escritório")}. Ele sai do cálculo do índice e fica travado na tela do Diagnóstico. Só a Gestão Estadual altera esta lista.</div></div></div>
+      ${DIMS.map(d=>`<div class="eyebrow" style="margin-top:12px">${esc(d.n)}</div><div class="nalist">${ITEMS.filter(i=>i.d===d.k).map(i=>{ const on=!!(S.diag[i.id]||{}).na;
+        return `<button type="button" class="switch" role="switch" aria-checked="${on}" data-na="${i.id}"><span class="track"><span class="thumb"></span></span><span><b class="code">${i.id}</b> ${esc(i.c)}</span></button>`; }).join("")}</div>`).join("")}`;
+    sec.querySelectorAll("[data-na]").forEach(b=>b.onclick=()=>{ const k=b.dataset.na; const cur=semCarimbo({...(S.diag[k]||{})}); cur.na=!cur.na; salvarLocal("diag",k,cur); toast(cur.na?k+": não se aplica a este ECP":k+": voltou a valer para este ECP"); scheduleRender(); });
+  }
   if(adm){
     const sec=document.createElement("section"); sec.className="panel"; w.appendChild(sec);
     sec.innerHTML=`<div class="panel-h"><div><h3>Novo escritório</h3><div class="small muted">Crie antes as pastas do ECP no Drive (modelo: copie a estrutura de um ECP existente) e cole os links no cadastro.</div></div></div>
@@ -1008,6 +1026,40 @@ function vCad(w){
       try{ const r=await api("salvarCadastro",{dados:{...fd,metas:DEFAULT_METAS,pastas:{}}}); toast("ECP cadastrado"); aplicarSessao(await api("sessao"),true); selectEcp(r.id); S.view="cad"; render(); }catch(e){ toast(e.message); } };
   }
 
+}
+
+/* ===== Logos do município e dos parceiros (ficam no topo das telas do escritório) ===== */
+function reduzirImagem(arq){ return new Promise((ok,erro)=>{
+  if(!/^image\//.test(arq.type)) return erro(new Error("Escolha um arquivo de imagem (PNG, JPG ou SVG)."));
+  const url=URL.createObjectURL(arq); const im=new Image();
+  im.onerror=()=>{ URL.revokeObjectURL(url); erro(new Error("Não foi possível ler esta imagem.")); };
+  im.onload=()=>{ URL.revokeObjectURL(url);
+    const w0=im.naturalWidth||300, h0=im.naturalHeight||150;
+    for(const lado of [320,240,180,128]){
+      const f=Math.min(1,lado/Math.max(w0,h0)); const cv=document.createElement("canvas"); cv.width=Math.max(1,Math.round(w0*f)); cv.height=Math.max(1,Math.round(h0*f));
+      cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);
+      let d=cv.toDataURL("image/png"); if(d.length<=40000) return ok(d);
+      d=cv.toDataURL("image/webp",.85); if(d.startsWith("data:image/webp") && d.length<=40000) return ok(d);
+    }
+    erro(new Error("A imagem é muito pesada. Use uma versão mais simples da logo.")); };
+  im.src=url; }); }
+function painelLogos(w,e){
+  const sec=document.createElement("section"); sec.className="panel"; w.appendChild(sec);
+  const L=logosOrdenadas(); const temMun=L.some(l=>l.tipo==="municipio");
+  sec.innerHTML=`<div class="panel-h"><div><h3>Logos do município e dos parceiros <span class="small muted">(${L.length})</span></h3><div class="small muted">As logos aparecem no topo das telas de ${esc(e.nome||"este escritório")}. Envie PNG, JPG ou SVG; o painel reduz a imagem sozinho para não pesar em conexões fracas.</div></div></div>
+    ${L.length?`<div class="logos-grid">${L.map(l=>`<figure class="logo-card"><div class="logo-box"><img src="${esc(l.img)}" alt="${esc(l.nome||"Logo")}"></div><figcaption><b>${esc(l.nome||"Sem nome")}</b><span class="small muted">${l.tipo==="municipio"?"Município":"Parceiro"}</span></figcaption><button type="button" class="btn" data-rm="${esc(l.id)}">Remover</button></figure>`).join("")}</div>`:`<p class="small muted">Nenhuma logo enviada ainda.</p>`}
+    <form class="form" id="fLogo"><div class="formgrid">
+      <label class="f"><span>Tipo</span><select name="tipo" class="sel"><option value="municipio" ${temMun?"":"selected"}>Município</option><option value="parceiro" ${temMun?"selected":""}>Parceiro</option></select></label>
+      <label class="f"><span>Nome *</span><input name="nome" required placeholder="Ex.: Prefeitura de ${esc(e.municipio||"Pinhais")}"></label>
+      <label class="f"><span>Arquivo da logo *</span><input type="file" name="arq" accept="image/*" required></label>
+    </div><div class="row"><button class="btn primary" type="submit">Adicionar logo</button></div></form>`;
+  sec.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{ if(b.dataset.armed!=="1"){ b.dataset.armed="1"; b.textContent="Confirmar remoção"; return; } excluirLocal("logos",b.dataset.rm); toast("Logo removida"); scheduleRender(); });
+  $("#fLogo",sec).onsubmit=async ev=>{ ev.preventDefault(); const f=ev.target; const arq=f.arq.files[0]; if(!arq) return;
+    if(L.length>=8){ toast("Limite de 8 logos por escritório. Remova uma para enviar outra."); return; }
+    try{ const img=await reduzirImagem(arq);
+      if(f.tipo.value==="municipio") L.filter(l=>l.tipo==="municipio").forEach(l=>excluirLocal("logos",l.id));
+      salvarLocal("logos","lg"+Date.now().toString(36),{nome:f.nome.value.trim(),tipo:f.tipo.value,img}); toast("Logo adicionada"); scheduleRender(); }
+    catch(err){ toast(err.message); } };
 }
 
 /* ===== Campos de senha com "Mostrar" ===== */
@@ -1035,7 +1087,7 @@ function vEntrada(w){
   api("escritorios").then(l=>{ ESCRITORIOS_PUBLICOS=l; LS.set("escritorios",l); const v=sel.value; sel.innerHTML=`<option value="">Selecione</option>${opts()}<option value="*">Sebrae/PR - Gestão Estadual</option><option value="*c">Sebrae/PR - Credenciados</option>`; sel.value=v||LS.get("ultEcp",""); }).catch(e=>{ if(!ESCRITORIOS_PUBLICOS.length) mostrarErro(e.message); });
   const err=$("#ent-erro",box); function mostrarErro(t){ err.textContent=t; err.hidden=false; }
   $("#fEntrada",box).onsubmit=async ev=>{
-    ev.preventDefault(); err.hidden=true; const fd=Object.fromEntries(new FormData(ev.target)); const btn=ev.target.querySelector("button"); btn.disabled=true; btn.textContent="Entrando…";
+    ev.preventDefault(); err.hidden=true; const fd=Object.fromEntries(new FormData(ev.target)); const btn=ev.target.querySelector("button[type=submit]"); btn.disabled=true; btn.textContent="Entrando…";
     try{
       const r=await api("entrar",{email:fd.email,senha:fd.senha,ecp:fd.ecp==="*c"?"*":fd.ecp});
       S.token=r.token; LS.set("token",r.token); LS.set("ultEcp",fd.ecp); S._senhaLogin=fd.senha;
