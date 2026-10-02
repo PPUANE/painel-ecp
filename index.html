@@ -300,6 +300,9 @@ details.how dd{margin:0}
   .ig-box,.ig-row{break-inside:avoid}
   .ig-top{gap:12px;padding:12px 16px;flex-wrap:nowrap}.ig-logo{height:44px}.ig-loc{padding:5px 9px;gap:9px}.ig-loc img{height:30px;max-width:84px}.ig-tit{padding-left:12px}.ig-tit b{font-size:18px;white-space:nowrap}.ig-tit span{font-size:9px}.ig-data{flex:none}
 }
+.imp-trava{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2)}.imp-linha{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.imp-linha .flabel{min-width:104px}.imp-linha .sel{min-width:240px}
+.imp-conf{display:flex;gap:8px;align-items:flex-start;margin-top:8px;font-weight:600;cursor:pointer}.imp-conf input{margin-top:3px}
+#impSec.destaque{box-shadow:0 0 0 3px var(--hex)}
 .imp-res{display:grid;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}.imp-chips{display:flex;flex-wrap:wrap;gap:6px}.imp-chips span{background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:4px 11px;font-size:.82rem}
 .dlg{border:0;border-radius:14px;padding:22px;width:min(480px,calc(100vw - 32px));background:var(--surface);color:var(--fg);box-shadow:0 20px 60px rgba(2,30,77,.35)}.dlg::backdrop{background:rgba(2,30,77,.55)}
 .dlg form{display:grid;gap:12px}.dlg h3{font-size:1.1rem}.dlg-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -355,6 +358,7 @@ main{min-height:calc(100vh - 141px);align-content:start}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#15234d;color:#fff;padding:9px 16px;border-radius:6px;font-weight:700;z-index:50;box-shadow:0 4px 18px rgba(0,0,0,.25)}
 .banner{border-radius:var(--r);padding:10px 12px;font-size:.84rem}
 .banner.warn{background:var(--warn-soft);color:var(--warn)}
+.banner.ok{background:var(--ok-soft);color:var(--ok)}
 .banner.info{background:var(--info-soft);color:var(--info)}
 svg text{fill:var(--muted);font-family:var(--f-body)}
 @media (prefers-reduced-motion:no-preference){.fill{transition:width .4s ease}}
@@ -430,10 +434,11 @@ svg text{fill:var(--muted);font-family:var(--f-body)}
       <button class="tab" role="tab" data-v="docs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.500 3.500h7l4.500 4.500v12.500h-11.500z"/><path d="M13.500 3.500v4.500h4.500M9.500 13h5.500M9.500 16.500h5.500"/></svg>Documentos</button>
       <button class="tab" role="tab" data-v="relat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20.500h16.500"/><rect x="5.500" y="11.500" width="3" height="6.500" rx=".6"/><rect x="10.800" y="6.500" width="3" height="11.500" rx=".6"/><rect x="16" y="9.500" width="3" height="8.500" rx=".6"/></svg>Relatórios</button>
       <span class="tab-sep">Gestão</span>
-      <button class="tab" role="tab" data-v="hist"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.200 12a8 8 0 1 0 2.400-5.700"/><path d="M4 4.500v3.800h3.800M12 7.800v4.600l3 1.800"/></svg>Histórico</button>
-      <button class="tab" role="tab" data-v="users"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.600"/><path d="M4.500 20.500c.6-4.200 3.500-6.300 7.500-6.300s6.900 2.100 7.500 6.300"/></svg>Usuários</button>
-      <button class="tab" role="tab" data-v="cad"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3.500v2.300M12 18.200v2.300M3.500 12h2.300M18.200 12h2.300M6 6l1.600 1.600M16.400 16.400L18 18M18 6l-1.600 1.600M7.600 16.400L6 18"/></svg>Cadastro</button>
       <button type="button" class="tab tab-acao" id="btnNovoEcp" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v8M8 12h8"/></svg>Novo escritório</button>
+      <button class="tab" role="tab" data-v="cad"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3.500v2.300M12 18.200v2.300M3.500 12h2.300M18.200 12h2.300M6 6l1.600 1.600M16.400 16.400L18 18M18 6l-1.600 1.600M7.600 16.400L6 18"/></svg>Cadastro</button>
+      <button class="tab" role="tab" data-v="users"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.600"/><path d="M4.500 20.500c.6-4.200 3.500-6.300 7.500-6.300s6.900 2.100 7.500 6.300"/></svg>Usuários</button>
+      <button type="button" class="tab tab-acao" id="btnImportar" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.500V4.500M7.500 9l4.500-4.500L16.500 9M4.500 15.500v2.500a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-2.500"/></svg>Importar planilha</button>
+      <button class="tab" role="tab" data-v="hist"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.200 12a8 8 0 1 0 2.400-5.700"/><path d="M4 4.500v3.800h3.800M12 7.800v4.600l3 1.800"/></svg>Histórico</button>
       <button type="button" class="tab tab-acao" id="btnSenha"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12.2l8.500-8.500M16.500 6.700l2.300 2.300M14 9.200l1.800 1.800"/></svg>Trocar senha</button>
       <button type="button" class="tab tab-acao" id="btnSair"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4.500H6.500a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2H10M15 8l4 4-4 4M19 12H9.500"/></svg>Sair</button>
     </nav><button type="button" class="tab-seta d" id="tabD" aria-label="Ver mais telas" hidden>›</button></aside>
@@ -669,6 +674,7 @@ window.addEventListener("hashchange",()=>{const h=location.hash.replace("#","");
 const sairDoPainel=async()=>{ try{ await api("sair"); }catch(e){} encerrar("Você saiu do painel."); };
 $("#btnSair").addEventListener("click",sairDoPainel); $("#btnSairTopo").addEventListener("click",sairDoPainel);
 $("#btnNovoEcp").addEventListener("click",()=>abrirNovoEcp());
+$("#btnImportar").addEventListener("click",()=>{ if(!S.ecpId){ toast("Escolha um escritório no topo para importar a planilha."); return; } S.view="painel"; LS.set("view","painel"); render(); setTimeout(()=>{ const n=$("#impSec"); if(n){ window.scrollTo({top:n.getBoundingClientRect().top+window.scrollY-90,behavior:"smooth"}); n.classList.add("destaque"); setTimeout(()=>n.classList.remove("destaque"),2500); } },200); });
 $("#btnSenha").addEventListener("click",()=>{ S.gate="senha"; S.trocaVoluntaria=true; render(); });
 
 function aplicarDados(d){
@@ -753,7 +759,7 @@ function render(){
   const ok = S.gate==="ok"; document.body.classList.toggle("sem-menu",!ok);
   if(ok && !(TAB_OK[S.view]||(()=>false))()) S.view="painel";
   document.querySelectorAll(".tab[data-v]").forEach(t=>{ t.hidden = !ok || !(TAB_OK[t.dataset.v]||(()=>false))(); t.setAttribute("aria-selected",t.dataset.v===S.view); });
-  $("#btnNovoEcp").hidden = !(ok && pode("cadastro"));
+  $("#btnNovoEcp").hidden = !(ok && pode("cadastro")); $("#btnImportar").hidden = !(ok && pode("importar"));
   ajustarAbas(true);
   if(!S.ready || S.gate==="loading"){ m.innerHTML=`<div class="empty">Carregando o painel…</div>`; return; }
   if(S.gate!=="ok"){ m.innerHTML=""; const wrap=document.createElement("div"); wrap.className="view"; m.appendChild(wrap); (S.gate==="senha"?vTrocarSenha:vEntrada)(wrap); return; }
@@ -855,7 +861,6 @@ function vPainel(w){
   w.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><div><h3>Evolução do índice</h3><div class="small muted">Registre uma fotografia ao fechar cada ciclo de diagnóstico para acompanhar a trajetória do ECP.</div></div>
     <div class="row">${pode("ciclo")?`<button class="btn" id="btnCiclo" ${!c.started?"disabled":""}>Registrar fotografia de hoje</button>`:""}${pode("export")?`<button class="btn" id="btnXlsx">Exportar ECP (Excel)</button>`:""}</div></div>
     ${cic.length?evoChart(cic):`<div class="empty">Nenhuma fotografia registrada ainda.</div>`}</section>`);
-  if(S.importa && S.importa.ecp!==S.ecpId) S.importa=null;
   painelImportar(w);
   w.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{S.view=b.dataset.go;render();});
   const bc=$("#btnCiclo",w); if(bc) bc.onclick=async()=>{
@@ -1704,26 +1709,54 @@ function lerPlanilha(wb){
         itens.push({colecao:achou.tipo,dados:d}); soma(achou.tipo); });
     }
   }
-  return {itens,cont,avisos};
+  // de qual município é a planilha: aba Identidade do modelo, ou aba Resumo do Excel exportado pelo painel
+  let municipio="";
+  const abasId=wb.SheetNames.filter(n=>/identidade|resumo|diagnostico/.test(impNorm(n))).sort((a,b)=>(/identidade|resumo/.test(impNorm(a))?0:1)-(/identidade|resumo/.test(impNorm(b))?0:1));
+  for(const nome of abasId){ if(municipio) break;
+    const L=XLSX.utils.sheet_to_json(wb.Sheets[nome],{header:1,raw:true,defval:""}).slice(0,25);
+    const rot=/identidade/.test(impNorm(nome))?/^nome do municipio$/:/^municipio$/;
+    for(const l of L){ const i=l.findIndex(c=>rot.test(impNorm(c))); if(i>=0){ const v=impTxt(l[i+1]); if(v && !/^=/.test(v) && !/^(regional|territorio|nao preenchido)/.test(impNorm(v))){ municipio=v; break; } } } }
+  return {itens,cont,avisos,municipio};
 }
 function painelImportar(w){
   if(!pode("importar")) return;
-  const sec=document.createElement("section"); sec.className="panel"; w.appendChild(sec);
+  const sec=document.createElement("section"); sec.className="panel"; sec.id="impSec"; w.appendChild(sec);
   const I=S.importa; const NOMES={diag:"notas do diagnóstico",plano:"ações do plano",cronograma:"atividades do cronograma",reunioes:"reuniões",stakeholders:"stakeholders",entidades:"entidades compradoras",documentos:"documentos"};
-  sec.innerHTML=`<div class="panel-h"><div><h3>Importar planilha preenchida</h3><div class="small muted">Suba o Excel do Diagnóstico de Maturidade já preenchido (ou um Excel exportado deste painel) para lançar tudo de uma vez em ${esc(ecp().nome||"este escritório")}.</div></div></div>
+  const ids=Object.keys(S.ecps).sort((a,b)=>(S.ecps[a].nome||a).localeCompare(S.ecps[b].nome||b));
+  const mesmo=(a,b)=>!!a && !!b && impNorm(a)===impNorm(b);
+  let trava="";
+  if(I && I.itens.length){
+    const dest=S.ecps[I.destino]; const bate = dest && I.municipio && (mesmo(I.municipio,dest.municipio) || mesmo(I.municipio,String(dest.nome||"").replace(/^ECP\s+/i,"")));
+    trava=`<div class="imp-trava">
+      <div class="imp-linha"><span class="flabel">Planilha de</span><b>${I.municipio?esc(I.municipio):"município não informado na planilha"}</b></div>
+      <label class="imp-linha"><span class="flabel">Importar para</span><select class="sel" id="impDest"><option value="">Escolha o escritório de destino</option>${ids.map(id=>`<option value="${esc(id)}" ${I.destino===id?"selected":""}>${esc(S.ecps[id].nome||id)}</option>`).join("")}</select></label>
+      ${!dest?`<div class="banner info">Escolha o escritório que vai receber os dados. O botão de importar só libera depois disso.</div>`
+        :bate?`<div class="banner ok">O município da planilha confere com ${esc(dest.nome)}.</div>`
+        :`<div class="banner warn">${I.municipio?`A planilha é de <b>${esc(I.municipio)}</b>, mas o destino escolhido é <b>${esc(dest.nome)}</b>${dest.municipio?` (${esc(dest.municipio)})`:""}.`:`A planilha não informa o município, então não dá para conferir sozinho se ela é de <b>${esc(dest.nome)}</b>.`}
+            <label class="imp-conf"><input type="checkbox" id="impConf" ${I.confirmado?"checked":""}> Confirmo que os dados desta planilha são de ${esc(dest.nome)}.</label></div>`}
+      <div class="row"><button class="btn primary" id="impOk" ${dest&&(bate||I.confirmado)?"":"disabled"}>${dest?`Importar para ${esc(dest.nome)}`:"Importar"}</button><button class="btn ghost" id="impCancela">Cancelar</button></div></div>`;
+  }
+  sec.innerHTML=`<div class="panel-h"><div><h3>Importar planilha preenchida</h3><div class="small muted">Suba o Excel do Diagnóstico de Maturidade já preenchido (ou um Excel exportado deste painel) para lançar tudo de uma vez. Você escolhe o escritório de destino antes de importar.</div></div></div>
     <div class="row"><label class="btn" style="cursor:pointer">Escolher arquivo Excel<input type="file" id="impArq" accept=".xlsx,.xls,.xlsm" hidden></label>${I?`<span class="small"><b>${esc(I.arquivo)}</b></span>`:`<span class="small muted">Formatos .xlsx ou .xls</span>`}</div>
     ${I?(I.itens.length?`<div class="imp-res"><div class="small muted">Encontrado na planilha:</div><div class="imp-chips">${Object.keys(NOMES).filter(k=>I.cont[k]).map(k=>`<span><b>${I.cont[k]}</b> ${NOMES[k]}</span>`).join("")}</div>
       ${I.avisos.length?`<div class="banner warn">${I.avisos.slice(0,5).map(esc).join("<br>")}${I.avisos.length>5?`<br>e mais ${I.avisos.length-5} aviso(s).`:""}</div>`:""}
-      <p class="small muted" style="margin:0">Notas e ações do plano substituem as que já existem neste escritório para os mesmos critérios. Nas listas (cronograma, reuniões, atores e documentos) os registros são acrescentados, e os repetidos são pulados. "Não se aplica" e os dados do Cadastro não mudam. A importação fica no Histórico para homologação.</p>
-      <div class="row"><button class="btn primary" id="impOk">Importar para ${esc(ecp().nome||"o escritório")}</button><button class="btn ghost" id="impCancela">Cancelar</button></div></div>`
+      <p class="small muted" style="margin:0">Notas e ações do plano substituem as que já existem no escritório de destino para os mesmos critérios. Nas listas (cronograma, reuniões, atores e documentos) os registros são acrescentados, e os repetidos são pulados. "Não se aplica" e os dados do Cadastro não mudam. A importação fica no Histórico para homologação.</p>
+      ${trava}</div>`
       :`<div class="banner warn" style="margin-top:10px">Não encontrei informações preenchidas nesta planilha. Confira se é o modelo do Diagnóstico de Maturidade, com as abas e os títulos das colunas originais.</div>`):""}`;
   $("#impArq",sec).onchange=async ev=>{ const arq=ev.target.files[0]; if(!arq) return; toast("Lendo a planilha…");
-    try{ await carregarXlsx(); const wb=XLSX.read(await arq.arrayBuffer(),{type:"array",cellDates:true}); S.importa={arquivo:arq.name,ecp:S.ecpId,...lerPlanilha(wb)}; }
+    try{ await carregarXlsx(); const wb=XLSX.read(await arq.arrayBuffer(),{type:"array",cellDates:true}); const lido=lerPlanilha(wb);
+      // o destino só vem preenchido quando o município da planilha bate com exatamente um escritório
+      const cand=ids.filter(id=>mesmo(lido.municipio,S.ecps[id].municipio)||mesmo(lido.municipio,String(S.ecps[id].nome||"").replace(/^ECP\s+/i,"")));
+      S.importa={arquivo:arq.name,destino:cand.length===1?cand[0]:"",confirmado:false,...lido}; }
     catch(e){ S.importa=null; toast(/Excel/.test(e.message)?e.message:"Não foi possível ler este arquivo. Use um Excel .xlsx ou .xls."); }
     render(); };
-  const ok=$("#impOk",sec); if(ok) ok.onclick=async()=>{ ok.disabled=true; ok.textContent="Importando…";
-    try{ const r=await api("importar",{ecp:S.ecpId,arquivo:I.arquivo,itens:I.itens}); S.importa=null; S.diagUI={}; await carregarEcp(S.ecpId,true); toast(`Importação concluída: ${r.total} registros`); if(pode("homologar")) loadHist(); }
-    catch(e){ toast(/desconhecid/i.test(e.message)?"Atualize o servidor (Code.gs) para importar planilhas.":e.message); ok.disabled=false; ok.textContent="Importar"; }
+  const sd=$("#impDest",sec); if(sd) sd.onchange=()=>{ I.destino=sd.value; I.confirmado=false; render(); };
+  const cf=$("#impConf",sec); if(cf) cf.onchange=()=>{ I.confirmado=cf.checked; render(); };
+  const ok=$("#impOk",sec); if(ok) ok.onclick=async()=>{ const destino=I.destino; if(!destino) return; ok.disabled=true; ok.textContent="Importando…";
+    try{ const r=await api("importar",{ecp:destino,arquivo:I.arquivo,itens:I.itens}); S.importa=null; S.diagUI={};
+      if(S.ecpId!==destino) selectEcp(destino); else await carregarEcp(destino,true);
+      toast(`Importação concluída em ${(S.ecps[destino]||{}).nome||destino}: ${r.total} registros`); if(pode("homologar")) loadHist(); }
+    catch(e){ toast(/desconhecid/i.test(e.message)?"Atualize o servidor (Code.gs) para importar planilhas.":e.message); }
     render(); };
   const ca=$("#impCancela",sec); if(ca) ca.onclick=()=>{ S.importa=null; render(); };
 }
