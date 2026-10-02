@@ -37,8 +37,8 @@ html,body{background:var(--bg);color:var(--fg)}
 body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='364' viewBox='0 0 420 364'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.10' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M60 0 L180 0 L240 104 L180 208 L60 208 L0 104 Z'/%3E%3Cpath d='M270 182 L390 182 L450 286 L390 390 L270 390 L210 286 Z'/%3E%3C/g%3E%3C/svg%3E");background-size:420px 364px}
 .view > .empty, main > .empty{color:#fff;border-color:rgba(255,255,255,.45)}
 body{font-family:var(--f-body);font-size:14px;line-height:1.5}
-h1,h2,h3{font-family:var(--f-display);font-weight:800;letter-spacing:-.005em;text-wrap:balance;margin:0}
-h2{font-size:1.35rem} h3{font-size:1.08rem}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;letter-spacing:-.005em;text-wrap:balance;margin:0}
+h2{font-size:1.18rem} h3{font-size:.98rem}
 a{color:var(--teal)}
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid #6f8df0;outline-offset:2px}
@@ -100,9 +100,9 @@ body.sem-menu .tabs-wrap{display:none}
 
 main{max-width:1180px;margin:0 auto;width:100%;padding-inline:16px;padding-block:22px 48px;display:grid;gap:18px}
 .view{display:grid;gap:18px;min-width:0}
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;min-width:0}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;min-width:0}
 .panel-h{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;margin-bottom:12px}
-.eyebrow{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.eyebrow{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
 .muted{color:var(--muted)}
 .small{font-size:.85rem}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:18px}
@@ -188,7 +188,11 @@ tr.click{cursor:pointer} tr.click:hover td{background:var(--surface-2)}
 .dimhead:hover{background:var(--surface-2)}
 .dimblock.aberta .dimhead{border-bottom:1px solid var(--line)}
 .dim-t{display:flex;align-items:center;gap:10px;min-width:0}
-.dimhead h3{margin:0;color:var(--fg);display:flex;align-items:center;gap:10px}
+.dimhead h3{margin:0;color:var(--fg);display:flex;align-items:center;gap:10px;font-size:.96rem}
+.diag-resumo{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.diag-dica{flex:1 1 380px;font-size:.82rem;color:var(--muted);line-height:1.45}
+.diag-stat{display:flex;gap:8px;font-size:.8rem;color:var(--muted)}.diag-stat>span{background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:4px 11px;white-space:nowrap}.diag-stat b{color:var(--fg)}
+.fbar .sel{padding-block:6px;font-size:.84rem;min-width:0;max-width:100%;flex:1 1 auto;text-overflow:ellipsis}
 .dimhead h3::before{content:"";width:18px;height:18px;background:var(--hex);clip-path:polygon(25% 6.7%,75% 6.7%,100% 50%,75% 93.3%,25% 93.3%,0 50%);flex:none}
 .chev{width:18px;height:18px;flex:none;fill:none;stroke:var(--muted);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
 .dimblock.aberta .dimhead .chev{transform:rotate(90deg)}
@@ -327,7 +331,7 @@ details.how dd{margin:0}
 main{min-height:calc(100vh - 141px);align-content:start}
 @media (max-width:899px){main{min-height:calc(100vh - 300px)}}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#15234d;color:#fff;padding:9px 16px;border-radius:6px;font-weight:700;z-index:50;box-shadow:0 4px 18px rgba(0,0,0,.25)}
-.banner{border-radius:var(--r);padding:12px 14px;font-size:.9rem}
+.banner{border-radius:var(--r);padding:10px 12px;font-size:.84rem}
 .banner.warn{background:var(--warn-soft);color:var(--warn)}
 .banner.info{background:var(--info-soft);color:var(--info)}
 svg text{fill:var(--muted);font-family:var(--f-body)}
@@ -341,20 +345,20 @@ svg text{fill:var(--muted);font-family:var(--f-body)}
 .filabar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#b26a00;color:#fff;text-align:center;font-weight:700;font-size:.85rem;padding:8px 16px calc(8px + env(safe-area-inset-bottom,0px))}
 
 /* ---- filtros ---- */
-.fbar{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center;padding:12px 14px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r)}
+.fbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding:10px 12px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r)}
 .fsearch{position:relative;flex:1 1 240px;max-width:380px;display:block}
 .fsearch svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
-.fsearch input{width:100%;border:1px solid var(--line);border-radius:999px;padding:8px 14px 8px 36px;background:var(--surface);font:inherit;font-size:.9rem;color:var(--fg)}
+.fsearch input{width:100%;border:1px solid var(--line);border-radius:999px;padding:7px 14px 7px 34px;background:var(--surface);font:inherit;font-size:.85rem;color:var(--fg)}
 .fsearch input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-soft)}
 .fgroup{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
-.flabel{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.flabel{font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:6px 13px;font:inherit;font-size:.84rem;font-weight:600;cursor:pointer;line-height:1.2;transition:background .15s,border-color .15s}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:5px 11px;font:inherit;font-size:.8rem;font-weight:600;cursor:pointer;line-height:1.2;transition:background .15s,border-color .15s}
 .chip:hover{border-color:var(--teal);color:var(--teal)}
 .chip[aria-pressed="true"]:hover{color:#fff;filter:brightness(1.08)}
 .tag{display:inline-block;white-space:nowrap;font-size:.76rem;font-weight:700;color:var(--teal);background:var(--teal-soft);border-radius:4px;padding:1px 7px;vertical-align:1px}
 .chip[aria-pressed="true"]{background:var(--hex);border-color:var(--hex);color:#fff}
-.chip .cnt{font-size:.72rem;font-weight:700;min-width:20px;text-align:center;padding:1px 6px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
+.chip .cnt{font-size:.68rem;font-weight:700;min-width:20px;text-align:center;padding:1px 6px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
 .chip[aria-pressed="true"] .cnt{background:rgba(255,255,255,.22);color:#fff}
 .flimpar{border:0;background:none;color:var(--teal);font:inherit;font-size:.84rem;font-weight:700;cursor:pointer;padding:6px 4px;text-decoration:underline;text-underline-offset:3px}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--surface-2)}
@@ -858,16 +862,16 @@ const DIM_CURTO={GOV:"Governança",AC:"Integração Compras",IE:"Integração Em
 function vDiag(w){
   const c=calc(S.diag);
   w.insertAdjacentHTML("beforeend",`<section class="panel">${ecpHeader()}
-    <div class="banner info" style="margin-top:12px">Para cada critério: escolha a nota, guarde o arquivo na pasta da dimensão no Drive e cole o link da evidência. Tudo é salvo automaticamente. Notas 2 e 3 exigem evidência vinculada.</div>
-    ${!pode("diag")?`<div class="banner warn" style="margin-top:10px">Seu perfil (${esc(perfilNome(S.me&&S.me.perfil))}) consulta o diagnóstico, mas não altera as notas.</div>`:""}
-    <p class="small muted num" style="margin:10px 0 0">${c.avaliados}/${c.total} critérios avaliados · índice ${c.started?pct(c.score):"—"}</p></section>`);
+    <div class="diag-resumo"><span class="diag-dica">Escolha a nota de cada critério, guarde o arquivo na pasta da dimensão no Drive e cole o link. Tudo é salvo automaticamente; notas 2 e 3 pedem evidência.</span>
+      <span class="diag-stat num"><span><b>${c.avaliados}/${c.total}</b> avaliados</span><span>índice <b>${c.started?pct(c.score):"—"}</b></span></span></div>
+    ${!pode("diag")?`<div class="banner warn" style="margin-top:10px">Seu perfil (${esc(perfilNome(S.me&&S.me.perfil))}) consulta o diagnóstico, mas não altera as notas.</div>`:""}</section>`);
   const sit=(i,k)=>{ const r=S.diag[i.id]||{}; const has=r.nota!=null&&r.nota!=="";
     if(k==="pendentes") return !has&&!r.na; if(k==="alta") return has&&!r.na&&Number(r.nota)<=1;
     if(k==="semevid") return !r.na&&!isUrl(r.evidencia); if(k==="na") return !!r.na; return true; };
   const fSit=valorFiltro("diag","sit","todos"), fDim=valorFiltro("diag","dim","todas");
   w.appendChild(barraFiltros("diag",{busca:"Buscar critério",grupos:[
-    {k:"sit",rotulo:"Situação",padrao:"todos",opcoes:[["todos","Todos"],["pendentes","Sem nota"],["alta","Alta prioridade"],["semevid","Sem evidência"],["na","Não se aplica"]].map(([v,t])=>({v,t,n:ITEMS.filter(i=>sit(i,v)).length}))},
-    {k:"dim",rotulo:"Dimensão",padrao:"todas",opcoes:[{v:"todas",t:"Todas"},...DIMS.map(d=>({v:d.k,t:DIM_CURTO[d.k],n:ITEMS.filter(i=>i.d===d.k&&sit(i,fSit)).length}))]}
+    {k:"sit",rotulo:"Situação",padrao:"todos",tipo:"select",opcoes:[["todos","Todos"],["pendentes","Sem nota"],["alta","Alta prioridade"],["semevid","Sem evidência"],["na","Não se aplica"]].map(([v,t])=>({v,t,n:ITEMS.filter(i=>sit(i,v)).length}))},
+    {k:"dim",rotulo:"Dimensão",padrao:"todas",tipo:"select",opcoes:[{v:"todas",t:"Todas"},...DIMS.map(d=>({v:d.k,t:d.n,n:ITEMS.filter(i=>i.d===d.k&&sit(i,fSit)).length}))]}
   ]}));
   // sanfona: uma dimensão aberta por vez e, dentro dela, um critério aberto por vez
   const U=S.diagUI||(S.diagUI={});
