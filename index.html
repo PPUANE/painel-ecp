@@ -1449,7 +1449,7 @@ function vUsers(w){
       <td>${esc(perfilNome(r.perfil))}</td>
       <td class="small">${(r.ecps||[]).includes("*")?"Todos":esc((r.ecps||[]).map(k=>(S.ecps[k]||{}).nome||k).join(", "))}</td>
       <td>${!r.ativo?'<span class="pill p-mut">Desativado</span>':r.trocarSenha?'<span class="pill p-warn">Aguardando 1º acesso</span>':'<span class="pill p-ok">Ativo</span>'}${r.ultimoAcesso?`<div class="small muted num" style="margin-top:3px">Último acesso em ${new Date(r.ultimoAcesso).toLocaleDateString("pt-BR")}</div>`:""}</td>
-      <td><div class="row acoes">${editavel?`<button class="btn" data-editar>Editar</button><button class="btn ghost" data-senha>Nova senha</button><button class="btn ${r.ativo?"danger":""}" data-ativo>${r.ativo?"Desativar":"Reativar"}</button>`:""}</div></td></tr>`; }).join("")}
+      <td><div class="row acoes">${r.id===S.me.id?`<button class="btn" data-editar>Editar</button>`:""}${editavel?`<button class="btn" data-editar>Editar</button><button class="btn ghost" data-senha>Nova senha</button><button class="btn ${r.ativo?"danger":""}" data-ativo>${r.ativo?"Desativar":"Reativar"}</button>`:""}</div></td></tr>`; }).join("")}
     </tbody></table></div>`;
   $("#uFiltros",u).appendChild(barraFiltros("users",{busca:"Buscar por nome ou e-mail",grupos:[
     {k:"perfil",rotulo:"Perfil",padrao:"todos",opcoes:[{v:"todos",t:"Todos",n:todosU.length},...Object.keys(PERFIS).map(p=>({v:p,t:perfilNome(p),n:todosU.filter(r=>r.perfil===p).length})).filter(o=>o.n)]},
@@ -1489,7 +1489,7 @@ function painelPerfis(w){
   const mudou = perfis.some(p=> SERVICOS.some(([k])=> E[p].includes(k)!==(PERM[p]||[]).includes(k)));
   const sec=document.createElement("section"); sec.className="panel";
   sec.innerHTML=`<h3>O que cada perfil pode fazer</h3>
-    <p class="small muted" style="margin:4px 0 10px">${adm?"Ligue ou desligue cada serviço para cada perfil e salve. A mudança vale para todos os escritórios assim que a pessoa abrir o painel de novo.":"Quem altera esta tabela é a administração."}</p>
+    <p class="small muted" style="margin:4px 0 10px">${adm?"Ligue ou desligue cada serviço nas colunas dos outros perfis e clique em <b>Salvar permissões</b>. A coluna Administrador é fixa: tem sempre todos os serviços. A mudança vale para todos os escritórios assim que a pessoa abrir o painel de novo.":"Quem altera esta tabela é a administração."}</p>
     <div class="tbl-wrap"><table class="tperm"><thead><tr><th>Serviço</th>${perfis.map(p=>`<th title="${esc(PERFIS[p].n)}">${esc(({admin:"Administrador",consultor:"Consultor Sebrae",coordenador:"Coordenador",atendente:"Atendente",credenciado:"Credenciado"})[p]||PERFIS[p].n)}</th>`).join("")}</tr></thead><tbody>
     ${SERVICOS.map(([k,n,d])=>`<tr><td><b>${n}</b><div class="small muted">${d}</div></td>${perfis.map(p=>{ const on=E[p].includes(k); const trava=!adm||p==="admin";
       return `<td><button type="button" class="switch" role="switch" aria-checked="${on}" aria-label="${n}: ${esc(PERFIS[p].n)}" data-p="${p}" data-k="${k}" ${trava?"disabled":""}><span class="track"><span class="thumb"></span></span>${on?"Sim":"Não"}</button></td>`; }).join("")}</tr>`).join("")}
@@ -1511,16 +1511,17 @@ function painelPerfis(w){
 /* edição de um usuário: nome, e-mail, perfil e escritórios, tudo no mesmo lugar */
 function formEditarUsuario(r,ids,souAdmin){
   const tr=document.createElement("tr"); tr.className="edit-row"; const td=document.createElement("td"); td.colSpan=5; tr.appendChild(td);
-  const sel=new Set(r.ecps||[]);
+  const sel=new Set(r.ecps||[]); const eu=r.id===S.me.id;
   td.innerHTML=`<form class="form" style="margin:0"><div class="eyebrow">Editar ${esc(r.nome)}</div><div class="formgrid">
       <label class="f"><span>Nome completo *</span><input name="nome" required value="${esc(r.nome)}"></label>
       <label class="f"><span>E-mail *</span><input name="email" type="email" required value="${esc(r.email)}"></label>
-      <label class="f"><span>Perfil *</span><select name="perfil">${Object.keys(PERFIS).filter(p=>souAdmin||p!=="admin").map(p=>`<option value="${p}" ${r.perfil===p?"selected":""}>${perfilNome(p)}</option>`).join("")}</select></label>
-      <div class="f wide"><span>Escritórios</span><div class="chips" role="group" aria-label="Escritórios">
+      <label class="f"><span>Perfil *</span><select name="perfil" ${eu?"disabled":""}>${Object.keys(PERFIS).filter(p=>souAdmin||p!=="admin").map(p=>`<option value="${p}" ${r.perfil===p?"selected":""}>${perfilNome(p)}</option>`).join("")}</select></label>
+      <div class="f wide" ${eu?"hidden":""}><span>Escritórios</span><div class="chips" role="group" aria-label="Escritórios">
         <button type="button" class="chip" data-v="*" aria-pressed="${sel.has("*")}">Todos os escritórios</button>
         ${ids.map(id=>`<button type="button" class="chip" data-v="${esc(id)}" aria-pressed="${sel.has(id)}">${esc((S.ecps[id].nome||id).replace(/^ECP /,""))}</button>`).join("")}</div>
         <span class="small muted" data-dica style="text-transform:none;letter-spacing:0;font-weight:400;margin-top:4px"></span></div>
-    </div><div class="row"><button class="btn primary" type="submit">Salvar alterações</button><button class="btn ghost" type="button" data-cancela>Cancelar</button></div></form>`;
+    </div>${eu?`<p class="small muted" style="margin:0">Na sua própria conta você corrige o nome e o e-mail. O perfil só pode ser trocado por outro administrador, para o painel nunca ficar sem administrador. A senha você troca em “Trocar senha”, no menu.</p>`:""}
+    <div class="row"><button class="btn primary" type="submit">Salvar alterações</button><button class="btn ghost" type="button" data-cancela>Cancelar</button></div></form>`;
   const f=td.querySelector("form"), box=td.querySelector(".chips"), todos=box.querySelector('[data-v="*"]'), dica=td.querySelector("[data-dica]");
   const ajusta=()=>{ const multi=PERFIS[f.perfil.value].multi; todos.hidden=!multi;
     dica.textContent = multi ? "Marque os escritórios que a pessoa acompanha, ou “Todos os escritórios”." : "Coordenador e atendente ficam em um único escritório: escolha um.";
@@ -1535,7 +1536,7 @@ function formEditarUsuario(r,ids,souAdmin){
     let ecps=[...box.querySelectorAll('.chip[aria-pressed="true"]')].map(b=>b.dataset.v); if(ecps.includes("*")) ecps=["*"];
     if(!ecps.length){ toast("Marque ao menos um escritório"); return; }
     const bt=f.querySelector("button[type=submit]"); bt.disabled=true;
-    try{ await api("alterarUsuario",{id:r.id,nome:f.nome.value.trim(),email:f.email.value.trim(),perfil:f.perfil.value,ecps}); toast("Usuário atualizado"); S.editUser=null; S.usuarios=null; render(); }
+    try{ await api("alterarUsuario",eu?{id:r.id,nome:f.nome.value.trim(),email:f.email.value.trim()}:{id:r.id,nome:f.nome.value.trim(),email:f.email.value.trim(),perfil:f.perfil.value,ecps}); toast("Usuário atualizado"); S.editUser=null; S.usuarios=null; if(eu){ try{ aplicarSessao(await api("sessao"),true); return; }catch(e2){} } render(); }
     catch(e){ toast(e.message); bt.disabled=false; } };
   return tr;
 }
