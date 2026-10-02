@@ -13,6 +13,7 @@ function intervalo(p){
   if(p==="90"||p==="30"){ const d=new Date(h); d.setDate(d.getDate()-Number(p)); return [iso(d), iso(h)]; }
   return ["0000-00-00","9999-12-31"];
 }
+const ehLocal = l => l.tipo==="municipio"||l.tipo==="escritorio";
 const dataBR = s => s ? String(s).slice(0,10).split("-").reverse().join("/") : "—";
 
 /* ---------- tudo o que o relatório mostra, calculado uma vez ---------- */
@@ -81,7 +82,7 @@ function infografico(D){
   return `<div class="ig">
     <div class="ig-top"><img src="${A.ecpBranco.d}" alt="Escritório de Compras Públicas" class="ig-logo">
       <div class="ig-tit"><span>Relatório de monitoramento</span><b>${esc(e.nome||"")}</b><small>${esc([e.municipio,e.territorio,e.regional?("Regional "+e.regional):""].filter(Boolean).join(" · "))}</small></div>
-      <div class="ig-data"><span>${esc(D.periodoNome)}</span><b>${D.hoje}</b></div></div>
+      ${D.logos.some(ehLocal)?`<div class="ig-loc">${D.logos.filter(ehLocal).map(l=>`<img src="${esc(l.img)}" alt="${esc(l.nome||"")}">`).join("")}</div>`:""}<div class="ig-data"><span>${esc(D.periodoNome)}</span><b>${D.hoje}</b></div></div>
     <div class="ig-row ig-r1">
       <div class="ig-box ig-indice">${hexSvg(c.started?pct(c.score):"—", D.faixa)}<div class="ig-ind-txt"><h4>Índice de maturidade ponderado</h4>
         <div class="ig-escala"><div class="ig-esc-bar">${BANDS.map(b=>`<i style="flex:${Math.min(1,b.max)-b.min};background:${b.c}"></i>`).join("")}${c.started?`<u style="left:${Math.min(100,Math.round(c.score*1000)/10)}%"></u>`:""}<s style="left:85%"></s></div>
@@ -98,7 +99,7 @@ function infografico(D){
         <h4 style="margin-top:10px">Pontos para a governança</h4><ul class="ig-pontos">${D.pontos.slice(0,4).map(p=>`<li>${esc(p)}</li>`).join("")}</ul></div>
     </div>
     <div class="ig-box"><h4>Indicadores de impacto</h4><div class="ig-ind">${D.ind.map(i=>`<div><span>${esc(i.n)}</span><div class="ig-meter"><em style="width:${Math.round(i.a*100)}%;background:${i.a>=.9?"#22804F":i.a>=.5?"#B26A00":"#B8352D"}"></em></div><b>${i.r} de ${i.m}</b></div>`).join("")}</div></div>
-    <div class="ig-foot"><img src="${A.ecpClaro.d}" alt="Escritório de Compras Públicas"><img src="${A.sebraeTE.d}" alt="Sebrae Território Empreendedor"><img src="${A.cidade.d}" alt="Cidade Empreendedora"><img src="${A.cidadeDigital.d}" alt="Cidade Empreendedora Digital">${D.logos.map(l=>`<img src="${esc(l.img)}" alt="${esc(l.nome||"")}">`).join("")}</div>
+    <div class="ig-foot"><img src="${A.ecpClaro.d}" alt="Escritório de Compras Públicas"><img src="${A.sebraeTE.d}" alt="Sebrae Território Empreendedor"><img src="${A.cidade.d}" alt="Cidade Empreendedora"><img src="${A.cidadeDigital.d}" alt="Cidade Empreendedora Digital">${D.logos.filter(l=>!ehLocal(l)).map(l=>`<img src="${esc(l.img)}" alt="${esc(l.nome||"")}">`).join("")}</div>
   </div>`;
 }
 
@@ -120,8 +121,12 @@ async function gerarPptx(D){
   const T="Montserrat", B="Sora"; const W=10, H=5.625, FY=5.04, FH=H-FY; const HEX=P.ShapeType.hexagon;
   const img=(s,a,x,y,h,wmax)=>{ let w=h*a.w/a.h; if(wmax&&w>wmax){ w=wmax; h=w*a.h/a.w; } s.addImage({data:a.d,x,y,w,h}); return w; };
   const rodape=s=>{ s.addShape(P.ShapeType.rect,{x:0,y:FY,w:W,h:FH,fill:{color:BRANCO},line:{color:BRANCO,width:0}});
-    let x=0.3; const h=0.34, y=FY+(FH-h)/2;
-    for(const a of [A.ecpClaro,A.sebraeTE,A.cidade,A.cidadeDigital,...logosCad]){ if(x>W-1.1) break; x+=img(s,a,x,y,h,1.25)+0.32; } };
+    const h=0.34, y=FY+(FH-h)/2;
+    // à direita, sempre no mesmo lugar: município e escritório local. À esquerda: programa e parceiros.
+    let xd=W-0.3; const hl=0.42, yl=FY+(FH-hl)/2;
+    for(const a of logosCad.filter(ehLocal).reverse()){ let w=hl*a.w/a.h, hh=hl; if(w>1.3){ w=1.3; hh=w*a.h/a.w; } xd-=w; s.addImage({data:a.d,x:xd,y:FY+(FH-hh)/2,w,h:hh}); xd-=0.25; }
+    let x=0.3;
+    for(const a of [A.ecpClaro,A.sebraeTE,A.cidade,A.cidadeDigital,...logosCad.filter(l=>!ehLocal(l))]){ if(x>xd-1.0) break; x+=img(s,a,x,y,h,1.25)+0.32; } };
   const marca=s=>img(s,A.ecpBranco,W-1.72,0.16,0.62);
   const titulo=(s,t,o)=>s.addText(t,{x:0.6,y:0.32,w:6.6,h:0.7,fontFace:T,fontSize:26,bold:true,color:BRANCO,valign:"middle",margin:0,...o});
   const hexLinha=(s,x,y,w,cor)=>s.addShape(HEX,{x,y,w,h:w*0.88,fill:{type:"none"},line:{color:cor||"4A66D9",width:0.75}});
@@ -143,7 +148,7 @@ async function gerarPptx(D){
     const linhas=[["Município",e.municipio],["Território",e.territorio],["Regional",e.regional],["Responsável",e.responsavel],["Período",D.periodoNome],["Data",D.hoje]].filter(l=>l[1]);
     linhas.forEach((l,i)=>{ const y=2.72+i*0.34; s.addShape(HEX,{x:4.68,y:y+0.06,w:0.16,h:0.14,fill:{color:AZUL},line:{color:AZUL,width:0}});
       s.addText([{text:l[0]+": ",options:{bold:true}},{text:String(l[1])}],{x:4.95,y,w:3.6,h:0.27,fontFace:B,fontSize:11,color:NAVY,valign:"middle",margin:0}); });
-    const mun=logosCad.find(l=>l.tipo==="municipio"); if(mun) img(s,mun,8.25,2.75,0.95,1.5);
+    { let yy=2.7; for(const a of logosCad.filter(ehLocal)){ let w=0.8*a.w/a.h, hh=0.8; if(w>1.45){ w=1.45; hh=w*a.h/a.w; } s.addImage({data:a.d,x:8.3+(1.45-w)/2,y:yy,w,h:hh}); yy+=hh+0.2; } }
     marca(s); rodape(s); }
 
   /* 2 · panorama */

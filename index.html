@@ -67,6 +67,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 .ecp-pick select{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:6px;padding:7px 10px;min-width:210px;max-width:100%}
 .ecp-pick select option{color:#1b2235;background:#fff}
 .ecp-pick{flex:1 1 420px;justify-content:flex-start;padding-left:14px}
+.hdr-logos{margin-left:auto;display:flex;align-items:center;gap:12px;background:#fff;border-radius:10px;padding:5px 12px;height:50px}.hdr-logos img{height:38px;max-width:120px;object-fit:contain;display:block}
+.hdr-logos:not([hidden])+.me{margin-left:6px}
+@media (min-width:900px){.me{flex-direction:column;align-items:flex-end;gap:3px}.me #meNome{color:#fff;font-weight:600;white-space:nowrap}.ecp-pick{flex-wrap:nowrap}}
+@media (max-width:899px){.hdr-logos{height:40px;padding:4px 9px;gap:9px}.hdr-logos img{height:30px;max-width:86px}}
 .me{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--bar-muted)}
 .me img{width:26px;height:26px;border-radius:50%}
 .shell{display:grid;grid-template-columns:236px minmax(0,1fr);max-width:1440px;margin:0 auto;align-items:start}
@@ -243,10 +247,11 @@ details.how dd{margin:0}
 .ig>*:not(.ig-top){margin-inline:18px}
 .ig-top{background:#16234d;color:#fff;display:flex;align-items:center;gap:18px;padding:16px 22px;flex-wrap:wrap}
 .ig-logo{height:58px}
-.ig-tit{display:grid;gap:1px;flex:1 1 220px;border-left:1px solid rgba(255,255,255,.3);padding-left:18px}
+.ig-tit{display:grid;gap:1px;flex:1 1 150px;min-width:0;border-left:1px solid rgba(255,255,255,.3);padding-left:18px}
 .ig-tit span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#aab8d6}
 .ig-tit b{font-family:var(--f-display);font-size:24px;line-height:1.15}
 .ig-tit small{color:#c9d3f5;font-size:12px}
+.ig-loc{display:flex;align-items:center;gap:12px;background:#fff;border-radius:10px;padding:6px 12px}.ig-loc img{height:44px;max-width:120px;object-fit:contain;display:block}
 .ig-data{text-align:right;display:grid}.ig-data span{font-size:11px;color:#aab8d6;text-transform:uppercase;letter-spacing:.08em}.ig-data b{font-family:var(--f-display);font-size:16px}
 .ig-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:760px){.ig-row{grid-template-columns:1fr}}
@@ -287,6 +292,7 @@ details.how dd{margin:0}
   .ig{font-size:10.5px;gap:8px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .ig-row{grid-template-columns:1fr 1fr!important}.ig-kpis{grid-template-columns:repeat(6,1fr)!important}.ig-ind{grid-template-columns:1fr 1fr 1fr!important}
   .ig-box,.ig-row{break-inside:avoid}
+  .ig-top{gap:12px;padding:12px 16px;flex-wrap:nowrap}.ig-logo{height:44px}.ig-loc{padding:5px 9px;gap:9px}.ig-loc img{height:30px;max-width:84px}.ig-tit{padding-left:12px}.ig-tit b{font-size:18px;white-space:nowrap}.ig-tit span{font-size:9px}.ig-data{flex:none}
 }
 .nalist{display:grid;gap:2px}.nalist .switch{align-items:flex-start;text-align:left;line-height:1.35;padding:7px 0}.nalist .switch .track{margin-top:1px}
 @media (max-width:640px){.fields{grid-template-columns:1fr}}
@@ -389,6 +395,7 @@ svg text{fill:var(--muted);font-family:var(--f-body)}
       <div class="ecp-pick">
         <label for="ecpSel">Escritório</label>
         <select id="ecpSel"><option value="">Carregando escritórios…</option></select>
+        <div class="hdr-logos" id="hdrLogos" hidden></div>
         <div class="me" id="me" hidden><span id="meNome"></span><b class="perfil" id="mePerfil" hidden></b><button type="button" id="btnSairTopo" hidden>Sair</button></div>
       </div>
     </div>
@@ -722,6 +729,8 @@ function render(){
   if(ok && !(TAB_OK[S.view]||(()=>false))()) S.view="painel";
   document.querySelectorAll(".tab[data-v]").forEach(t=>{ t.hidden = !ok || !(TAB_OK[t.dataset.v]||(()=>false))(); t.setAttribute("aria-selected",t.dataset.v===S.view); });
   ajustarAbas(true);
+  // logos do município e do escritório local: mesmo lugar em todas as telas
+  { const box=$("#hdrLogos"); const L=ok&&S.ecpId?logosLocais():[]; box.hidden=!L.length; box.innerHTML=L.map(l=>`<img src="${esc(l.img)}" alt="${esc(l.nome||"Logo")}" title="${esc(l.nome||"")}">`).join(""); }
   if(!S.ready || S.gate==="loading"){ m.innerHTML=`<div class="empty">Carregando o painel…</div>`; return; }
   if(S.gate!=="ok"){ m.innerHTML=""; const wrap=document.createElement("div"); wrap.className="view"; m.appendChild(wrap); (S.gate==="senha"?vTrocarSenha:vEntrada)(wrap); return; }
   if(!ecpsPermitidos().length && S.view!=="cad" && S.view!=="users"){
@@ -746,12 +755,14 @@ const ecp = () => S.ecps[S.ecpId]||{};
 const pastas = () => ecp().pastas||{};
 
 function driveLink(key,label){ const u=folderUrl(pastas()[key]); return u?`<a class="drive" href="${esc(u)}" target="_blank" rel="noopener">↗ ${esc(label||"Abrir pasta no Drive")}</a>`:""; }
-function logosOrdenadas(){ return Object.entries(S.lists.logos||{}).map(([id,l])=>({id,...l})).filter(l=>/^data:image\//.test(l.img||"")).sort((a,b)=>(a.tipo==="municipio"?0:1)-(b.tipo==="municipio"?0:1) || String(a.id).localeCompare(String(b.id))); }
+const ORDEM_LOGO = l => l.tipo==="municipio"?0 : l.tipo==="escritorio"?1 : 2;
+const logosLocais = () => logosOrdenadas().filter(l=>l.tipo==="municipio"||l.tipo==="escritorio");
+function logosOrdenadas(){ return Object.entries(S.lists.logos||{}).map(([id,l])=>({id,...l})).filter(l=>/^data:image\//.test(l.img||"")).sort((a,b)=>ORDEM_LOGO(a)-ORDEM_LOGO(b) || String(a.id).localeCompare(String(b.id))); }
 function ecpHeader(){
   const e=ecp();
   return `<div class="panel-h" style="margin:0"><div><div class="eyebrow">${esc([e.territorio,e.regional?("Regional "+e.regional):""].filter(Boolean).join(" · ")||"Escritório de Compras Públicas")}</div><h2>${esc(e.nome||"")}</h2>
   <div class="small muted">Responsável: ${esc(e.responsavel||"não informado")}${e.dataDiagnostico?` · Diagnóstico de ${fmtD(e.dataDiagnostico)}`:""}</div></div>
-  <div class="row">${logosOrdenadas().map(l=>`<img class="logo-ecp" src="${esc(l.img)}" alt="${esc(l.nome||"Logo")}" title="${esc(l.nome||"")}">`).join("")}${driveLink("raiz","Pasta do ECP no Drive")}</div></div>`;
+  <div class="row">${driveLink("raiz","Pasta do ECP no Drive")}</div></div>`;
 }
 
 /* ===== Painel do ECP ===== */
@@ -1217,11 +1228,11 @@ function reduzirImagem(arq){ return new Promise((ok,erro)=>{
   im.src=url; }); }
 function painelLogos(w,e){
   const sec=document.createElement("section"); sec.className="panel"; w.appendChild(sec);
-  const L=logosOrdenadas(); const temMun=L.some(l=>l.tipo==="municipio");
-  sec.innerHTML=`<div class="panel-h"><div><h3>Logos do município e dos parceiros <span class="small muted">(${L.length})</span></h3><div class="small muted">As logos aparecem no topo das telas de ${esc(e.nome||"este escritório")}. Envie PNG, JPG ou SVG; o painel reduz a imagem sozinho para não pesar em conexões fracas.</div></div></div>
-    ${L.length?`<div class="logos-grid">${L.map(l=>`<figure class="logo-card"><div class="logo-box"><img src="${esc(l.img)}" alt="${esc(l.nome||"Logo")}"></div><figcaption><b>${esc(l.nome||"Sem nome")}</b><span class="small muted">${l.tipo==="municipio"?"Município":"Parceiro"}</span></figcaption><button type="button" class="btn" data-rm="${esc(l.id)}">Remover</button></figure>`).join("")}</div>`:`<p class="small muted">Nenhuma logo enviada ainda.</p>`}
+  const L=logosOrdenadas(); const temMun=L.some(l=>l.tipo==="municipio"), temEsc=L.some(l=>l.tipo==="escritorio"); const NOME_TIPO={municipio:"Município",escritorio:"Escritório de Compras local",parceiro:"Parceiro"};
+  sec.innerHTML=`<div class="panel-h"><div><h3>Logos do município e dos parceiros <span class="small muted">(${L.length})</span></h3><div class="small muted">As logos do município e do escritório local aparecem no topo de todas as telas e nos relatórios de ${esc(e.nome||"este escritório")}; as dos parceiros, no rodapé dos relatórios. Envie PNG, JPG ou SVG; o painel reduz a imagem sozinho para não pesar em conexões fracas.</div></div></div>
+    ${L.length?`<div class="logos-grid">${L.map(l=>`<figure class="logo-card"><div class="logo-box"><img src="${esc(l.img)}" alt="${esc(l.nome||"Logo")}"></div><figcaption><b>${esc(l.nome||"Sem nome")}</b><span class="small muted">${NOME_TIPO[l.tipo]||"Parceiro"}</span></figcaption><button type="button" class="btn" data-rm="${esc(l.id)}">Remover</button></figure>`).join("")}</div>`:`<p class="small muted">Nenhuma logo enviada ainda.</p>`}
     <form class="form" id="fLogo"><div class="formgrid">
-      <label class="f"><span>Tipo</span><select name="tipo" class="sel"><option value="municipio" ${temMun?"":"selected"}>Município</option><option value="parceiro" ${temMun?"selected":""}>Parceiro</option></select></label>
+      <label class="f"><span>Tipo</span><select name="tipo" class="sel"><option value="municipio" ${temMun?"":"selected"}>Município</option><option value="escritorio" ${temMun&&!temEsc?"selected":""}>Escritório de Compras local</option><option value="parceiro" ${temMun&&temEsc?"selected":""}>Parceiro</option></select></label>
       <label class="f"><span>Nome *</span><input name="nome" required placeholder="Ex.: Prefeitura de ${esc(e.municipio||"Pinhais")}"></label>
       <label class="f"><span>Arquivo da logo *</span><input type="file" name="arq" accept="image/*" required></label>
     </div><div class="row"><button class="btn primary" type="submit">Adicionar logo</button></div></form>`;
@@ -1229,7 +1240,7 @@ function painelLogos(w,e){
   $("#fLogo",sec).onsubmit=async ev=>{ ev.preventDefault(); const f=ev.target; const arq=f.arq.files[0]; if(!arq) return;
     if(L.length>=8){ toast("Limite de 8 logos por escritório. Remova uma para enviar outra."); return; }
     try{ const img=await reduzirImagem(arq);
-      if(f.tipo.value==="municipio") L.filter(l=>l.tipo==="municipio").forEach(l=>excluirLocal("logos",l.id));
+      if(f.tipo.value!=="parceiro") L.filter(l=>l.tipo===f.tipo.value).forEach(l=>excluirLocal("logos",l.id)); // município e escritório têm uma logo só: a nova substitui
       salvarLocal("logos","lg"+Date.now().toString(36),{nome:f.nome.value.trim(),tipo:f.tipo.value,img}); toast("Logo adicionada"); scheduleRender(); }
     catch(err){ toast(err.message); } };
 }
