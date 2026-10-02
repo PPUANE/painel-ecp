@@ -101,7 +101,7 @@ body.sem-menu .tabs-wrap{display:none}
 main{max-width:1180px;margin:0 auto;width:100%;padding-inline:16px;padding-block:22px 48px;display:grid;gap:18px}
 .view{display:grid;gap:18px;min-width:0}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;min-width:0}
-.panel-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 16px;margin-bottom:12px}
+.panel-h{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;margin-bottom:12px}
 .eyebrow{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
 .muted{color:var(--muted)}
 .small{font-size:.85rem}
@@ -207,7 +207,7 @@ details.how dd{margin:0}
 .note.n1[aria-pressed="true"]{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
 .note.n2[aria-pressed="true"]{background:var(--info-soft);border-color:var(--info);color:var(--info)}
 .note.n3[aria-pressed="true"]{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
-.fields{display:grid;grid-template-columns:minmax(200px,280px) 1fr 1fr;gap:10px;align-items:start}
+.fields{display:grid;grid-template-columns:minmax(230px,330px) 1fr 1fr;gap:10px;align-items:start}
 @media (max-width:900px){.fields{grid-template-columns:1fr 1fr}.fields .fnota{grid-column:1/-1;max-width:320px}}
 .nota-sel{width:100%;font-weight:600}.nota-sel.n0{border-color:var(--bad);color:var(--bad)}.nota-sel.n1{border-color:var(--warn);color:var(--warn)}.nota-sel.n2{border-color:var(--info);color:var(--info)}.nota-sel.n3{border-color:var(--ok);color:var(--ok)}.nota-sel option{color:var(--fg);font-weight:400}
 .logo-ecp{height:44px;max-width:130px;object-fit:contain}
@@ -298,6 +298,11 @@ details.how dd{margin:0}
 .hist-row:last-child{border-bottom:0}
 @media (max-width:700px){.hist-row{grid-template-columns:1fr}}
 .diff{display:grid;gap:3px;font-size:.84rem;margin-top:6px}
+.diff-d{margin-top:6px}.diff-d summary{cursor:pointer;color:var(--teal);font-weight:600;font-size:.84rem;width:max-content;max-width:100%}.diff-d[open] summary{margin-bottom:2px}
+.edit-c{text-align:right;white-space:nowrap}.lnk{color:var(--teal);font-weight:700;font-size:.84rem}tr.click:hover .lnk{text-decoration:underline}
+.row.acoes{flex-wrap:nowrap;justify-content:flex-end;gap:6px}.row.acoes .btn{white-space:nowrap;padding:6px 10px;font-size:.82rem}
+.tperm th,.tperm td{padding-inline:8px}
+.rede-t th,.rede-t td{padding-inline:8px}
 .diff span.old{color:var(--bad);text-decoration:line-through;text-decoration-thickness:1px}
 .diff span.new{color:var(--ok);font-weight:600}
 .checks{display:flex;flex-wrap:wrap;gap:6px 14px}
@@ -347,8 +352,13 @@ svg text{fill:var(--muted);font-family:var(--f-body)}
 .switch[aria-checked="true"] .track{background:var(--hex)}
 .switch[aria-checked="true"] .thumb{left:19px}
 .switch[disabled]{opacity:.55;cursor:not-allowed}
-.tperm th:not(:first-child),.tperm td:not(:first-child){text-align:left;white-space:nowrap}.tperm td:first-child{min-width:220px}.tperm .switch{font-weight:600}
-@media (max-width:640px){.fbar{gap:10px}.fsearch{max-width:none;flex-basis:100%}.fgroup{width:100%}}
+.tperm th:not(:first-child),.tperm td:not(:first-child){text-align:left;white-space:nowrap}.tperm td:first-child{min-width:190px}.tperm .switch{font-weight:600}
+@media (max-width:640px){.fbar{gap:10px}.fsearch{max-width:none;flex-basis:100%}.fgroup{width:100%;flex-wrap:nowrap}
+  .view>*{min-width:0}.fbar{min-width:0;max-width:100%;overflow:hidden}.fgroup{min-width:0}
+  .fbar .chips{flex:1 1 0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;min-width:0;padding-right:16px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 22px),transparent)}
+  .fbar .chips::-webkit-scrollbar{display:none}.fbar .chip{flex:none}.fbar .flabel{flex:none}
+  .brand-t span{display:none}.brand img{height:40px}.bar-top{gap:8px 14px}
+  .ig-indice{flex-wrap:wrap;justify-content:center}.ig-ind-txt{flex-basis:100%}.ig-top{padding:14px 16px;gap:12px}.ig-tit{border-left:0;padding-left:0}.ig-data{text-align:left}}
 @media (prefers-reduced-motion:reduce){.switch .track,.switch .thumb,.chip{transition:none}}
 </style>
 </head>
@@ -982,7 +992,7 @@ function crud(w,key){
     rows.forEach(([id,r])=>{
       if(ed===id){ const tr=document.createElement("tr"); const td=document.createElement("td"); td.colSpan=sc.cols.length+1; td.appendChild(recForm(key,id,r)); tr.appendChild(td); tb.appendChild(tr); return; }
       const tr=document.createElement("tr"); tr.className="click";
-      tr.innerHTML=sc.cols.map(c=>`<td>${cellVal(key,c,r)}</td>`).join("")+`<td class="small muted">${pw?"Editar":""}</td>`;
+      tr.innerHTML=sc.cols.map(c=>`<td>${cellVal(key,c,r)}</td>`).join("")+`<td class="edit-c">${pw?`<span class="lnk">Editar</span>`:""}</td>`;
       if(!pw) tr.className="";
       tr.onclick=e=>{ if(e.target.closest("a")) return; if(!pw) return; S.editing[key]=id; render(); };
       tb.appendChild(tr);
@@ -1051,7 +1061,7 @@ function vRede(w){
   const fb=barraFiltros("rede",{busca:"Buscar escritório, município ou território",grupos:[{k:"faixa",rotulo:"Situação",padrao:"todas",opcoes:[{v:"todas",t:"Todas",n:S.rede.rows.length},...["Avançado","Intermediário","Básico","Em Estruturação"].map(v=>({v,t:v,n:S.rede.rows.filter(r=>faixa(r)===v).length})).filter(o=>o.n),{v:"nao",t:"Não iniciado",n:S.rede.rows.filter(r=>faixa(r)==="nao").length}]}]});
   w.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><h3>Comparativo por escritório</h3><span class="small muted">Clique na linha para abrir o painel do ECP</span></div>
     <div id="redeF" style="margin-bottom:12px"></div>${linhas.length?"":`<div class="empty">Nenhum escritório encontrado com esses filtros.</div>`}
-    <div class="tbl-wrap" ${linhas.length?"":"hidden"}><table><thead><tr><th>ECP</th><th>Índice</th><th>Situação</th>${DIMS.map(d=>`<th title="${esc(d.n)}">${d.k}</th>`).join("")}<th>Avaliados</th><th>Evidências</th><th>Ações concl.</th><th>Atrasadas</th><th>Reuniões</th><th>Última atualização</th></tr></thead><tbody>
+    <div class="tbl-wrap" ${linhas.length?"":"hidden"}><table class="rede-t"><thead><tr><th>ECP</th><th>Índice</th><th>Situação</th>${DIMS.map(d=>`<th title="${esc(d.n)}">${d.k}</th>`).join("")}<th title="Critérios avaliados">Aval.</th><th title="Critérios com evidência">Evid.</th><th title="Ações do plano concluídas">Ações</th><th title="Ações atrasadas">Atras.</th><th title="Reuniões realizadas">Reun.</th><th title="Última atualização">Atualiz.</th></tr></thead><tbody>
     ${linhas.map(r=>r.err?`<tr><td>${esc(r.nome)}</td><td colspan="${10+DIMS.length}" class="muted">Não foi possível ler os dados.</td></tr>`:
       `<tr class="click" data-id="${esc(r.id)}"><td style="white-space:nowrap"><b>${esc(String(r.nome).replace(/^ECP /,""))}</b></td><td class="num"><b>${r.c.started?pct(r.c.score):"—"}</b></td>
       <td>${r.c.started?`<span class="pill ${band(r.c.score).t==="Avançado"?"p-ok":band(r.c.score).t==="Intermediário"?"p-info":band(r.c.score).t==="Básico"?"p-warn":"p-bad"}">${band(r.c.score).t}</span>`:`<span class="pill p-mut">Não iniciado</span>`}</td>
@@ -1345,14 +1355,13 @@ function vUsers(w){
   u.innerHTML=`<div class="panel-h"><div><h3>Usuários <span class="muted small num">(${todosU.length})</span></h3><div class="small muted">Altere o perfil, gere nova senha provisória ou desative quem não deve mais acessar.</div></div></div>
     <div id="uFiltros" style="margin-bottom:12px"></div>
     ${lista.length?"":`<div class="empty">Nenhum usuário encontrado com esses filtros.</div>`}
-    <div class="tbl-wrap" ${lista.length?"":"hidden"}><table><thead><tr><th>Pessoa</th><th>Perfil</th><th>Escritórios</th><th>Situação</th><th>Último acesso</th><th></th></tr></thead><tbody>
+    <div class="tbl-wrap" ${lista.length?"":"hidden"}><table><thead><tr><th>Pessoa</th><th>Perfil</th><th>Escritórios</th><th>Situação</th><th></th></tr></thead><tbody>
     ${lista.map(r=>{ const editavel = r.id!==S.me.id && (souAdmin || r.perfil!=="admin");
       return `<tr data-id="${esc(r.id)}"><td><b>${esc(r.nome)}</b>${r.id===S.me.id?' <span class="small muted">(você)</span>':""}<br><span class="small muted">${esc(r.email)}</span></td>
       <td>${editavel?`<select class="sel" data-perfil>${Object.keys(PERFIS).filter(p=>souAdmin||p!=="admin").map(p=>`<option value="${p}" ${r.perfil===p?"selected":""}>${perfilNome(p)}</option>`).join("")}</select>`:esc(perfilNome(r.perfil))}</td>
       <td class="small">${(r.ecps||[]).includes("*")?"Todos":esc((r.ecps||[]).map(k=>(S.ecps[k]||{}).nome||k).join(", "))}</td>
-      <td>${!r.ativo?'<span class="pill p-mut">Desativado</span>':r.trocarSenha?'<span class="pill p-warn">Aguardando 1º acesso</span>':'<span class="pill p-ok">Ativo</span>'}</td>
-      <td class="num small">${r.ultimoAcesso?new Date(r.ultimoAcesso).toLocaleDateString("pt-BR"):"—"}</td>
-      <td><div class="row">${editavel?`<button class="btn ghost" data-senha>Nova senha</button><button class="btn ${r.ativo?"danger":""}" data-ativo>${r.ativo?"Desativar":"Reativar"}</button>`:""}</div></td></tr>`; }).join("")}
+      <td>${!r.ativo?'<span class="pill p-mut">Desativado</span>':r.trocarSenha?'<span class="pill p-warn">Aguardando 1º acesso</span>':'<span class="pill p-ok">Ativo</span>'}${r.ultimoAcesso?`<div class="small muted num" style="margin-top:3px">Último acesso em ${new Date(r.ultimoAcesso).toLocaleDateString("pt-BR")}</div>`:""}</td>
+      <td><div class="row acoes">${editavel?`<button class="btn ghost" data-senha>Nova senha</button><button class="btn ${r.ativo?"danger":""}" data-ativo>${r.ativo?"Desativar":"Reativar"}</button>`:""}</div></td></tr>`; }).join("")}
     </tbody></table></div>`;
   $("#uFiltros",u).appendChild(barraFiltros("users",{busca:"Buscar por nome ou e-mail",grupos:[
     {k:"perfil",rotulo:"Perfil",padrao:"todos",opcoes:[{v:"todos",t:"Todos",n:todosU.length},...Object.keys(PERFIS).map(p=>({v:p,t:perfilNome(p),n:todosU.filter(r=>r.perfil===p).length})).filter(o=>o.n)]},
@@ -1391,7 +1400,7 @@ function painelPerfis(w){
   const sec=document.createElement("section"); sec.className="panel";
   sec.innerHTML=`<h3>O que cada perfil pode fazer</h3>
     <p class="small muted" style="margin:4px 0 10px">${adm?"Ligue ou desligue cada serviço para cada perfil e salve. A mudança vale para todos os escritórios assim que a pessoa abrir o painel de novo.":"Quem altera esta tabela é a administração."}</p>
-    <div class="tbl-wrap"><table class="tperm"><thead><tr><th>Serviço</th>${perfis.map(p=>`<th>${esc(PERFIS[p].n)}</th>`).join("")}</tr></thead><tbody>
+    <div class="tbl-wrap"><table class="tperm"><thead><tr><th>Serviço</th>${perfis.map(p=>`<th title="${esc(PERFIS[p].n)}">${esc(({admin:"Administrador",consultor:"Consultor Sebrae",coordenador:"Coordenador",atendente:"Atendente",credenciado:"Credenciado"})[p]||PERFIS[p].n)}</th>`).join("")}</tr></thead><tbody>
     ${SERVICOS.map(([k,n,d])=>`<tr><td><b>${n}</b><div class="small muted">${d}</div></td>${perfis.map(p=>{ const on=E[p].includes(k); const trava=!adm||p==="admin";
       return `<td><button type="button" class="switch" role="switch" aria-checked="${on}" aria-label="${n}: ${esc(PERFIS[p].n)}" data-p="${p}" data-k="${k}" ${trava?"disabled":""}><span class="track"><span class="thumb"></span></span>${on?"Sim":"Não"}</button></td>`; }).join("")}</tr>`).join("")}
     </tbody></table></div>
@@ -1429,11 +1438,14 @@ async function loadRede(){
 }
 
 const CAMPO={nota:"Nota",evidencia:"Evidência",obs:"Observações",na:"Não se aplica",acao:"Ação",como:"Como",onde:"Onde",quando:"Prazo",quem:"Responsável",quanto:"Recurso",status:"Status",nome:"Nome",municipio:"Município",territorio:"Território",regional:"Regional",responsavel:"Responsável",email:"E-mail",dataDiagnostico:"Data do diagnóstico",elaboradoPor:"Elaborado por",metas:"Metas",pastas:"Pastas do Drive",perfil:"Perfil",ativo:"Ativo",indice:"Índice",avaliados:"Avaliados",quantidade:"Quantidade",motivo:"Motivo",registro:"Registro"};
-function fmtVal(v){ if(v===null||v===undefined||v==="") return "(vazio)"; if(v===true) return "sim"; if(v===false) return "não"; if(typeof v==="object") return short(JSON.stringify(v),70); if(isUrl(v)) return "link do Drive"; return short(String(v),70); }
+function fmtVal(v){ if(v===null||v===undefined||v==="") return "(vazio)"; if(v===true) return "sim"; if(v===false) return "não"; if(typeof v==="object") return short(JSON.stringify(v),70); if(isUrl(v)) return "link do Drive"; if(/^\d{4}-\d{2}-\d{2}$/.test(String(v))) return String(v).split("-").reverse().join("/"); return short(String(v),70); }
 function diffHtml(e){
   const a=e.antes||{}, d=e.depois||{}; const keys=[...new Set([...Object.keys(a),...Object.keys(d)])].filter(k=>JSON.stringify(a[k])!==JSON.stringify(d[k])).filter(k=>e.antes||!(d[k]===""||d[k]===null||d[k]===undefined||d[k]===false));
   if(!keys.length) return "";
-  return `<div class="diff">${keys.slice(0,8).map(k=>`<div><span class="muted">${esc(CAMPO[k]||LABEL[k]||k)}:</span> ${e.antes?`<span class="old">${esc(fmtVal(a[k]))}</span> → `:""}<span class="new">${esc(fmtVal(d[k]))}</span></div>`).join("")}${e.acao==="excluiu"?`<div class="muted">Registro excluído</div>`:""}</div>`;
+  const linhas=keys.slice(0,12).map(k=>`<div><span class="muted">${esc(CAMPO[k]||LABEL[k]||k)}:</span> ${e.antes?`<span class="old">${esc(fmtVal(a[k]))}</span> → `:""}<span class="new">${esc(fmtVal(d[k]))}</span></div>`).join("")+(e.acao==="excluiu"?`<div class="muted">Registro excluído</div>`:"");
+  // uma ou duas mudanças aparecem direto; listas maiores ficam recolhidas para a tela não virar um paredão
+  if(keys.length<=2) return `<div class="diff">${linhas}</div>`;
+  return `<details class="diff-d"><summary>Ver os ${keys.length} campos ${e.antes?"alterados":"preenchidos"}</summary><div class="diff">${linhas}</div></details>`;
 }
 /* ===== Exportação ===== */
 function sheetFrom(rows){ return XLSX.utils.aoa_to_sheet(rows); }
