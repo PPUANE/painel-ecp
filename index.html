@@ -58,12 +58,12 @@ button,input,select,textarea{font:inherit;color:inherit}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .logo-dark{display:block!important}:root:not([data-theme="light"]) .logo-light{display:none!important}}
 :root[data-theme="dark"] .logo-dark{display:block!important}:root[data-theme="dark"] .logo-light{display:none!important}
 .brand-t{display:flex;flex-direction:column;gap:1px;border-left:1px solid rgba(255,255,255,.25);padding-left:16px}
-.brand-t b{font-family:var(--f-display);font-weight:400;font-size:1.05rem;letter-spacing:.06em;text-transform:uppercase}
+.brand-t b{font-family:var(--f-display);font-weight:400;font-size:1.05rem;letter-spacing:.01em}
 .brand-t b strong{font-weight:800}
 .brand-t span{color:var(--bar-muted);font-size:.8rem}
 @media (max-width:560px){.brand img{height:42px}.brand-t{border-left:0;padding-left:0}}
 .ecp-pick{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.ecp-pick label{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--bar-muted)}
+.ecp-pick label{font-size:.75rem;letter-spacing:.01em;color:var(--bar-muted)}
 .ecp-pick select{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:6px;padding:7px 10px;min-width:210px;max-width:100%}
 .ecp-pick select option{color:#1b2235;background:#fff}
 .ecp-pick{flex:1 1 420px;justify-content:flex-start;padding-left:14px}
@@ -85,7 +85,7 @@ body.sem-menu .tabs-wrap{display:none}
 .tab:hover{color:#fff;background:rgba(255,255,255,.09)}
 .tab[aria-selected="true"]{background:var(--hex);color:#fff}
 .tab[aria-selected="true"] svg{opacity:1}
-.tab-sep{display:block;margin:12px 4px 4px;padding:12px 8px 2px;border-top:1px solid rgba(255,255,255,.18);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--bar-muted);font-weight:700}
+.tab-sep{display:block;margin:12px 4px 4px;padding:12px 8px 2px;border-top:1px solid rgba(255,255,255,.18);font-size:.7rem;letter-spacing:.01em;color:var(--bar-muted);font-weight:700}
 .tab-seta{display:none}
 @media (max-width:899px){
   .shell{display:block}
@@ -106,7 +106,7 @@ main{max-width:1180px;margin:0 auto;width:100%;padding-inline:16px;padding-block
 .view{display:grid;gap:18px;min-width:0}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;min-width:0}
 .panel-h{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;margin-bottom:12px}
-.eyebrow{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.eyebrow{font-size:.68rem;letter-spacing:.01em;color:var(--muted);font-weight:700}
 .muted{color:var(--muted)}
 .small{font-size:.85rem}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:18px}
@@ -119,8 +119,24 @@ main{max-width:1180px;margin:0 auto;width:100%;padding-inline:16px;padding-block
 .btn.ghost{background:none}
 .btn.danger{color:var(--bad);border-color:var(--bad)}
 .btn[disabled]{opacity:.5;cursor:not-allowed}
-.drive{color:var(--teal);font-weight:700;font-size:.85rem;text-decoration:none;display:inline-flex;gap:5px;align-items:center}
-.drive:hover{text-decoration:underline}
+.drive{color:var(--muted);font-weight:500;font-size:.74rem;text-decoration:none;display:inline-flex;gap:6px;align-items:center;white-space:nowrap}
+.drive svg{width:16px;height:16px;flex:none;fill:none;stroke:var(--teal);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.drive:hover{color:var(--teal)}
+.acc-h{cursor:pointer;user-select:none;border-radius:8px}
+.acc-h:focus-visible{outline:2px solid var(--teal);outline-offset:4px}
+.acc-h h3,h3.acc-h{display:flex;align-items:center;gap:8px}
+.acc-h .chev{transform:rotate(90deg)}
+.panel.fechado>.acc-h .chev{transform:none}
+.panel.fechado>:not(.acc-h){display:none!important}
+.panel.fechado>.acc-h{margin-bottom:0}
+details.grp{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+details.grp>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:10px 14px;font-weight:600;font-size:.86rem;background:var(--surface-2)}
+details.grp>summary::-webkit-details-marker{display:none}
+details.grp[open]>summary{border-bottom:1px solid var(--line)}
+details.grp[open]>summary .chev{transform:rotate(90deg)}
+details.grp>.formgrid{padding:14px}
+@media print{.panel.fechado>:not(.acc-h){display:revert!important}}
+
 
 /* Pílulas de estado */
 .pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:700;white-space:nowrap}
@@ -178,7 +194,7 @@ main{max-width:1180px;margin:0 auto;width:100%;padding-inline:16px;padding-block
 /* Tabelas */
 .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r)}
 table{border-collapse:collapse;width:100%;font-size:.88rem}
-th{text-align:left;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--surface-2);padding:9px 10px;white-space:nowrap}
+th{text-align:left;font-size:.72rem;letter-spacing:.01em;color:var(--muted);background:var(--surface-2);padding:9px 10px;white-space:nowrap}
 td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
 tr.click{cursor:pointer} tr.click:hover td{background:var(--surface-2)}
 .heat{display:inline-block;min-width:44px;text-align:center;border-radius:4px;padding:2px 4px;font-weight:700}
@@ -219,7 +235,7 @@ tr.click{cursor:pointer} tr.click:hover td{background:var(--surface-2)}
 .item-c p{margin:0;font-weight:700}
 details.how summary{cursor:pointer;color:var(--teal);font-weight:700;font-size:.86rem}
 details.how dl{display:grid;gap:8px;margin:10px 0 0;font-size:.88rem}
-details.how dt{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+details.how dt{font-size:.72rem;letter-spacing:.01em;color:var(--muted);font-weight:700}
 details.how dd{margin:0}
 .notes{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 @media (max-width:640px){.notes{grid-template-columns:repeat(2,1fr)}}
@@ -254,15 +270,15 @@ details.how dd{margin:0}
 .ig-top{background:#16234d;color:#fff;display:flex;align-items:center;gap:18px;padding:16px 22px;flex-wrap:wrap}
 .ig-logo{height:58px}
 .ig-tit{display:grid;gap:1px;flex:1 1 150px;min-width:0;border-left:1px solid rgba(255,255,255,.3);padding-left:18px}
-.ig-tit span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#aab8d6}
+.ig-tit span{font-size:11px;letter-spacing:.01em;color:#aab8d6}
 .ig-tit b{font-family:var(--f-display);font-size:24px;line-height:1.15}
 .ig-tit small{color:#c9d3f5;font-size:12px}
 .ig-loc{display:flex;align-items:center;gap:12px;background:#fff;border-radius:10px;padding:6px 12px}.ig-loc img{height:44px;max-width:120px;object-fit:contain;display:block}
-.ig-data{text-align:right;display:grid}.ig-data span{font-size:11px;color:#aab8d6;text-transform:uppercase;letter-spacing:.08em}.ig-data b{font-family:var(--f-display);font-size:16px}
+.ig-data{text-align:right;display:grid}.ig-data span{font-size:11px;color:#aab8d6;letter-spacing:.08em}.ig-data b{font-family:var(--f-display);font-size:16px}
 .ig-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:760px){.ig-row{grid-template-columns:1fr}}
 .ig-box{border:1px solid #dfe3e8;border-radius:12px;padding:12px 14px;min-width:0}
-.ig-box h4{margin:0 0 8px;font-family:var(--f-display);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#2a4fda}
+.ig-box h4{margin:0 0 8px;font-family:var(--f-display);font-size:13px;letter-spacing:.01em;color:#2a4fda}
 .ig-indice{display:flex;gap:16px;align-items:center}.ig-ind-txt{flex:1;min-width:0}.ig-ind-txt p{margin:10px 0 0;color:#5f6878;font-size:11.5px}
 .ig-esc-bar{position:relative;display:flex;gap:2px;height:12px;margin-top:14px}.ig-esc-bar i{display:block;height:100%}.ig-esc-bar i:first-child{border-radius:999px 0 0 999px}.ig-esc-bar i:nth-child(4){border-radius:0 999px 999px 0}
 .ig-esc-bar u{position:absolute;top:-7px;width:0;height:0;margin-left:-6px;border:6px solid transparent;border-top-color:#16234d}
@@ -314,7 +330,7 @@ details.how dd{margin:0}
 .nalist{display:grid;gap:2px}.nalist .switch{align-items:flex-start;text-align:left;line-height:1.35;padding:7px 0}.nalist .switch .track{margin-top:1px}
 @media (max-width:640px){.fields{grid-template-columns:1fr}}
 .f{display:grid;gap:4px;min-width:0}
-.f > span{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.f > span{font-size:.75rem;letter-spacing:.01em;color:var(--muted);font-weight:700}
 .f input,.f select,.f textarea{width:100%;border:1px solid var(--line);border-radius:6px;padding:7px 9px;background:var(--surface);min-width:0}
 .f textarea{min-height:60px;resize:vertical}
 .inline-link{display:flex;gap:6px}
@@ -377,7 +393,7 @@ svg text{fill:var(--muted);font-family:var(--f-body)}
 .fsearch input{width:100%;border:1px solid var(--line);border-radius:999px;padding:7px 14px 7px 34px;background:var(--surface);font:inherit;font-size:.85rem;color:var(--fg)}
 .fsearch input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-soft)}
 .fgroup{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
-.flabel{font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.flabel{font-size:.66rem;letter-spacing:.01em;color:var(--muted);font-weight:700}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:5px 11px;font:inherit;font-size:.8rem;font-weight:600;cursor:pointer;line-height:1.2;transition:background .15s,border-color .15s}
 .chip:hover{border-color:var(--teal);color:var(--teal)}
@@ -426,7 +442,7 @@ svg text{fill:var(--muted);font-family:var(--f-body)}
 <aside class="tabs-wrap" aria-label="Telas do painel"><button type="button" class="tab-seta e" id="tabE" aria-label="Ver telas anteriores" hidden>‹</button>
     <nav class="tabs" role="tablist" id="tabs">
       <button class="tab" role="tab" data-v="rede" title="Visão da rede de escritórios"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.2"/><circle cx="5" cy="18" r="2.2"/><circle cx="19" cy="18" r="2.2"/><path d="M12 7.2v4.3M12 11.5l-5.6 4.6M12 11.5l5.6 4.6"/></svg>Visão da rede</button>
-      <button class="tab" role="tab" data-v="painel" title="Painel do escritório"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="9" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="5" rx="1.5"/><rect x="13.5" y="11.5" width="7" height="9" rx="1.5"/><rect x="3.5" y="15.5" width="7" height="5" rx="1.5"/></svg>Painel do ECP</button>
+      <button class="tab" role="tab" data-v="painel" title="Painel do escritório"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="9" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="5" rx="1.5"/><rect x="13.5" y="11.5" width="7" height="9" rx="1.5"/><rect x="3.5" y="15.5" width="7" height="5" rx="1.5"/></svg>Painel do escritório</button>
       <button class="tab" role="tab" data-v="diag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4.5h6M8 3.5h8v3H8z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M8.5 13l2.2 2.2L15.5 10.5"/></svg>Diagnóstico</button>
       <button class="tab" role="tab" data-v="plano"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".8"/></svg>Plano de ação</button>
       <button class="tab" role="tab" data-v="agenda" title="Agenda e reuniões"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Agenda e reuniões</button>
@@ -448,7 +464,7 @@ svg text{fill:var(--muted);font-family:var(--f-body)}
 <dialog id="dlgNovo" class="dlg"><form class="form" id="fNovo" style="margin:0;border:0;background:none;padding:0">
   <h3>Novo escritório</h3>
   <p class="small muted" style="margin:0">Antes, crie as pastas do ECP no Drive, copiando a estrutura de um escritório que já existe. Depois de cadastrar, o painel abre o Cadastro do novo escritório para você colar os links das pastas e enviar as logos.</p>
-  <label class="f"><span>Nome do ECP *</span><input name="nome" required placeholder="Ex.: ECP Toledo"></label>
+  <label class="f"><span>Nome do escritório *</span><input name="nome" required placeholder="Ex.: ECP Toledo"></label>
   <label class="f"><span>Município</span><input name="municipio"></label>
   <div class="dlg-2"><label class="f"><span>Território</span><input name="territorio"></label><label class="f"><span>Regional</span><input name="regional"></label></div>
   <div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" id="novoCancela">Cancelar</button><button class="btn primary" type="submit">Cadastrar escritório</button></div>
@@ -507,7 +523,7 @@ const SCHEMAS = {
       {k:"pncp",l:"Publica no PNCP?",t:"select",o:["Sim","Não","Parcial"]},{k:"contratos",l:"Contratos/ano",t:"number"},{k:"volume",l:"Volume estimado (R$)",t:"number"},
       {k:"mpe",l:"% MPE",t:"number"},{k:"influencia",l:"Influência",t:"select",o:["Alta","Média","Baixa"]},{k:"engajamento",l:"Engajamento",t:"select",o:["Alto","Médio","Baixo"]},
       {k:"responsavel",l:"Responsável",t:"text"},{k:"obs",l:"Observações",t:"textarea",wide:1}]},
-  documentos:{title:"Documentos de referência",sub:"Normativos, acordos, planos, atas e materiais de apoio do ECP",folder:"docs",order:"data",
+  documentos:{title:"Documentos de referência",sub:"Normativos, acordos, planos, atas e materiais de apoio do escritório",folder:"docs",order:"data",
     cols:["titulo","tipo","data","status","link"],
     fields:[{k:"titulo",l:"Título do documento",t:"text",req:1,wide:1},{k:"tipo",l:"Tipo",t:"select",o:["Normativo","Apresentação","Acordo","Ata","Relatório","Material de Apoio","Outro"]},
       {k:"data",l:"Data",t:"date"},{k:"versao",l:"Versão",t:"text"},{k:"responsavel",l:"Responsável",t:"text"},
@@ -674,7 +690,7 @@ window.addEventListener("hashchange",()=>{const h=location.hash.replace("#","");
 const sairDoPainel=async()=>{ try{ await api("sair"); }catch(e){} encerrar("Você saiu do painel."); };
 $("#btnSair").addEventListener("click",sairDoPainel); $("#btnSairTopo").addEventListener("click",sairDoPainel);
 $("#btnNovoEcp").addEventListener("click",()=>abrirNovoEcp());
-$("#btnImportar").addEventListener("click",()=>{ if(!S.ecpId){ toast("Escolha um escritório no topo para importar a planilha."); return; } S.view="painel"; LS.set("view","painel"); render(); setTimeout(()=>{ const n=$("#impSec"); if(n){ window.scrollTo({top:n.getBoundingClientRect().top+window.scrollY-90,behavior:"smooth"}); n.classList.add("destaque"); setTimeout(()=>n.classList.remove("destaque"),2500); } },200); });
+$("#btnImportar").addEventListener("click",()=>{ if(!S.ecpId){ toast("Escolha um escritório no topo para importar a planilha."); return; } S.acc=S.acc||{}; S.acc["painel|Importar planilha preenchida"]=true; S.view="painel"; LS.set("view","painel"); render(); setTimeout(()=>{ const n=$("#impSec"); if(n){ window.scrollTo({top:n.getBoundingClientRect().top+window.scrollY-90,behavior:"smooth"}); n.classList.add("destaque"); setTimeout(()=>n.classList.remove("destaque"),2500); } },200); });
 $("#btnSenha").addEventListener("click",()=>{ S.gate="senha"; S.trocaVoluntaria=true; render(); });
 
 function aplicarDados(d){
@@ -769,7 +785,7 @@ function render(){
   const v = {rede:vRede,painel:vPainel,diag:vDiag,plano:vPlano,agenda:vAgenda,atores:vAtores,docs:vDocs,relat:vRelat,cad:vCad,hist:vHist,users:vUsers}[S.view]||vPainel;
   const sy=window.scrollY; m.innerHTML=""; const wrap=document.createElement("div"); wrap.className="view"; m.appendChild(wrap);
   if(S.carregando && ["painel","diag","plano","agenda","atores","docs","relat"].includes(S.view)){ wrap.innerHTML=`<div class="empty">Carregando ${esc((S.ecps[S.ecpId]||{}).nome||"escritório")}…</div>`; return; }
-  v(wrap); window.scrollTo({top:sy});
+  v(wrap); sanfonar(wrap); window.scrollTo({top:sy});
   if(aid){ const n=document.getElementById(aid); if(n){ n.focus(); try{ n.setSelectionRange(pos,pos); }catch(e){} } }
 }
 /* barra de telas: mostra setas quando há telas fora da vista e traz a tela atual para dentro */
@@ -784,7 +800,29 @@ $("#tabD").addEventListener("click",()=>{ $("#tabs").scrollLeft+=Math.round($("#
 const ecp = () => S.ecps[S.ecpId]||{};
 const pastas = () => ecp().pastas||{};
 
-function driveLink(key,label){ const u=folderUrl(pastas()[key]); return u?`<a class="drive" href="${esc(u)}" target="_blank" rel="noopener">↗ ${esc(label||"Abrir pasta no Drive")}</a>`:""; }
+/* ===== Sanfona genérica dos quadros ===== */
+const ACC_FECHADOS=["O que cada perfil pode fazer","Cadastrar usuário","Importar planilha preenchida","Critérios que não se aplicam a este escritório","Logos do município e dos parceiros"];
+function accTitulo(h3){ let t=""; h3.childNodes.forEach(n=>{ if(n.nodeType===3) t+=n.textContent; }); return t.trim(); }
+function sanfonar(raiz){
+  if(!raiz) return; S.acc=S.acc||LS.get("acc",{})||{};
+  raiz.querySelectorAll("section.panel").forEach(p=>{
+    if(p.closest(".gate")||p.querySelector(":scope > .acc-h")) return;
+    const h=p.querySelector(":scope > .panel-h, :scope > h3"); if(!h) return;
+    const h3=h.matches("h3")?h:h.querySelector("h3"); if(!h3||h.querySelector("h2")) return;
+    const tit=accTitulo(h3); if(!tit) return; const key=S.view+"|"+tit;
+    const aberto = key in S.acc ? !!S.acc[key] : !ACC_FECHADOS.includes(tit);
+    h.classList.add("acc-h"); h.tabIndex=0; h.setAttribute("role","button"); h.setAttribute("aria-expanded",aberto);
+    h3.insertAdjacentHTML("afterbegin",'<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>');
+    p.classList.toggle("fechado",!aberto);
+    const alterna=()=>{ const ab=p.classList.contains("fechado"); p.classList.toggle("fechado",!ab); h.setAttribute("aria-expanded",ab); S.acc[key]=ab; LS.set("acc",S.acc); };
+    h.addEventListener("click",ev=>{ if(ev.target.closest("a,button,input,select,label")) return; alterna(); });
+    h.addEventListener("keydown",ev=>{ if(ev.target!==h) return; if(ev.key==="Enter"||ev.key===" "){ ev.preventDefault(); alterna(); } });
+  });
+}
+(function(){ const m=document.getElementById("main"); if(!m||!window.MutationObserver) return; let t=0;
+  new MutationObserver(()=>{ if(t) return; t=requestAnimationFrame(()=>{ t=0; sanfonar(m); }); }).observe(m,{childList:true,subtree:true}); })();
+
+function driveLink(key,label){ const u=folderUrl(pastas()[key]); return u?`<a class="drive" href="${esc(u)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>${esc(label||"Pasta no Drive")}</span></a>`:""; }
 const ORDEM_LOGO = l => l.tipo==="municipio"?0 : l.tipo==="escritorio"?1 : 2;
 const logosLocais = () => logosOrdenadas().filter(l=>l.tipo==="municipio"||l.tipo==="escritorio");
 function logosOrdenadas(){ return Object.entries(S.lists.logos||{}).map(([id,l])=>({id,...l})).filter(l=>/^data:image\//.test(l.img||"")).sort((a,b)=>ORDEM_LOGO(a)-ORDEM_LOGO(b) || String(a.id).localeCompare(String(b.id))); }
@@ -792,7 +830,7 @@ function ecpHeader(){
   const e=ecp();
   return `<div class="panel-h" style="margin:0"><div><div class="eyebrow">${esc([e.territorio,e.regional?("Regional "+e.regional):""].filter(Boolean).join(" · ")||"Escritório de Compras Públicas")}</div><h2>${esc(e.nome||"")}</h2>
   <div class="small muted">Responsável: ${esc(e.responsavel||"não informado")}${e.dataDiagnostico?` · Diagnóstico de ${fmtD(e.dataDiagnostico)}`:""}</div></div>
-  <div class="ecp-dir">${logosOrdenadas().length?`<div class="ecp-logos">${logosOrdenadas().map(l=>`<img src="${esc(l.img)}" alt="${esc(l.nome||"Logo")}" title="${esc(l.nome||"")}">`).join("")}</div>`:""}${driveLink("raiz","Pasta do ECP no Drive")}</div></div>`;
+  <div class="ecp-dir">${logosOrdenadas().length?`<div class="ecp-logos">${logosOrdenadas().map(l=>`<img src="${esc(l.img)}" alt="${esc(l.nome||"Logo")}" title="${esc(l.nome||"")}">`).join("")}</div>`:""}${driveLink("raiz","Pasta no Drive")}</div></div>`;
 }
 
 /* ===== Painel do ECP ===== */
@@ -814,7 +852,7 @@ function vPainel(w){
         <div class="scale-ref" style="left:85%" title="Modelo de Referência: 85%"></div>
         <div class="scale-lbl">${BANDS.map(x=>`<div style="width:${(Math.min(1,x.max)-x.min)*100}%">${x.t}</div>`).join("")}</div>
       </div>
-      <p class="small muted" style="margin:10px 0 0">A linha tracejada marca 85%, o patamar para o ECP ser Modelo de Referência no Paraná. Itens ainda não avaliados contam como zero no índice.</p>
+      <p class="small muted" style="margin:10px 0 0">A linha tracejada marca 85%, o patamar para o escritório ser Modelo de Referência no Paraná. Itens ainda não avaliados contam como zero no índice.</p>
     </div></div></section>`);
   w.insertAdjacentHTML("beforeend",`<section class="kpis">
     <div class="kpi"><b class="num">${c.avaliados}/${c.total}</b><span>critérios avaliados</span></div>
@@ -858,14 +896,14 @@ function vPainel(w){
     :`<div class="empty">Sem prazos em aberto. Ações do cronograma, encaminhamentos de reuniões e prazos do plano aparecem aqui.</div>`}</section>`);
   // evolução
   const cic=Object.values(S.ciclos).sort((a,b)=>(a.data||"").localeCompare(b.data||""));
-  w.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><div><h3>Evolução do índice</h3><div class="small muted">Registre uma fotografia ao fechar cada ciclo de diagnóstico para acompanhar a trajetória do ECP.</div></div>
-    <div class="row">${pode("ciclo")?`<button class="btn" id="btnCiclo" ${!c.started?"disabled":""}>Registrar fotografia de hoje</button>`:""}${pode("export")?`<button class="btn" id="btnXlsx">Exportar ECP (Excel)</button>`:""}</div></div>
-    ${cic.length?evoChart(cic):`<div class="empty">Nenhuma fotografia registrada ainda.</div>`}</section>`);
+  w.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><div><h3>Evolução do índice</h3><div class="small muted">Registre o índice ao fechar cada ciclo para acompanhar a evolução do escritório.</div></div>
+    <div class="row">${pode("ciclo")?`<button class="btn" id="btnCiclo" ${!c.started?"disabled":""}>Registrar índice de hoje</button>`:""}${pode("export")?`<button class="btn" id="btnXlsx">Exportar para Excel</button>`:""}</div></div>
+    ${cic.length?evoChart(cic):`<div class="empty">Nenhum registro ainda.</div>`}</section>`);
   painelImportar(w);
   w.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{S.view=b.dataset.go;render();});
   const bc=$("#btnCiclo",w); if(bc) bc.onclick=async()=>{
     const id=today(); const snap={data:id,score:c.score,avaliados:c.avaliados,evidencias:c.comEvid,dims:Object.fromEntries(c.dims.map(d=>[d.k,d.ader]))};
-    const s2={...snap}; delete s2.atualizadoEm; delete s2.atualizadoPor; salvarLocal("ciclos",id,s2); toast("Fotografia registrada"); render();
+    const s2={...snap}; delete s2.atualizadoEm; delete s2.atualizadoPor; salvarLocal("ciclos",id,s2); toast("Registro registrada"); render();
   };
   const bx=$("#btnXlsx",w); if(bx) bx.onclick=()=>exportEcp();
 }
@@ -877,10 +915,10 @@ function nextStep(c){
   const alimenta=pode("diag");
   if(pend>0 && pode("homologar") && (!alimenta || sem===0 || S.me.perfil!=="atendente")){ t=`${pend} ${pend===1?"alteração aguarda":"alterações aguardam"} sua homologação`; d="Confira o que mudou, quem alterou e homologue para validar o histórico do escritório."; btn="Homologar alterações"; go="hist"; }
   else if(!alimenta){ t="Acompanhe a evolução do escritório"; d="Seu perfil tem acesso de leitura aos painéis. As alterações feitas pela equipe aparecem no Histórico."; btn="Ver histórico"; go="hist"; }
-  else if(sem>0){ t=c.avaliados?`Faltam ${sem} critérios para fechar o diagnóstico`:"Comece o diagnóstico do seu ECP"; d=c.avaliados?"Continue de onde parou: os critérios sem nota já aparecem filtrados.":"São 24 critérios em 5 dimensões. Leva cerca de 30 minutos e tudo é salvo automaticamente."; btn=c.avaliados?"Continuar diagnóstico":"Começar agora"; go="diag"; f="pendentes"; }
+  else if(sem>0){ t=c.avaliados?`Faltam ${sem} critérios para fechar o diagnóstico`:"Comece o diagnóstico do seu escritório"; d=c.avaliados?"Continue de onde parou: os critérios sem nota já aparecem filtrados.":"São 24 critérios em 5 dimensões. Leva cerca de 30 minutos e tudo é salvo automaticamente."; btn=c.avaliados?"Continuar diagnóstico":"Começar agora"; go="diag"; f="pendentes"; }
   else if(c.semEvid>0){ t=`${c.semEvid} notas aguardam evidência`; d="Guarde os arquivos na pasta da dimensão no Drive e cole o link no critério."; btn="Vincular evidências"; go="diag"; f="semevid"; }
   else if(semPlano>0){ t=`${semPlano} ações do plano sem responsável`; d="Defina quem faz e até quando para transformar o diagnóstico em resultado."; btn="Completar plano de ação"; go="plano"; }
-  else { t="Diagnóstico completo e plano em dia"; d="Registre a fotografia do ciclo e acompanhe a evolução do índice."; btn="Ver agenda e reuniões"; go="agenda"; }
+  else { t="Diagnóstico completo e plano em dia"; d="Registre a registro do ciclo e acompanhe a evolução do índice."; btn="Ver agenda e reuniões"; go="agenda"; }
   const el=document.createElement("section"); el.className="next";
   el.innerHTML=`<div class="next-hex num">${Math.round(pr*100)}%</div><div style="min-width:0"><div class="eyebrow">Próximo passo</div><h3>${esc(t)}</h3><div class="small muted">${esc(d)}</div><div class="prog" title="Avanço: critérios avaliados e evidências vinculadas"><i style="width:${pr*100}%"></i></div></div><button class="btn primary">${esc(btn)} →</button>`;
   el.querySelector("button").onclick=()=>{ if(f){ filtro("diag").g.sit=f; filtro("diag").g.dim="todas"; } S.diagUI={}; if(go==="hist") filtro("hist").g.st="pend"; S.view=go; render(); window.scrollTo({top:0}); };
@@ -936,7 +974,7 @@ function vDiag(w){
     blk.querySelector(".dimhead").onclick=()=>{ U.dim = U.dim===d.k ? "" : d.k; U.item=undefined; render(); };
     if(!aberta) continue;
     const corpo=document.createElement("div"); corpo.className="dimbody"; blk.appendChild(corpo);
-    const pasta=driveLink(d.f,"Pasta de evidências desta dimensão"); if(pasta) corpo.insertAdjacentHTML("beforeend",`<div class="dim-pasta">${pasta}</div>`);
+    const pasta=driveLink(d.f,"Pasta de evidências"); if(pasta) corpo.insertAdjacentHTML("beforeend",`<div class="dim-pasta">${pasta}</div>`);
     // critério aberto: o escolhido pela pessoa ou, na falta, o primeiro ainda sem nota
     let abertoId = U.dim===d.k || fDim===d.k ? U.item : undefined;
     if(abertoId===undefined && (U.dim===d.k||fDim===d.k)){ const p=its.find(semNota); abertoId=p?p.id:null; }
@@ -1029,7 +1067,7 @@ function vPlano(w){
     el.innerHTML=`<div class="item-h"><div class="item-c"><span class="code">${i.id}</span><div style="min-width:0"><p>${esc(p.acao||sugestao(Number(r.nota)))}</p><div class="small muted">${esc(DIMS.find(d=>d.k===i.d).n)} · nota ${r.nota}</div></div></div>
       <div class="row"><span class="pill ${pr==="Alta"?"p-bad":"p-warn"}">${pr}</span><span class="pill ${stt==="Concluído"?"p-ok":stt==="Atrasado"?"p-bad":stt==="Em andamento"?"p-info":"p-mut"}">${stt}</span></div></div>
       <div class="row small muted" style="gap:16px">${p.quem?`<span>Quem: <b>${esc(p.quem)}</b></span>`:""}${p.quando?`<span class="num">Prazo: <b>${fmtD(p.quando)}</b></span>`:""}</div>
-      ${open?planoForm(i,p,r):(pode("plano")?`<div><button class="btn" data-edit>Detalhar 5W2H e status</button></div>`:"")}`;
+      ${open?planoForm(i,p,r):(pode("plano")?`<div><button class="btn" data-edit>Detalhar ação e status</button></div>`:"")}`;
     const eb=el.querySelector("[data-edit]"); if(eb) eb.onclick=()=>{S.editing["plano:"+i.id]=1;render();};
     const f=el.querySelector("form"); if(f){
       f.onsubmit=async ev=>{ev.preventDefault(); const fd=Object.fromEntries(new FormData(f)); salvarLocal("plano",i.id,fd); delete S.editing["plano:"+i.id]; toast("Plano salvo"); render(); };
@@ -1155,8 +1193,8 @@ function vRede(w){
   const iniciados=R.filter(r=>r.c.started); const media=iniciados.length?iniciados.reduce((s,r)=>s+r.c.score,0)/iniciados.length:null;
   const aptos=iniciados.filter(r=>r.c.score>=.85).length;
   const evid=R.reduce((s,r)=>s+r.c.comEvid,0), tot=R.reduce((s,r)=>s+r.c.total,0);
-  w.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><div><div class="eyebrow">Programa Compra Paraná</div><h2>Visão da rede de ECPs</h2><div class="small muted">Atualizado às ${S.rede.at.toLocaleTimeString("pt-BR",{timeStyle:"short"})}</div></div>
-    <div class="row"><button class="btn" id="reload">Atualizar</button>${pode("export")?`<button class="btn" id="xlsxRede">Exportar rede (Excel)</button>`:""}</div></div>
+  w.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><div><div class="eyebrow">Programa Compra Paraná</div><h2>Visão da rede de escritórios</h2><div class="small muted">Atualizado às ${S.rede.at.toLocaleTimeString("pt-BR",{timeStyle:"short"})}</div></div>
+    <div class="row"><button class="btn" id="reload">Atualizar</button>${pode("export")?`<button class="btn" id="xlsxRede">Exportar para Excel</button>`:""}</div></div>
     <div class="kpis"><div class="kpi"><b class="num">${R.length}</b><span>escritórios no painel</span></div>
     <div class="kpi"><b class="num">${iniciados.length}</b><span>com diagnóstico iniciado</span></div>
     <div class="kpi"><b class="num">${media==null?"—":pct(media)}</b><span>índice médio (iniciados)</span></div>
@@ -1167,9 +1205,9 @@ function vRede(w){
   const fF=valorFiltro("rede","faixa","todas");
   const linhas=S.rede.rows.filter(r=>(fF==="todas"||faixa(r)===fF)&&buscaOk("rede",r.nome,(S.ecps[r.id]||{}).municipio,(S.ecps[r.id]||{}).territorio,(S.ecps[r.id]||{}).regional));
   const fb=barraFiltros("rede",{busca:"Buscar escritório, município ou território",grupos:[{k:"faixa",rotulo:"Situação",padrao:"todas",opcoes:[{v:"todas",t:"Todas",n:S.rede.rows.length},...["Avançado","Intermediário","Básico","Em Estruturação"].map(v=>({v,t:v,n:S.rede.rows.filter(r=>faixa(r)===v).length})).filter(o=>o.n),{v:"nao",t:"Não iniciado",n:S.rede.rows.filter(r=>faixa(r)==="nao").length}]}]});
-  w.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><h3>Comparativo por escritório</h3><span class="small muted">Clique na linha para abrir o painel do ECP</span></div>
+  w.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h"><h3>Comparativo por escritório</h3><span class="small muted">Clique na linha para abrir o painel do escritório</span></div>
     <div id="redeF" style="margin-bottom:12px"></div>${linhas.length?"":`<div class="empty">Nenhum escritório encontrado com esses filtros.</div>`}
-    <div class="tbl-wrap" ${linhas.length?"":"hidden"}><table class="rede-t"><thead><tr><th>ECP</th><th>Índice</th><th>Situação</th>${DIMS.map(d=>`<th title="${esc(d.n)}">${d.k}</th>`).join("")}<th title="Critérios avaliados">Aval.</th><th title="Critérios com evidência">Evid.</th><th title="Ações do plano concluídas">Ações</th><th title="Ações atrasadas">Atras.</th><th title="Reuniões realizadas">Reun.</th><th title="Última atualização">Atualiz.</th></tr></thead><tbody>
+    <div class="tbl-wrap" ${linhas.length?"":"hidden"}><table class="rede-t"><thead><tr><th>Escritório</th><th>Índice</th><th>Situação</th>${DIMS.map(d=>`<th title="${esc(d.n)}">${d.k}</th>`).join("")}<th title="Critérios avaliados">Aval.</th><th title="Critérios com evidência">Evid.</th><th title="Ações do plano concluídas">Ações</th><th title="Ações atrasadas">Atras.</th><th title="Reuniões realizadas">Reun.</th><th title="Última atualização">Atualiz.</th></tr></thead><tbody>
     ${linhas.map(r=>r.err?`<tr><td>${esc(r.nome)}</td><td colspan="${10+DIMS.length}" class="muted">Não foi possível ler os dados.</td></tr>`:
       `<tr class="click" data-id="${esc(r.id)}"><td style="white-space:nowrap"><b>${esc(String(r.nome).replace(/^ECP /,""))}</b></td><td class="num"><b>${r.c.started?pct(r.c.score):"—"}</b></td>
       <td>${r.c.started?`<span class="pill ${band(r.c.score).t==="Avançado"?"p-ok":band(r.c.score).t==="Intermediário"?"p-info":band(r.c.score).t==="Básico"?"p-warn":"p-bad"}">${band(r.c.score).t}</span>`:`<span class="pill p-mut">Não iniciado</span>`}</td>
@@ -1191,9 +1229,9 @@ function vCad(w){
     const metas={...DEFAULT_METAS,...(e.metas||{})}; const p=e.pastas||{};
     w.insertAdjacentHTML("beforeend",`<section class="panel">${ecpHeader()}</section>`);
     const sec=document.createElement("section"); sec.className="panel"; w.appendChild(sec);
-    sec.innerHTML=`<div class="panel-h"><h3>Identidade do escritório</h3>${driveLink("raiz","Pasta do ECP")}</div>
-    <form class="form" id="fIdent"><div class="formgrid">
-      <label class="f"><span>Nome do ECP</span><input name="nome" value="${esc(e.nome||"")}" ${adm?"":"readonly"}></label>
+    sec.innerHTML=`<div class="panel-h"><h3>Identidade do escritório</h3></div>
+    <form class="form" id="fIdent"><details class="grp" open><summary><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>Dados do escritório</summary><div class="formgrid">
+      <label class="f"><span>Nome do escritório</span><input name="nome" value="${esc(e.nome||"")}" ${adm?"":"readonly"}></label>
       <label class="f"><span>Município</span><input name="municipio" value="${esc(e.municipio||"")}"></label>
       <label class="f"><span>Território</span><input name="territorio" value="${esc(e.territorio||"")}"></label>
       <label class="f"><span>Regional</span><input name="regional" value="${esc(e.regional||"")}"></label>
@@ -1201,17 +1239,17 @@ function vCad(w){
       <label class="f"><span>E-mail</span><input name="email" type="email" value="${esc(e.email||"")}"></label>
       <label class="f"><span>Data do diagnóstico</span><input name="dataDiagnostico" type="date" value="${esc(e.dataDiagnostico||"")}"></label>
       <label class="f"><span>Elaborado por</span><input name="elaboradoPor" value="${esc(e.elaboradoPor||"")}"></label>
-    </div>
-    <div class="eyebrow">Metas dos indicadores de impacto</div>
+    </div></details>
+    <details class="grp"><summary><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>Metas dos indicadores de impacto</summary>
     <div class="formgrid">
       <label class="f"><span>Stakeholders mapeados</span><input type="number" name="m_stakeholders" value="${metas.stakeholders}"></label>
       <label class="f"><span>Reuniões realizadas</span><input type="number" name="m_reunioes" value="${metas.reunioes}"></label>
       <label class="f"><span>Ações concluídas</span><input type="number" name="m_acoes" value="${metas.acoes}"></label>
       <label class="f"><span>Parceiros engajados</span><input type="number" name="m_parceiros" value="${metas.parceiros}"></label>
-    </div>
-    ${adm?`<div class="eyebrow">Pastas no Google Drive (link ou ID)</div><div class="formgrid">
-      ${[["raiz","Pasta do ECP"],["d1","01 Governança"],["d2","02 Integração Compras"],["d3","03 Integração Empresarial"],["d4","04 Estrutura"],["d5","05 Atendimento MPEs"],["reunioes","06 Reuniões e Atas"],["presenca","07 Listas de Presença"],["docs","08 Documentos"],["acoes","09 Ações e Eventos"]]
-        .map(([k,l])=>`<label class="f"><span>${l}</span><input name="p_${k}" value="${esc(p[k]||"")}"></label>`).join("")}</div>`:""}
+    </div></details>
+    ${adm?`<details class="grp"><summary><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>Pastas no Google Drive (link ou ID)</summary><div class="formgrid">
+      ${[["raiz","Pasta principal do escritório"],["d1","01 Governança"],["d2","02 Integração Compras"],["d3","03 Integração Empresarial"],["d4","04 Estrutura"],["d5","05 Atendimento MPEs"],["reunioes","06 Reuniões e Atas"],["presenca","07 Listas de Presença"],["docs","08 Documentos"],["acoes","09 Ações e Eventos"]]
+        .map(([k,l])=>`<label class="f"><span>${l}</span><input name="p_${k}" value="${esc(p[k]||"")}"></label>`).join("")}</div></details>`:""}
     <div class="row"><button class="btn primary" type="submit" ${adm?"":"disabled"}>Salvar cadastro</button></div></form>`;
     $("#fIdent",sec).onsubmit=async ev=>{ev.preventDefault(); const fd=Object.fromEntries(new FormData(ev.target));
       const upd={metas:{}}; const pastasU={};
@@ -1224,13 +1262,13 @@ function vCad(w){
   if(id && adm){
     const sec=document.createElement("section"); sec.className="panel"; w.appendChild(sec);
     const nNa=ITEMS.filter(i=>(S.diag[i.id]||{}).na).length;
-    sec.innerHTML=`<div class="panel-h"><div><h3>Critérios que não se aplicam a este ECP <span class="small muted">(${nNa})</span></h3><div class="small muted">Ligue o critério que não faz sentido para a realidade de ${esc(e.nome||"este escritório")}. Ele sai do cálculo do índice e fica travado na tela do Diagnóstico. Só a Gestão Estadual altera esta lista.</div></div></div>
+    sec.innerHTML=`<div class="panel-h"><div><h3>Critérios que não se aplicam a este escritório <span class="small muted">(${nNa})</span></h3><div class="small muted">Ligue o critério que não faz sentido para a realidade de ${esc(e.nome||"este escritório")}. Ele sai do cálculo do índice e fica travado na tela do Diagnóstico. Só a Gestão Estadual altera esta lista.</div></div></div>
       <div class="na-acc">${DIMS.map(d=>{ const its=ITEMS.filter(i=>i.d===d.k); const n=its.filter(i=>(S.diag[i.id]||{}).na).length; const ab=(S.naAberta||{})[d.k];
         return `<div class="na-dim${ab?" aberta":""}"><button type="button" class="na-head" aria-expanded="${!!ab}" data-nadim="${d.k}"><span class="dim-t"><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><b>${esc(d.n)}</b></span><span class="small ${n?"":"muted"}">${n?`<span class="pill p-mut">${n} de ${its.length} não se ${n===1?"aplica":"aplicam"}</span>`:`${its.length} critérios, todos valem`}</span></button>
           ${ab?`<div class="nalist">${its.map(i=>{ const on=!!(S.diag[i.id]||{}).na;
             return `<button type="button" class="switch" role="switch" aria-checked="${on}" data-na="${i.id}"><span class="track"><span class="thumb"></span></span><span><b class="code">${i.id}</b> ${esc(i.c)}</span></button>`; }).join("")}</div>`:""}</div>`; }).join("")}</div>`;
     sec.querySelectorAll("[data-nadim]").forEach(b=>b.onclick=()=>{ const k=b.dataset.nadim; S.naAberta=S.naAberta||{}; S.naAberta[k]=!S.naAberta[k]; render(); });
-    sec.querySelectorAll("[data-na]").forEach(b=>b.onclick=()=>{ const k=b.dataset.na; const cur=semCarimbo({...(S.diag[k]||{})}); cur.na=!cur.na; salvarLocal("diag",k,cur); toast(cur.na?k+": não se aplica a este ECP":k+": voltou a valer para este ECP"); scheduleRender(); });
+    sec.querySelectorAll("[data-na]").forEach(b=>b.onclick=()=>{ const k=b.dataset.na; const cur=semCarimbo({...(S.diag[k]||{})}); cur.na=!cur.na; salvarLocal("diag",k,cur); toast(cur.na?k+": não se aplica a este escritório":k+": voltou a valer para este ECP"); scheduleRender(); });
   }
 
 }
@@ -1503,7 +1541,7 @@ const SERVICOS=[
   ["agenda","Agenda e reuniões","Cadastrar o cronograma de ações e o histórico de reuniões"],
   ["atores","Atores","Cadastrar stakeholders e o mapa de entidades"],
   ["docs","Documentos","Cadastrar documentos de referência"],
-  ["ciclo","Evolução","Registrar a fotografia do índice de maturidade"],
+  ["ciclo","Evolução","Registrar a registro do índice do índice de maturidade"],
   ["homologar","Homologar","Homologar alterações feitas por outras pessoas"],
   ["usuarios","Usuários","Cadastrar pessoas, gerar senha provisória e desativar acessos"],
   ["export","Exportar e relatórios","Baixar os dados em Excel, imprimir o infográfico e gerar a apresentação"],
