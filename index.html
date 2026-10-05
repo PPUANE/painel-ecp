@@ -139,6 +139,13 @@ main{max-width:1180px;margin:0 auto;width:100%;padding-inline:16px;padding-block
 .ev-leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.74rem;color:var(--muted);margin-top:8px}.ev-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 @media (max-width:640px){.ev-day{min-height:46px;padding:3px;align-items:center}.ev-tag{width:7px;height:7px;padding:0;border-radius:50%;border:0;font-size:0;background:#2a4fdb}.ev-tag.cap{background:#1a7a3c}.ev-tag.out{background:#8a93a8}.ev-day .tags{display:flex;gap:3px;flex-wrap:wrap;justify-content:center}.ev-card{grid-template-columns:52px minmax(0,1fr)}.ev-card>.pill{grid-column:2;justify-self:start}}
 @media print{.ev-nav button,.ev-top .row{display:none}}
+.fn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.fn-card{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.fn-card h4{margin:0;font-size:.92rem}.fn-card p{margin:0;font-size:.8rem;color:var(--muted);flex:1}
+.fn-quem{display:flex;flex-wrap:wrap;gap:4px}.fn-quem span{font-size:.68rem;font-weight:600;padding:1px 7px;border-radius:999px;background:var(--surface-2);color:var(--muted)}.fn-quem span.on{background:var(--info-soft);color:#16234d}
+.fn-card .btn{align-self:flex-start;padding:5px 12px;font-size:.8rem}
+.fn-grupo{font-size:.78rem;font-weight:700;color:var(--muted);margin:14px 0 8px}.fn-grupo:first-child{margin-top:0}
+.ult-imp{font-size:.74rem;color:var(--muted);margin-top:4px}.ult-imp b{font-weight:600;color:inherit}
 .acc-h{cursor:pointer;user-select:none;border-radius:8px}
 .acc-h:focus-visible{outline:2px solid var(--teal);outline-offset:4px}
 .acc-h h3,h3.acc-h{display:flex;align-items:center;gap:8px}
@@ -468,6 +475,7 @@ svg text{fill:var(--muted);font-family:var(--f-body)}
       <button class="tab" role="tab" data-v="docs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.500 3.500h7l4.500 4.500v12.500h-11.500z"/><path d="M13.500 3.500v4.500h4.500M9.500 13h5.500M9.500 16.500h5.500"/></svg>Documentos</button>
       <button class="tab" role="tab" data-v="relat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20.500h16.500"/><rect x="5.500" y="11.500" width="3" height="6.500" rx=".6"/><rect x="10.800" y="6.500" width="3" height="11.500" rx=".6"/><rect x="16" y="9.500" width="3" height="8.500" rx=".6"/></svg>Relatórios</button>
       <span class="tab-sep">Gestão</span>
+      <button class="tab" role="tab" data-v="gestao" title="Visão exclusiva da Gestão Estadual"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7.500 3v5.500c0 4.600-3.200 8-7.500 9.500-4.300-1.500-7.500-4.900-7.500-9.500V6z"/><path d="M8.800 12.200l2.300 2.300 4.200-4.600"/></svg>Gestão Estadual</button>
       <button type="button" class="tab tab-acao" id="btnNovoEcp" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v8M8 12h8"/></svg>Novo escritório</button>
       <button class="tab" role="tab" data-v="cad"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3.500v2.300M12 18.200v2.300M3.500 12h2.300M18.200 12h2.300M6 6l1.600 1.600M16.400 16.400L18 18M18 6l-1.600 1.600M7.600 16.400L6 18"/></svg>Cadastro</button>
       <button class="tab" role="tab" data-v="users"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.600"/><path d="M4.500 20.500c.6-4.200 3.500-6.300 7.500-6.300s6.900 2.100 7.500 6.300"/></svg>Usuários</button>
@@ -786,7 +794,7 @@ function bindTabs(){
 }
 
 /* ---------- render ---------- */
-const TAB_OK = { rede:()=>multiEcp(), painel:()=>true, diag:()=>true, plano:()=>true, agenda:()=>true, eventos:()=>true, atores:()=>true, docs:()=>true, relat:()=>true, hist:()=>!!S.me && (S.me.perfil==="admin" || pode("homologar")), users:()=>pode("usuarios"), cad:()=>pode("cadastro") };
+const TAB_OK = { rede:()=>multiEcp(), painel:()=>true, diag:()=>true, plano:()=>true, agenda:()=>true, eventos:()=>true, gestao:()=>!!S.me && S.me.perfil==="admin", atores:()=>true, docs:()=>true, relat:()=>true, hist:()=>!!S.me && (S.me.perfil==="admin" || pode("homologar")), users:()=>pode("usuarios"), cad:()=>pode("cadastro") };
 function render(){
   const ae=document.activeElement, aid=ae&&ae.id&&ae.id.startsWith("fq-")?ae.id:null, pos=aid?ae.selectionStart:0;
   const m=$("#main");
@@ -800,7 +808,7 @@ function render(){
   if(!ecpsPermitidos().length && S.view!=="cad" && S.view!=="users"){
     m.innerHTML=`<div class="panel"><h2>Nenhum escritório vinculado</h2><p class="muted">Peça à coordenação do Sebrae/PR para vincular o seu usuário a um escritório.</p></div>`; return;
   }
-  const v = {rede:vRede,painel:vPainel,diag:vDiag,plano:vPlano,agenda:vAgenda,eventos:vEventos,atores:vAtores,docs:vDocs,relat:vRelat,cad:vCad,hist:vHist,users:vUsers}[S.view]||vPainel;
+  const v = {rede:vRede,painel:vPainel,diag:vDiag,plano:vPlano,agenda:vAgenda,eventos:vEventos,gestao:vGestao,atores:vAtores,docs:vDocs,relat:vRelat,cad:vCad,hist:vHist,users:vUsers}[S.view]||vPainel;
   const sy=window.scrollY; m.innerHTML=""; const wrap=document.createElement("div"); wrap.className="view"; m.appendChild(wrap);
   if(S.carregando && ["painel","diag","plano","agenda","eventos","atores","docs","relat"].includes(S.view)){ wrap.innerHTML=`<div class="empty">Carregando ${esc((S.ecps[S.ecpId]||{}).nome||"escritório")}…</div>`; return; }
   v(wrap); sanfonar(wrap); window.scrollTo({top:sy});
@@ -819,7 +827,7 @@ const ecp = () => S.ecps[S.ecpId]||{};
 const pastas = () => ecp().pastas||{};
 
 /* ===== Sanfona genérica dos quadros ===== */
-const ACC_FECHADOS=["O que cada perfil pode fazer","Cadastrar usuário","Importar planilha preenchida","Critérios que não se aplicam a este escritório","Logos do município e dos parceiros"];
+const ACC_FECHADOS=["Todas as funções do painel","Escritórios da rede","O que cada perfil pode fazer","Cadastrar usuário","Importar planilha preenchida","Critérios que não se aplicam a este escritório","Logos do município e dos parceiros"];
 function accTitulo(h3){ let t=""; h3.childNodes.forEach(n=>{ if(n.nodeType===3) t+=n.textContent; }); return t.trim(); }
 function sanfonar(raiz){
   if(!raiz) return; S.acc=S.acc||LS.get("acc",{})||{};
@@ -847,7 +855,7 @@ function logosOrdenadas(){ return Object.entries(S.lists.logos||{}).map(([id,l])
 function ecpHeader(){
   const e=ecp();
   return `<div class="panel-h" style="margin:0"><div><div class="eyebrow">${esc([e.territorio,e.regional?("Regional "+e.regional):""].filter(Boolean).join(" · ")||"Escritório de Compras Públicas")}</div><h2>${esc(e.nome||"")}</h2>
-  <div class="small muted">Responsável: ${esc(e.responsavel||"não informado")}${e.dataDiagnostico?` · Diagnóstico de ${fmtD(e.dataDiagnostico)}`:""}</div></div>
+  <div class="small muted">Responsável: ${esc(e.responsavel||"não informado")}${e.dataDiagnostico?` · Diagnóstico de ${fmtD(e.dataDiagnostico)}`:""}</div>${textoUltImp(e)?`<div class="ult-imp">${textoUltImp(e)}</div>`:""}</div>
   <div class="ecp-dir">${logosOrdenadas().length?`<div class="ecp-logos">${logosOrdenadas().map(l=>`<img src="${esc(l.img)}" alt="${esc(l.nome||"Logo")}" title="${esc(l.nome||"")}">`).join("")}</div>`:""}${driveLink("raiz","Pasta no Drive")}</div></div>`;
 }
 
@@ -1246,6 +1254,9 @@ function vEventos(w){
   const lp=$("#evLimpa",s2); if(lp) lp.onclick=()=>{ U.dia=""; render(); };
 }
 
+function textoUltImp(e){ const i=((e||{}).pastas||{})._imp; if(!i||!i.em) return ""; const d=new Date(i.em); if(isNaN(d)) return "";
+  return `Última atualização por planilha: <b>${d.toLocaleDateString("pt-BR")} às ${d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</b>, ${i.origem==="link"?"via link da planilha online":"via arquivo enviado"}${i.por?", por "+esc(i.por):""}`; }
+
 function vRede(w){
   if(!S.rede || (S.redeSuja && !S.rede.loading)){ S.redeSuja=false; loadRede(); return; }
   if(S.rede.loading){ w.innerHTML=`<div class="empty">Consolidando os dados dos escritórios…</div>`; return; }
@@ -1309,7 +1320,7 @@ function vCad(w){
       <label class="f"><span>Parceiros engajados</span><input type="number" name="m_parceiros" value="${metas.parceiros}"></label>
     </div></details>
     ${adm?`<details class="grp"><summary><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>Pastas no Google Drive (link ou ID)</summary><div class="formgrid">
-      ${[["raiz","Pasta principal do escritório"],["d1","01 Governança"],["d2","02 Integração Compras"],["d3","03 Integração Empresarial"],["d4","04 Estrutura"],["d5","05 Atendimento MPEs"],["reunioes","06 Reuniões e Atas"],["presenca","07 Listas de Presença"],["docs","08 Documentos"],["acoes","09 Ações e Eventos"]]
+      ${[["planilha","Planilha online do diagnóstico (link para atualizar pelo painel)"],["raiz","Pasta principal do escritório"],["d1","01 Governança"],["d2","02 Integração Compras"],["d3","03 Integração Empresarial"],["d4","04 Estrutura"],["d5","05 Atendimento MPEs"],["reunioes","06 Reuniões e Atas"],["presenca","07 Listas de Presença"],["docs","08 Documentos"],["acoes","09 Ações e Eventos"]]
         .map(([k,l])=>`<label class="f"><span>${l}</span><input name="p_${k}" value="${esc(p[k]||"")}"></label>`).join("")}</div></details>`:""}
     <div class="row"><button class="btn primary" type="submit" ${adm?"":"disabled"}>Salvar cadastro</button></div></form>`;
     $("#fIdent",sec).onsubmit=async ev=>{ev.preventDefault(); const fd=Object.fromEntries(new FormData(ev.target));
@@ -1593,7 +1604,7 @@ function vUsers(w){
     const ba=tr.querySelector("[data-ativo]"); if(ba) ba.onclick=async()=>{ if(r.ativo && ba.dataset.armed!=="1"){ ba.dataset.armed="1"; ba.textContent="Confirmar"; return; }
       try{ await api("alterarUsuario",{id:r.id,ativo:!r.ativo}); toast(r.ativo?"Acesso desativado":"Acesso reativado"); }catch(e){ toast(e.message); } S.usuarios=null; render(); };
   });
-  painelPerfis(w);
+  if(S.me.perfil==="admin"){ const n=document.createElement("section"); n.className="panel"; n.innerHTML=`<div class="row" style="justify-content:space-between"><span class="small muted">A autorização dos serviços de cada perfil fica na tela <b>Gestão Estadual</b>.</span><button class="btn" id="irGestao">Abrir Gestão Estadual</button></div>`; w.appendChild(n); $("#irGestao",n).onclick=()=>{ S.view="gestao"; LS.set("view","gestao"); render(); }; } else painelPerfis(w);
 }
 /* ===== O que cada perfil pode fazer (a administração liga e desliga cada serviço) ===== */
 const SERVICOS=[
@@ -1602,7 +1613,7 @@ const SERVICOS=[
   ["agenda","Agenda e reuniões","Cadastrar o cronograma de ações e o histórico de reuniões"],
   ["atores","Atores","Cadastrar stakeholders e o mapa de entidades"],
   ["docs","Documentos","Cadastrar documentos de referência"],
-  ["ciclo","Evolução","Registrar a registro do índice do índice de maturidade"],
+  ["ciclo","Evolução","Registrar o índice de maturidade ao fechar cada ciclo"],
   ["homologar","Homologar","Homologar alterações feitas por outras pessoas"],
   ["usuarios","Usuários","Cadastrar pessoas, gerar senha provisória e desativar acessos"],
   ["export","Exportar e relatórios","Baixar os dados em Excel, imprimir o infográfico e gerar a apresentação"],
@@ -1616,7 +1627,7 @@ function painelPerfis(w){
   const E=S.permEdit;
   const mudou = perfis.some(p=> SERVICOS.some(([k])=> E[p].includes(k)!==(PERM[p]||[]).includes(k)));
   const sec=document.createElement("section"); sec.className="panel";
-  sec.innerHTML=`<h3>O que cada perfil pode fazer</h3>
+  sec.innerHTML=`<div class="panel-h"><div><h3>O que cada perfil pode fazer</h3><div class="small muted">Autorização dos serviços por perfil.</div></div></div>
     <p class="small muted" style="margin:4px 0 10px">${adm?"Ligue ou desligue cada serviço nas colunas dos outros perfis e clique em <b>Salvar permissões</b>. A coluna Administrador é fixa: tem sempre todos os serviços. A mudança vale para todos os escritórios assim que a pessoa abrir o painel de novo.":"Quem altera esta tabela é a administração."}</p>
     <div class="tbl-wrap"><table class="tperm"><thead><tr><th>Serviço</th>${perfis.map(p=>`<th title="${esc(PERFIS[p].n)}">${esc(({admin:"Administrador",consultor:"Consultor Sebrae",coordenador:"Coordenador",atendente:"Atendente",credenciado:"Credenciado"})[p]||PERFIS[p].n)}</th>`).join("")}</tr></thead><tbody>
     ${SERVICOS.map(([k,n,d])=>`<tr><td><b>${n}</b><div class="small muted">${d}</div></td>${perfis.map(p=>{ const on=E[p].includes(k); const trava=!adm||p==="admin";
@@ -1685,6 +1696,48 @@ async function loadRede(){
     S.rede={rows,at:new Date()};
   }catch(e){ S.rede={rows:[],at:new Date(),erro:e.message}; toast(e.message); }
   if(S.view==="rede") render();
+}
+
+/* ===== Gestão Estadual: visão exclusiva do administrador ===== */
+const FUNCOES=[
+  ["Dia a dia","rede","Visão da rede","Comparativo de todos os escritórios, com índice e situação","ver"],
+  ["Dia a dia","painel","Painel do escritório","Índice de maturidade, indicadores e próximos prazos","ver"],
+  ["Dia a dia","diag","Diagnóstico","Notas, evidências e observações dos 24 critérios","diag"],
+  ["Dia a dia","plano","Plano de ação","Ações, responsáveis, prazos e status","plano"],
+  ["Dia a dia","agenda","Agenda e reuniões","Cronograma de ações e histórico de reuniões","agenda"],
+  ["Dia a dia","eventos","Agenda de capacitações e eventos","Calendário da programação do escritório","ver"],
+  ["Dia a dia","atores","Atores","Stakeholders e mapa de entidades compradoras","atores"],
+  ["Dia a dia","docs","Documentos","Normativos, atas e materiais de referência","docs"],
+  ["Dia a dia","relat","Relatórios","Infográfico de monitoramento e apresentação em slides","export"],
+  ["Gestão","novo","Novo escritório","Cadastrar um escritório na rede","cadastro"],
+  ["Gestão","cad","Cadastro","Dados, metas, pastas, logos e critérios que não se aplicam","cadastro"],
+  ["Gestão","users","Usuários","Cadastrar pessoas, trocar perfil, gerar senha e desativar acessos","usuarios"],
+  ["Gestão","importar","Importar planilha","Atualizar o escritório por arquivo enviado ou pelo link da planilha online","importar"],
+  ["Gestão","hist","Histórico e homologação","Tudo o que foi alterado, por quem, e a homologação","homologar"]
+];
+function vGestao(w){
+  if(!S.me || S.me.perfil!=="admin"){ w.innerHTML=`<div class="banner warn">Esta tela é exclusiva da Gestão Estadual.</div>`; return; }
+  if(!S.usuarios) loadUsuarios();
+  S.acc=S.acc||LS.get("acc",{})||{};
+  const U=Array.isArray(S.usuarios)?S.usuarios:null; const ids=Object.keys(S.ecps).sort((a,b)=>(S.ecps[a].nome||a).localeCompare(S.ecps[b].nome||b));
+  const nU=f=>U?U.filter(f).length:"…"; const perfis=Object.keys(PERFIS);
+  const curto={admin:"Administrador",consultor:"Consultor Sebrae",coordenador:"Coordenador",atendente:"Atendente",credenciado:"Credenciado"};
+  const comLink=ids.filter(id=>String((S.ecps[id].pastas||{}).planilha||"").trim()).length;
+  w.insertAdjacentHTML("beforeend",`<section class="panel"><div class="panel-h" style="margin-bottom:14px"><div><div class="eyebrow">Sebrae/PR · acesso exclusivo do administrador</div><h2>Gestão Estadual</h2><div class="small muted">Acesso total a todos os escritórios. Clique em um título abaixo para abrir.</div></div></div>
+    <div class="kpis"><div class="kpi"><b>${ids.length}</b><span>escritórios na rede</span></div><div class="kpi"><b>${nU(r=>r.ativo&&!r.trocarSenha)}</b><span>usuários ativos</span></div><div class="kpi"><b>${nU(r=>r.ativo&&r.trocarSenha)}</b><span>aguardando 1º acesso</span></div><div class="kpi"><b>${nU(r=>!r.ativo)}</b><span>acessos desativados</span></div><div class="kpi"><b>${comLink}/${ids.length}</b><span>com planilha online vinculada</span></div></div></section>`);
+  const f=document.createElement("section"); f.className="panel"; w.appendChild(f);
+  const cardF=([g,v,n,d,serv])=>`<div class="fn-card"><h4>${n}</h4><p>${d}</p><div class="fn-quem" title="Perfis autorizados a usar esta função">${perfis.map(p=>{ const on=serv==="ver"||p==="admin"||(PERM[p]||[]).includes(serv); return `<span class="${on?"on":""}" ${on?"":'style="text-decoration:line-through"'}>${curto[p]}</span>`; }).join("")}</div><button class="btn" data-fn="${v}">Abrir</button></div>`;
+  f.innerHTML=`<div class="panel-h"><div><h3>Todas as funções do painel</h3><div class="small muted">Atalhos para cada tela e quem está autorizado a usar.</div></div></div>
+    ${["Dia a dia","Gestão"].map(g=>`<div class="fn-grupo">${g==="Gestão"?"Funções de gestão":"Funções do dia a dia"}</div><div class="fn-grid">${FUNCOES.filter(x=>x[0]===g).map(cardF).join("")}</div>`).join("")}`;
+  f.querySelectorAll("[data-fn]").forEach(b=>b.onclick=()=>{ const v=b.dataset.fn; if(v==="novo"){ abrirNovoEcp(); return; } if(v==="importar"){ $("#btnImportar").click(); return; }
+    if(!S.ecpId && !["rede","users","hist"].includes(v)){ toast("Escolha um escritório no topo para abrir esta função."); return; } S.view=v; LS.set("view",v); render(); window.scrollTo({top:0}); });
+  painelPerfis(w);
+  const e=document.createElement("section"); e.className="panel"; w.appendChild(e);
+  e.innerHTML=`<div class="panel-h"><div><h3>Escritórios da rede</h3><div class="small muted">Pessoas vinculadas, planilha online e última atualização de cada escritório.</div></div></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Escritório</th><th>Município</th><th>Pessoas vinculadas</th><th>Planilha online</th><th>Última atualização por planilha</th></tr></thead><tbody>
+    ${ids.map(id=>{ const x=S.ecps[id]; const i=(x.pastas||{})._imp; const n=U?U.filter(r=>r.ativo&&(r.ecps||[]).includes(id)).length:"…"; const d=i&&i.em?new Date(i.em):null;
+      return `<tr class="click" data-id="${esc(id)}"><td><b>${esc(x.nome||id)}</b></td><td>${esc(x.municipio||"—")}</td><td class="num">${n}</td><td>${String((x.pastas||{}).planilha||"").trim()?'<span class="pill p-ok">Vinculada</span>':'<span class="pill p-mut">Sem link</span>'}</td><td class="small">${d&&!isNaN(d)?`${d.toLocaleDateString("pt-BR")} às ${d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})} · ${i.origem==="link"?"via link":"via arquivo"}${i.por?" · "+esc(i.por):""}`:'<span class="muted">Nunca</span>'}</td></tr>`; }).join("")}</tbody></table></div>`;
+  e.querySelectorAll("tr[data-id]").forEach(tr=>tr.onclick=()=>{ S.view="painel"; LS.set("view","painel"); selectEcp(tr.dataset.id); });
 }
 
 const CAMPO={nota:"Nota",evidencia:"Evidência",obs:"Observações",na:"Não se aplica",acao:"Ação",como:"Como",onde:"Onde",quando:"Prazo",quem:"Responsável",quanto:"Recurso",status:"Status",nome:"Nome",municipio:"Município",territorio:"Território",regional:"Regional",responsavel:"Responsável",email:"E-mail",dataDiagnostico:"Data do diagnóstico",elaboradoPor:"Elaborado por",metas:"Metas",pastas:"Pastas do Drive",perfil:"Perfil",ativo:"Ativo",indice:"Índice",avaliados:"Avaliados",quantidade:"Quantidade",motivo:"Motivo",registro:"Registro"};
@@ -1823,7 +1876,7 @@ function painelImportar(w){
   const I=S.importa; const NOMES={diag:"notas do diagnóstico",plano:"ações do plano",cronograma:"atividades do cronograma",reunioes:"reuniões",stakeholders:"stakeholders",entidades:"entidades compradoras",documentos:"documentos"};
   const ids=Object.keys(S.ecps).sort((a,b)=>(S.ecps[a].nome||a).localeCompare(S.ecps[b].nome||b));
   const mesmo=(a,b)=>!!a && !!b && impNorm(a)===impNorm(b);
-  let trava="";
+  let trava=""; const temLink=!!String(((ecp()||{}).pastas||{}).planilha||"").trim();
   if(I && I.itens.length){
     const dest=S.ecps[I.destino]; const bate = dest && I.municipio && (mesmo(I.municipio,dest.municipio) || mesmo(I.municipio,String(dest.nome||"").replace(/^ECP\s+/i,"")));
     trava=`<div class="imp-trava">
@@ -1836,7 +1889,8 @@ function painelImportar(w){
       <div class="row"><button class="btn primary" id="impOk" ${dest&&(bate||I.confirmado)?"":"disabled"}>${dest?`Importar para ${esc(dest.nome)}`:"Importar"}</button><button class="btn ghost" id="impCancela">Cancelar</button></div></div>`;
   }
   sec.innerHTML=`<div class="panel-h"><div><h3>Importar planilha preenchida</h3><div class="small muted">Suba o Excel do Diagnóstico de Maturidade já preenchido (ou um Excel exportado deste painel) para lançar tudo de uma vez. Você escolhe o escritório de destino antes de importar.</div></div></div>
-    <div class="row"><label class="btn" style="cursor:pointer">Escolher arquivo Excel<input type="file" id="impArq" accept=".xlsx,.xls,.xlsm" hidden></label>${I?`<span class="small"><b>${esc(I.arquivo)}</b></span>`:`<span class="small muted">Formatos .xlsx ou .xls</span>`}</div>
+    ${textoUltImp(ecp())?`<div class="ult-imp" style="margin:0 0 10px">${textoUltImp(ecp())}</div>`:`<div class="ult-imp" style="margin:0 0 10px">${esc(ecp().nome||"Este escritório")} ainda não recebeu atualização por planilha.</div>`}
+    <div class="row"><label class="btn" style="cursor:pointer">Escolher arquivo Excel<input type="file" id="impArq" accept=".xlsx,.xls,.xlsm" hidden></label>${temLink?`<button class="btn" id="impLink">Atualizar pelo link da planilha online</button>`:""}${I?`<span class="small"><b>${esc(I.arquivo)}</b>${I.origem==="link"?` · planilha online${I.modificado?", editada em "+new Date(I.modificado).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}):""}`:""}</span>`:`<span class="small muted">${temLink?"Envie um arquivo .xlsx/.xls ou busque a versão online.":"Formatos .xlsx ou .xls. Para atualizar por link, cadastre o link da planilha online em Cadastro › Pastas no Google Drive."}</span>`}</div>
     ${I?(I.itens.length?`<div class="imp-res"><div class="small muted">Encontrado na planilha:</div><div class="imp-chips">${Object.keys(NOMES).filter(k=>I.cont[k]).map(k=>`<span><b>${I.cont[k]}</b> ${NOMES[k]}</span>`).join("")}</div>
       ${I.avisos.length?`<div class="banner warn">${I.avisos.slice(0,5).map(esc).join("<br>")}${I.avisos.length>5?`<br>e mais ${I.avisos.length-5} aviso(s).`:""}</div>`:""}
       <p class="small muted" style="margin:0">Notas e ações do plano substituem as que já existem no escritório de destino para os mesmos critérios. Nas listas (cronograma, reuniões, atores e documentos) os registros são acrescentados, e os repetidos são pulados. "Não se aplica" e os dados do Cadastro não mudam. A importação fica no Histórico para homologação.</p>
@@ -1846,13 +1900,18 @@ function painelImportar(w){
     try{ await carregarXlsx(); const wb=XLSX.read(await arq.arrayBuffer(),{type:"array",cellDates:true}); const lido=lerPlanilha(wb);
       // o destino só vem preenchido quando o município da planilha bate com exatamente um escritório
       const cand=ids.filter(id=>mesmo(lido.municipio,S.ecps[id].municipio)||mesmo(lido.municipio,String(S.ecps[id].nome||"").replace(/^ECP\s+/i,"")));
-      S.importa={arquivo:arq.name,destino:cand.length===1?cand[0]:"",confirmado:false,...lido}; }
+      S.importa={arquivo:arq.name,origem:"planilha",destino:cand.length===1?cand[0]:"",confirmado:false,...lido}; }
     catch(e){ S.importa=null; toast(/Excel/.test(e.message)?e.message:"Não foi possível ler este arquivo. Use um Excel .xlsx ou .xls."); }
+    render(); };
+  const bl=$("#impLink",sec); if(bl) bl.onclick=async()=>{ const alvo=S.ecpId; bl.disabled=true; bl.textContent="Buscando a planilha online…";
+    try{ const r=await api("baixarPlanilha",{ecp:alvo}); await carregarXlsx(); const wb=XLSX.read(r.b64,{type:"base64",cellDates:true}); const lido=lerPlanilha(wb);
+      S.importa={arquivo:r.nome||"planilha online",origem:"link",modificado:r.modificado||"",destino:alvo,confirmado:false,...lido}; }
+    catch(e){ S.importa=null; toast(/desconhecid/i.test(e.message)?"Atualize o servidor (Code.gs) para usar o link da planilha.":e.message); }
     render(); };
   const sd=$("#impDest",sec); if(sd) sd.onchange=()=>{ I.destino=sd.value; I.confirmado=false; render(); };
   const cf=$("#impConf",sec); if(cf) cf.onchange=()=>{ I.confirmado=cf.checked; render(); };
   const ok=$("#impOk",sec); if(ok) ok.onclick=async()=>{ const destino=I.destino; if(!destino) return; ok.disabled=true; ok.textContent="Importando…";
-    try{ const r=await api("importar",{ecp:destino,arquivo:I.arquivo,itens:I.itens}); S.importa=null; S.redeSuja=true; S.diagUI={};
+    try{ const r=await api("importar",{ecp:destino,arquivo:I.arquivo,origem:I.origem||"planilha",itens:I.itens}); if(r.imp&&S.ecps[destino]){ S.ecps[destino].pastas={...(S.ecps[destino].pastas||{}),_imp:r.imp}; } S.importa=null; S.redeSuja=true; S.diagUI={};
       if(S.ecpId!==destino) selectEcp(destino); else await carregarEcp(destino,true);
       toast(`Importação concluída em ${(S.ecps[destino]||{}).nome||destino}: ${r.total} registros`); if(pode("homologar")) loadHist(); }
     catch(e){ toast(/desconhecid/i.test(e.message)?"Atualize o servidor (Code.gs) para importar planilhas.":e.message); }
