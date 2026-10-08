@@ -42,7 +42,6 @@ function dadosRelatorio(periodo){
   // pontos de atenção para a governança, tirados dos próprios dados
   const pontos=[];
   const pend=c.total-c.avaliados; if(pend>0) pontos.push(`${pend} ${pend===1?"critério ainda não foi avaliado":"critérios ainda não foram avaliados"} no diagnóstico.`);
-  if(c.semEvid>0) pontos.push(`${c.semEvid} ${c.semEvid===1?"critério com nota 2 ou 3 está":"critérios com nota 2 ou 3 estão"} sem evidência vinculada.`);
   if(prioridades.length) pontos.push(`${prioridades.length} ${prioridades.length===1?"critério de alta prioridade (nota 0 ou 1) pede":"critérios de alta prioridade (nota 0 ou 1) pedem"} decisão da governança.`);
   const atrP=contaPlano("Atrasado"); if(atrP) pontos.push(`${atrP} ${atrP===1?"ação do plano está atrasada":"ações do plano estão atrasadas"}.`);
   const semDono=acoesPlano.filter(a=>!a.quem||!a.quando).length; if(semDono) pontos.push(`${semDono} ${semDono===1?"ação do plano está":"ações do plano estão"} sem responsável ou sem prazo definido.`);
@@ -60,7 +59,7 @@ window.renderRelatorio=function(w){
   const periodo=valorFiltro("relat","per","tudo"); const D=dadosRelatorio(periodo); const pe=pode("export");
   w.insertAdjacentHTML("beforeend",`<section class="panel noprint">${ecpHeader()}
     <div class="fbar" style="margin-top:12px"><div class="fgroup" role="group" aria-label="Período"><span class="flabel">Período da apresentação em slides</span><div class="chips">${PERIODOS.map(([v,t])=>`<button type="button" class="chip" data-per="${v}" aria-pressed="${periodo===v}">${t}</button>`).join("")}</div></div></div></section>
-  <section class="panel info-wrap" style="padding:0;overflow:hidden"><iframe class="monit-um" id="relInfo" title="Infográfico do escritório" src="monitor.html?um=1&v=3#infograficos" scrolling="no" loading="lazy"></iframe></section>
+  <section class="panel info-wrap" style="padding:0;overflow:hidden"><iframe class="monit-um" id="relInfo" title="Infográfico do escritório" src="monitor.html?um=1&v=4#infograficos" scrolling="no" loading="lazy"></iframe></section>
   <section class="panel noprint"><div class="panel-h"><div><h3>Imprimir e apresentar</h3><div class="small muted">Usam os dados do painel, o período escolhido e as logos do Cadastro.</div></div></div>
     <div class="rel-cards" style="margin-top:0">
       <div class="rel-card"><b>Infográfico</b><span class="small muted">O mesmo infográfico do monitoramento da rede, em PDF.</span><button class="btn primary" id="relPrint" ${pe?"":"disabled"}>Baixar o infográfico em PDF</button></div>

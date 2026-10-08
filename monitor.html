@@ -1447,8 +1447,6 @@ function alertas() {
     if (x.atras30.length) add(3, e.municipio, x.atras.length + (x.atras.length === 1 ? ' ação vencida' : ' ações vencidas') + (x.atras.length > x.atras30.length ? ', ' + x.atras30.length + ' delas' : '') + ' há mais de 30 dias.', 'Repactuar prazos ou marcar como concluídas.', 'Plano de ação', 'Ações atrasadas');
     else if (x.atras.length) add(2, e.municipio, x.atras.length + (x.atras.length === 1 ? ' ação vencida.' : ' ações vencidas.'), 'Atualizar o status no plano de ação.', 'Plano de ação', 'Ações atrasadas');
     if (x.total && !x.comPrazo) add(2, e.municipio, 'Nenhuma das ' + x.total + ' ações tem data definida.', 'Definir prazo e responsável para as ações de prioridade alta.', 'Plano de ação', 'Plano sem prazos');
-    var semEv = e.itens.filter(function (i) { return i.nota != null && i.nota >= 2 && !i.ev; }).length;
-    if (semEv) add(2, e.municipio, semEv + (semEv === 1 ? ' critério com nota 2 ou 3 sem evidência.' : ' critérios com nota 2 ou 3 sem evidência.'), 'Vincular os documentos antes da próxima rodada.', 'Evidências', 'Nota sem comprovação');
     if (e.dataSoAno) add(1, e.municipio, 'Só o ano está registrado na planilha.', 'Registrar a data do diagnóstico.', 'Dados', 'Diagnóstico sem data');
     else if (e.data && dias(e.data, h) > 180) add(1, e.municipio, 'Diagnóstico com ' + dias(e.data, h) + ' dias.', 'Agendar nova rodada.', 'Dados', 'Diagnóstico antigo');
     if (e.instrumento !== 'imecop') add(1, e.municipio, 'Usou o modelo de 6 dimensões; não dá para comparar com os demais.', 'Aplicar o IMECOP na próxima rodada.', 'Dados', 'Modelo antigo de diagnóstico');
