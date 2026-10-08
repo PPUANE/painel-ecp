@@ -2012,7 +2012,7 @@ function vMonit(w){
     w.appendChild(av); $("#monCarga",av).onclick=async ev=>{ if(ev.target.dataset.ok!=="1"){ ev.target.dataset.ok="1"; ev.target.textContent="Confirmar: gravar "+pend.length+(pend.length===1?" diagnóstico":" diagnósticos"); return; }
       ev.target.disabled=true; ev.target.textContent="Gravando…"; const r=await monitCargaInicial();
       S.monitMsg={tipo:r.falhas.length?"warn":"ok",txt:(r.feitos.length?"Diagnósticos gravados no Painel de Gestão: "+r.feitos.join(", ")+". ":"")+(r.falhas.length?"Não gravados: "+r.falhas.join("; "):"As duas visões passam a usar os mesmos dados.")}; render(); }; }
-  const fr=document.createElement("iframe"); fr.className="monit-fr"; fr.title="Monitoramento da rede de escritórios"; fr.src="monitor.html?v=4"+(S.monitPag?"#"+S.monitPag:""); w.appendChild(fr);
+  const fr=document.createElement("iframe"); fr.className="monit-fr"; fr.title="Monitoramento da rede de escritórios"; fr.src="monitor.html?v=5"+(S.monitPag?"#"+S.monitPag:""); w.appendChild(fr);
 }
 
 const CAMPO={nota:"Nota",evidencia:"Evidência",obs:"Observações",na:"Não se aplica",acao:"Ação",como:"Como",onde:"Onde",quando:"Prazo",quem:"Responsável",quanto:"Recurso",status:"Status",nome:"Nome",municipio:"Município",territorio:"Território",regional:"Regional",responsavel:"Responsável",email:"E-mail",dataDiagnostico:"Data do diagnóstico",elaboradoPor:"Elaborado por",metas:"Metas",pastas:"Pastas do Drive",perfil:"Perfil",ativo:"Ativo",indice:"Índice",avaliados:"Avaliados",quantidade:"Quantidade",motivo:"Motivo",registro:"Registro"};
@@ -2069,7 +2069,7 @@ function exportRede(){ comExcel(()=>{
 /* ===== Relatórios: o módulo (infográfico + slides) só é baixado quando a aba é aberta ===== */
 let _relat=null;
 function carregarRelatorio(){ if(window.renderRelatorio) return Promise.resolve(); if(_relat) return _relat;
-  _relat=new Promise((ok,falha)=>{ const sc=document.createElement("script"); sc.src="relatorio.js?v=4"; sc.onload=()=>window.renderRelatorio?ok():falha(new Error("x")); sc.onerror=()=>falha(new Error("x")); document.head.appendChild(sc); }).catch(e=>{ _relat=null; throw e; });
+  _relat=new Promise((ok,falha)=>{ const sc=document.createElement("script"); sc.src="relatorio.js?v=5"; sc.onload=()=>window.renderRelatorio?ok():falha(new Error("x")); sc.onerror=()=>falha(new Error("x")); document.head.appendChild(sc); }).catch(e=>{ _relat=null; throw e; });
   return _relat; }
 function vRelat(w){
   if(S.ecpId && !(S.monResumo||{})[S.ecpId]){ loadMonResumo(S.ecpId); w.innerHTML=`<div class="empty">Preparando os relatórios…</div>`; return; }

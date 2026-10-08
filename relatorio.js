@@ -59,7 +59,7 @@ window.renderRelatorio=function(w){
   const periodo=valorFiltro("relat","per","tudo"); const D=dadosRelatorio(periodo); const pe=pode("export");
   w.insertAdjacentHTML("beforeend",`<section class="panel noprint">${ecpHeader()}
     <div class="fbar" style="margin-top:12px"><div class="fgroup" role="group" aria-label="Período"><span class="flabel">Período da apresentação em slides</span><div class="chips">${PERIODOS.map(([v,t])=>`<button type="button" class="chip" data-per="${v}" aria-pressed="${periodo===v}">${t}</button>`).join("")}</div></div></div></section>
-  <section class="panel info-wrap" style="padding:0;overflow:hidden"><iframe class="monit-um" id="relInfo" title="Infográfico do escritório" src="monitor.html?um=1&v=4#infograficos" scrolling="no" loading="lazy"></iframe></section>
+  <section class="panel info-wrap" style="padding:0;overflow:hidden"><iframe class="monit-um" id="relInfo" title="Infográfico do escritório" src="monitor.html?um=1&v=5#infograficos" scrolling="no" loading="lazy"></iframe></section>
   <section class="panel noprint"><div class="panel-h"><div><h3>Imprimir e apresentar</h3><div class="small muted">Usam os dados do painel, o período escolhido e as logos do Cadastro.</div></div></div>
     <div class="rel-cards" style="margin-top:0">
       <div class="rel-card"><b>Infográfico</b><span class="small muted">O mesmo infográfico do monitoramento da rede, em PDF.</span><button class="btn primary" id="relPrint" ${pe?"":"disabled"}>Baixar o infográfico em PDF</button></div>

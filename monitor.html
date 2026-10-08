@@ -1356,7 +1356,6 @@ var METAS_BASE = [
   { id: 'subiram', nome: 'Pilotos que subiram de faixa desde a rodada anterior', tipo: 'pct', sentido: 'min' },
   { id: 'dimEstr', nome: 'Dimensões em estruturação (abaixo de 30%)', tipo: 'n', sentido: 'max' },
   { id: 'criticos', nome: 'Critérios críticos (nota 0 ou 1), redução sobre a linha de base', tipo: 'pct', sentido: 'min' },
-  { id: 'evid', nome: 'Critérios com evidência vinculada', tipo: 'pct', sentido: 'min' },
   { id: 'prazoDef', nome: 'Ações do plano com prazo definido', tipo: 'pct', sentido: 'min' },
   { id: 'atraso', nome: 'Ações com prazo vencido', tipo: 'n', sentido: 'max' },
   { id: 'diagDia', nome: 'Pilotos com diagnóstico em dia (até 180 dias)', tipo: 'pct', sentido: 'min' },
@@ -1414,10 +1413,9 @@ function indicadores() {
   if (todos.length) {
     var ev = 0, it = 0, ac = 0, cp = 0, atr = 0;
     todos.forEach(function (e) { var x = execucao(e); ev += x.ev; it += x.itens; ac += x.total; cp += x.comPrazo; atr += x.atras.length; });
-    R.evid = avaliar(D.evid, it ? ev / it : null, it ? pct(ev / it) : 'sem dado', ev + ' de ' + it + ' critérios');
     R.prazoDef = avaliar(D.prazoDef, ac ? cp / ac : null, ac ? pct(cp / ac) : 'sem ações', cp + ' de ' + ac + ' ações');
     R.atraso = cp ? avaliar(D.atraso, atr, String(atr)) : avaliar(D.atraso, null, 'sem prazos definidos');
-  } else ['evid', 'prazoDef', 'atraso'].forEach(function (k) { R[k] = avaliar(D[k], null); });
+  } else ['prazoDef', 'atraso'].forEach(function (k) { R[k] = avaliar(D[k], null); });
   var emDia = PIL().filter(function (p) { var e = ecpDe(p); return e && e.data && !e.dataSoAno && dias(e.data, h) <= 180; }).length;
   R.diagDia = avaliar(D.diagDia, emDia / np, emDia + ' de ' + np);
   if (STATE.atendimentos) {
@@ -1657,7 +1655,7 @@ function pgPanorama() {
     var e = ecpDe(p), a = atendDe(p), x = e ? execucao(e) : null;
     var mat = e ? stDot(['vermelho', 'amarelo', 'verde', 'verde'][faixa(e.indice)], pct(e.indice) + (e.instrumento !== 'imecop' ? '*' : '')) : stDot('cinza', 'sem diagnóstico');
     var pl = !x ? stDot('cinza', '—') : x.atras.length ? stDot('vermelho', x.atras.length + ' vencidas') : !x.comPrazo ? stDot('amarelo', 'sem prazos') : stDot('verde', 'em dia');
-    var ev = !x ? stDot('cinza', '—') : stDot(x.ev / x.itens >= 1 ? 'verde' : x.ev / x.itens >= 0.5 ? 'amarelo' : 'vermelho', pct(x.ev / x.itens));
+    var ev = !x ? stDot('cinza', '—') : stDot('cinza', x.ev + ' de ' + x.itens);
     var dsr = a && a.ultimo ? dias(a.ultimo, h) : null;
     var atd = dsr == null ? stDot('cinza', 'sem registro') : stDot(dsr > 30 ? 'vermelho' : dsr > 15 ? 'amarelo' : 'verde', dsr === 0 ? 'hoje' : 'há ' + dsr + (dsr === 1 ? ' dia' : ' dias'));
     return '<tr><th scope="row"><i class="sw" style="background:' + corPiloto(p) + '"></i>' + esc(p) + '</th><td>' + mat + '</td><td>' + pl + '</td><td>' + ev + '</td><td>' + atd + '</td></tr>';
@@ -1810,7 +1808,7 @@ function pgExecucao() {
   function mini(r, v, s, st) { return '<div class="kpi k-' + st + '"><span class="kl">' + r + '</span><b>' + v + '</b><span class="ks">' + s + '</span></div>'; }
   var kp = '<div class="kpis k3">' + mini('Ações com prazo', tot ? pct(cp / tot) : '—', cp + ' de ' + tot + ' ações', cp === tot && tot ? 'verde' : 'vermelho') +
     mini('Ações vencidas', String(venc), venc ? 'repactuar ou concluir' : 'nenhuma', venc ? 'vermelho' : 'verde') +
-    mini('Critérios com evidência', it ? pct(ev / it) : '—', ev + ' de ' + it + ' critérios', ev === it && it ? 'verde' : 'vermelho') + '</div>';
+    mini('Critérios com evidência', it ? pct(ev / it) : '—', ev + ' de ' + it + ' critérios · informativo, não pesa no índice', 'neutro') + '</div>';
   lista.sort(function (a, b) { return a.a.prazo.localeCompare(b.a.prazo); });
   var vl = lista.slice(0, 5).map(function (v) { return '<li><i class="sw" style="background:' + corPiloto(v.m) + '"></i><div><b>' + esc(v.a.acao) + '</b><span class="sm">' + esc(v.m) + ', prazo ' + dataBR(v.a.prazo) + ', ' + dias(v.a.prazo, h) + ' dias de atraso</span></div></li>'; }).join('');
   var alt = Math.max(160, todos.length * 42 + 60);
@@ -2410,7 +2408,7 @@ function dadosRanking() {
   }
   R.gestao = posicoes(pilotosECP().map(function (e) {
     var x = execucao(e), pz = x.total ? x.comPrazo / x.total : 0, cc = x.total ? x.concl / x.total : 0, ev = x.itens ? x.ev / x.itens : 0;
-    return { p: e.municipio, pz: pz, cc: cc, ev: ev, atr: x.atras.length, v: (pz + cc + ev) / 3 };
+    return { p: e.municipio, pz: pz, cc: cc, ev: ev, atr: x.atras.length, v: (pz + cc) / 2 };
   }), function (x) { return x.v; });
   return R;
 }
@@ -2479,8 +2477,8 @@ function pgRanking() {
     : '<p class="empty">Sem registro de atendimentos suficiente.</p>', '');
 
   /* gestão do plano */
-  var cG = card('Ranking de gestão do plano', R.gestao.length ? '<p class="hint">Média de três números: ações com prazo, ações concluídas e critérios com comprovação.</p><div class="scroll"><table class="rg"><thead><tr><th></th><th>Município</th><th>Regional</th><th class="num" title="Ações com prazo">Prazo</th><th class="num" title="Ações concluídas">Concluídas</th><th class="num" title="Critérios com comprovação">Comprov.</th><th class="num">Pontos</th></tr></thead><tbody>' +
-    R.gestao.map(function (x) { return '<tr><td>' + medalha(x.pos) + '</td><th scope="row"><i class="sw" style="background:' + corPiloto(x.p) + '"></i>' + esc(x.p) + (x.atr ? '<span class="tagatr">' + x.atr + ' atrasadas</span>' : '') + '</th>' + cregP(x.p) + '<td class="num">' + pct(x.pz) + '</td><td class="num">' + pct(x.cc) + '</td><td class="num">' + pct(x.ev) + '</td><td class="num"><b>' + Math.round(x.v * 100) + '</b></td></tr>'; }).join('') + '</tbody></table></div>' : '<p class="empty">Sem planos de ação.</p>', '');
+  var cG = card('Ranking de gestão do plano', R.gestao.length ? '<p class="hint">Média de dois números: ações com prazo e ações concluídas. A evidência não entra na pontuação.</p><div class="scroll"><table class="rg"><thead><tr><th></th><th>Município</th><th>Regional</th><th class="num" title="Ações com prazo">Prazo</th><th class="num" title="Ações concluídas">Concluídas</th><th class="num">Pontos</th></tr></thead><tbody>' +
+    R.gestao.map(function (x) { return '<tr><td>' + medalha(x.pos) + '</td><th scope="row"><i class="sw" style="background:' + corPiloto(x.p) + '"></i>' + esc(x.p) + (x.atr ? '<span class="tagatr">' + x.atr + ' atrasadas</span>' : '') + '</th>' + cregP(x.p) + '<td class="num">' + pct(x.pz) + '</td><td class="num">' + pct(x.cc) + '</td><td class="num"><b>' + Math.round(x.v * 100) + '</b></td></tr>'; }).join('') + '</tbody></table></div>' : '<p class="empty">Sem planos de ação.</p>', '');
 
   /* quadro de posições */
   var achar = function (lst, p) { var x = lst.find(function (y) { return norm(y.p) === norm(p); }); return x ? medalha(x.pos) : '<span class="md mdx">—</span>'; };
